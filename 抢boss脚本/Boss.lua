@@ -434,6 +434,10 @@ end
 
 function BackToCity()
     -- 回城
+    if tonumber(获取人物信息(13))== 0 then
+		坐骑_下坐骑()
+        延时(1000)
+    end
     if 获取背包物品数量("紫色定位符") > 0 then
         右键使用物品("紫色定位符")
         延时(1500)
