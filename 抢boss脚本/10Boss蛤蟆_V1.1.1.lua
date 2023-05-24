@@ -107,7 +107,7 @@ function GetBossRefreshInfo(cur_hour)
             return 22, 30, "苍山"
         end
     elseif string.find(BOSS名称, "冥虚奴") then
-        if cur_hour < 12 then
+        if cur_hour < 17 then
             return 15, 30, "草原"
         else
             return 22, 30, "草原"
