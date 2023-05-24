@@ -14,15 +14,15 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 使用风雷 = 1  -- 0:不使用, 1:使用
 提前开风雷时间 = 2
 
-使用移花接木 = 0  -- 0:不使用, 1:使用
-提前开移花时间 = 2
-
 使用阳春白雪 = 0  -- 0:不使用, 1:使用
 提前天山半怒抗失明 = 2
 
+使用移花接木 = 0  -- 0:不使用, 1:使用
+提前开移花时间 = 3
+
 是否提前去定位 = 1  -- 0:不去定位, 1:去定位。不去定位需要把要飞的土灵珠放在最前面
 提前秒钟去定位 = 600 -- 提前600秒去定位
-提前秒钟飞定位 = 13  -- 提前n秒飞定位
+提前秒钟飞定位 = 14  -- 提前n秒飞定位
 
 是否开模式 = 1 -- (勿改)0:不开模式, 1:开模式
 模式形式 = "帮会"   -- (勿改)和平、个人、组队、帮会、善恶
@@ -608,11 +608,11 @@ function main()
 
     -- 打Boss
     local startAttackTime = os.time()
+    local recorderLoopTimeMS = 0
     while true do
         -- TODO 遍历15.5米范围内的怪物，是否范围太大
-        怪物名称, 怪物ID, 物品X坐标, 物品Y坐标, 目标血量, 物品距离, 物品类别, 物品归属, 怪物判断, 头顶标注 = 遍历周围物品(4, BOSS名称, 15.5)
-        屏幕提示(怪物ID)
-        屏幕提示(目标血量)
+        怪物名称, 怪物ID, 物品X坐标, 物品Y坐标, 目标血量, 物品距离, 物品类别, 物品归属, 怪物判断, 头顶标注 = 遍历周围物品(4, BOSS名称, 12)
+        屏幕提示(string.format("Boss名称: %s, 怪物ID: %s, 目标血量: %s", 怪物名称, tostring(怪物ID), tostring(目标血量)))
         -- 提前扔控制技能，如月落、八阵等，开状态，如风雷、移花等
         if 提前使用控制技能 == 1 then
             local refreshLeftTime = bossRefreshTimestamp - tonumber(os.time())
@@ -633,12 +633,14 @@ function main()
                     --MentalTip("惊涛骇浪")
                     惊涛骇浪技能ID = 获取技能ID("惊涛骇浪")
                     使用技能(惊涛骇浪技能ID);
+                    UseRoleHideSkill()
                 end
             elseif 门派 == "峨嵋" then
                 if os.time() == bossRefreshTimestamp - 提前用月落时间 then
                     --MentalTip("月落西山")
                     月落西山技能ID = 获取技能ID("月落西山")
                     使用技能(月落西山技能ID);
+                    UseRoleHideSkill()
                 end
             end
         end
@@ -649,25 +651,30 @@ function main()
                 --MentalTip("风雷万钧")
                 风雷阵技能ID = 获取技能ID("风雷万钧")
                 使用技能(风雷阵技能ID);
+                UseRoleHideSkill()
             end
         elseif 门派 == "天山" then
             if os.time() == bossRefreshTimestamp - 提前天山半怒抗失明 and 使用阳春白雪 == 1 then
                 阳春白雪技能ID = 获取技能ID("阳春白雪")
                 使用技能(阳春白雪技能ID);
+                if 使用移花接木 == 0 then
+                    UseRoleHideSkill()
+                end
             end
             if os.time() == bossRefreshTimestamp - 提前开移花时间 and 使用移花接木 == 1 then
                 --MentalTip("移花接木")
                 移花接木技能ID = 获取技能ID("移花接木")
                 使用技能(移花接木技能ID);
+                UseRoleHideSkill()
             end
         end
 
         if 怪物ID > 0 then
             if 目标血量 > 0 then
                 UseRoleSkillAttack(怪物ID)
-                延时(120)
+                延时(110)
                 UseRoleSkillAttack(怪物ID);
-                延时(120)
+                延时(110)
             else
                 MentalTip("BOSS怪物死亡啦")
                 延时(2000)
@@ -703,7 +710,7 @@ function main()
             break
         end
 
-        延时(100)  -- 防止发包过快
+        延时(110)  -- 防止发包过快
     end
 
 end
