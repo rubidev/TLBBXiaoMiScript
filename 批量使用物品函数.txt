@@ -1,0 +1,20 @@
+function 批量使用物品(AAA)
+	local t={}
+	for w in string.gmatch(AAA,"([^'|']+)") do        
+		table.insert(t,w)
+	end
+	for k,v in ipairs(t) do
+		--取出物品(v)
+		执行功能("自动存仓")
+		--[[for i =1, 99 do
+			if 获取背包物品数量(v) <=0 then
+				break
+			end
+			友情提示("使用物品:"..k..":"..v) 
+			右键使用物品(v);延时(300)
+			自动清包();
+		end]]
+	end
+end
+
+批量使用物品("精品残印")

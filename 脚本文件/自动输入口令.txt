@@ -1,0 +1,6 @@
+LUA_Call("setmetatable(_G, {__index = PlayerQuicklyEnter_Env});PlayerQuicklyEnter_Clicked(5)")
+—” ±(1000)
+LUA_Call("setmetatable(_G, {__index = Anniversary_Guide_Env});Anniversary_Guide_Clicked(1)")
+—” ±(1000)
+LUA_Call("setmetatable(_G, {__index = Anniversary_Env});KaiMenLing_Button_Clicked()")
+—” ±(1000)

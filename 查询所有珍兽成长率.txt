@@ -1,0 +1,34 @@
+function 查询所有珍兽成长率()
+屏幕提示("查询所有珍兽成长率")
+       LUA_Call(string.format([[
+
+for i=0, 9 do
+		if Pet:IsPresent(i) then
+			    local Petchengzhanglv = Pet : GetGrowRate(i);
+                             local PetName=Pet:GetName(i)
+                 --PushDebugMessage(Petchengzhanglv)
+    
+			if tonumber(Petchengzhanglv) < 500 then
+                             local hid,lid = Pet:GetGUID(i);
+                              PushDebugMessage("资质鉴定珍兽成长:"..PetName)
+                             Clear_XSCRIPT();
+                             Set_XSCRIPT_Function_Name("OnInquiryForGrowRate");
+                             Set_XSCRIPT_ScriptID(1050);
+                             Set_XSCRIPT_Parameter(0,hid);
+                             Set_XSCRIPT_Parameter(1,lid);
+                             Set_XSCRIPT_ParamCount(2);
+                             Send_XSCRIPT();   
+			end
+		end
+	end	
+	]]))
+end
+
+
+function start()
+   跨图寻路("洛阳",275,297)
+   查询所有珍兽成长率()
+end
+
+start()
+   
