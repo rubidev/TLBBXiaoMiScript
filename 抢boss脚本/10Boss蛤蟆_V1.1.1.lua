@@ -609,6 +609,7 @@ function main()
     -- 打Boss
     local startAttackTime = os.time()
     while true do
+        -- TODO 遍历15.5米范围内的怪物，是否范围太大
         怪物名称, 怪物ID, 物品X坐标, 物品Y坐标, 目标血量, 物品距离, 物品类别, 物品归属, 怪物判断, 头顶标注 = 遍历周围物品(4, BOSS名称, 15.5)
         屏幕提示(怪物ID)
         屏幕提示(目标血量)
@@ -664,9 +665,9 @@ function main()
         if 怪物ID > 0 then
             if 目标血量 > 0 then
                 UseRoleSkillAttack(怪物ID)
-                延时(150)
+                延时(120)
                 UseRoleSkillAttack(怪物ID);
-                延时(150)
+                延时(120)
             else
                 MentalTip("BOSS怪物死亡啦")
                 延时(2000)
@@ -682,7 +683,7 @@ function main()
             end
         end
 
-        -- 死亡出窍，自动定位回点捡包
+        -- 死亡出窍，自动定位回点捡包，只回点一次，捡完包回城
         if 判断人物死亡() == 1 then
             死亡出窍()
             出监狱地府()
@@ -702,7 +703,7 @@ function main()
             break
         end
 
-        延时(150)  -- 防止发包过快
+        延时(100)  -- 防止发包过快
     end
 
 end
