@@ -31,7 +31,7 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 宝宝名字 = "．"
 
 是否分散站位 = 1  -- (勿改)0:不分散，1:分散战位
-分散站位距离 = 3   -- 6个点，如果是近战就站点上
+分散站位距离 = 4   -- 6个点，如果是近战就站点上
 
 使用土灵珠 = 1  -- (勿改)0:不使用, 1:使用
 
@@ -316,7 +316,7 @@ function UseRoleSkills(RoleSkill, skillTarget)
     if tonumber(判断技能冷却(RoleSkill)) == 1 then
         SkillID = 获取技能ID(RoleSkill)
         使用技能(SkillID, skillTarget);
-        延时(110)
+        延时(150)
     end
 end
 
