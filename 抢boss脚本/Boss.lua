@@ -412,10 +412,18 @@ end
 
 function BackToCity()
     -- 回城
-    if tonumber(获取人物信息(13))== 0 then
-		坐骑_下坐骑()
-        延时(1000)
+    while true do
+        if downZQ >= 3 then
+            break
+        end
+        if tonumber(获取人物信息(13))== 0 then
+            坐骑_下坐骑()
+            延时(1000)
+        else
+            break
+        end
     end
+
     if 获取背包物品数量("紫色定位符") > 0 then
         右键使用物品("紫色定位符")
         延时(1500)
@@ -434,20 +442,35 @@ function BackToCity()
     elseif 获取背包物品数量("黄色定位符") > 0 then
         右键使用物品("黄色定位符")
         延时(1500)
-    else
-        执行功能("大理回城")
-        延时(1500)
     end
 end
 
 function AddBuff()
-    if tonumber(获取人物信息(13))== 0 then
-		坐骑_下坐骑()
-        延时(1000)
+    local downZQ = 0
+    while true do
+        if downZQ >= 3 then
+            break
+        end
+        if tonumber(获取人物信息(13))== 0 then
+            坐骑_下坐骑()
+            延时(1000)
+        else
+            break
+        end
     end
 
+
     -- 使用buff，并满血
-    使用技能("暗器护体")
+    if 判断技能冷却("暗器护体") == 1 then
+        local HideSkillID = 获取技能ID("暗器护体")
+        使用技能(HideSkillID)
+        延时(500)
+    end
+    if 判断技能冷却("天覆阵") == 1 then
+        local HideSkillID = 获取技能ID("天覆阵")
+        使用技能(HideSkillID)
+        延时(500)
+    end
     延时(2000)
 
 end
