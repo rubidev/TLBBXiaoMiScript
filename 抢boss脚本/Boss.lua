@@ -8,21 +8,21 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 使用诛仙阵 = 0  -- 0:不使用, 1:使用，控制技能小开关，要使用诛仙阵，必须保证 提前使用控制技能 = 1
 提前下八阵图时间 = 36  -- 这个时间需要包含运气时间，如果 使用八阵图 设置为0, 该配置不生效
 提前下诛仙阵时间 = 16  -- 这个时间需要包含运气时间，如果 使用诛仙阵 设置为0, 该配置不生效
-提前用惊涛时间 = 3   -- 提前3秒
-提前用月落时间 = 3
+提前用惊涛时间 = 4   -- 提前3秒
+提前用月落时间 = 4
 
 使用风雷 = 1  -- 0:不使用, 1:使用
-提前开风雷时间 = 1
+提前开风雷时间 = 3
 
-使用阳春白雪 = 0  -- 0:不使用, 1:使用
-提前天山半怒抗失明 = 2
+使用阳春白雪 = 1  -- 0:不使用, 1:使用
+提前天山半怒抗失明 = 4
 
 使用移花接木 = 1  -- 0:不使用, 1:使用
-提前开移花时间 = 2
+提前开移花时间 = 3
 
 是否提前去定位 = 1  -- 0:不去定位, 1:去定位。不去定位需要把要飞的土灵珠放在最前面
-提前秒钟去定位 = 900 -- 提前n秒去定位
-提前秒钟飞定位 = 15  -- 提前n秒飞定位
+提前秒钟去定位 = 1200 -- 提前n秒去定位
+提前秒钟飞定位 = 20  -- 提前n秒飞定位
 
 是否开模式 = 1 -- (勿改)0:不开模式, 1:开模式
 模式形式 = "帮会"   -- (勿改)和平、个人、组队、帮会、善恶
@@ -36,7 +36,7 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 使用土灵珠 = 1  -- (勿改)0:不使用, 1:使用
 
 存仓物品 = ""
-最长刷怪时间 = 300  -- 刷怪时间超过5分钟，自动取消刷怪，回城
+最长刷怪时间 = 180  -- 刷怪时间超过3分钟，自动取消刷怪，回城
 currentRoleOpenedMode = 0
 -- -------------------------------------------------------------------------------------------------------------------------------------------------
 -- -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -326,67 +326,44 @@ function UseRoleSkillAttack(attackTargetID)
     if 门派 == "逍遥" then
         UseRoleSkills("宇越星现", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
-        UseRoleSkills("溪山行旅", attackTargetID);
     elseif 门派 == "唐门" then
-        UseRoleSkills("落日追星", attackTargetID);
         UseRoleSkills("九天揽月", attackTargetID);
-        UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
-        UseRoleSkills("铁蒺藜", attackTargetID);
+        UseRoleSkills("落日追星", attackTargetID);
     elseif 门派 == "武当" then
         UseRoleSkills("宙耀七星", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
-        UseRoleSkills("游刃有余", attackTargetID);
     elseif 门派 == "天龙" then
         UseRoleSkills("黄龙怒鸣", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "鬼谷" then
         UseRoleSkills("万宿辰光", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("一气三清", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "天山" then
         UseRoleSkills("洪涛碧浪", attackTargetID);
         UseRoleSkills("阳歌天钧", attackTargetID);
-        UseRoleSkills("诛仙万象", attackTargetID);
     elseif 门派 == "明教" then
         UseRoleSkills("天火穹燃", attackTargetID);
         UseRoleSkills("炎龙无双", attackTargetID);
-        UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "星宿" then
         UseRoleSkills("荒野幽魂", attackTargetID);
-        UseRoleSkills("诛仙万象", attackTargetID);
         UseRoleSkills("天地同寿", attackTargetID);
-        UseRoleSkills("一日丧命散", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "峨嵋" then
         UseRoleSkills("混江破崖", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "慕容" then
         UseRoleSkills("沌异潮落", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "少林" then
         UseRoleSkills("玄印悟佛", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "丐帮" then
         UseRoleSkills("地沉陷痕", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "桃花岛" then
         UseRoleSkills("良夜游", attackTargetID);
-        UseRoleSkills("诛仙万象", attackTargetID);
         UseRoleSkills("人之可诛", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     elseif 门派 == "绝情谷" then
         UseRoleSkills("诛仙万象", attackTargetID);
-        UseRoleSkills("暗器连击", attackTargetID);
     end
 end
 
@@ -721,10 +698,9 @@ function main()
                 UseRoleSkillAttack(怪物ID)
                 延时(110)
                 UseRoleSkillAttack(怪物ID);
-                延时(110)
             else
                 MentalTip("BOSS怪物死亡啦")
-                延时(3000)
+                延时(2000)
                 自动捡包();
                 延时(500)
                 自动捡包();
