@@ -1,6 +1,29 @@
 BOSS名称 = "莽牯毒蛤"
 BOSS坐标X, BOSS坐标Y = 70, 140
 
+-- 草原可坐标:
+-- 大boss左边(99, 90), 追风岭(165, 63)
+-- 乱字(83, 66), 河边(275, 125)
+-- 科尔沁(64, 254), 门口(280, 282)
+
+-- 玄武岛可用坐标:
+-- 兔子(139, 79), 狗点(232, 36)
+-- 螳螂(72, 142), 猫头鹰(41, 217)
+-- 野猪(134, 275), 鹰(236, 261),
+-- 孔雀(267, 183), 圣兽山门口(266, 45)
+
+-- 武夷可用坐标:
+-- 曲字、桥左上 放弃
+-- 黄龙洞(112, 43), 桥右边(79, 146)
+-- 桥左下(53, 211), 双树园(182, 128), 梅岭(268, 135)
+-- 河右边(90, 264), 下面中间点(150, 260), 南海(201, 241)
+
+-- 苍山可用坐标:
+-- 左上角(35, 47), 门口上面(129, 49), 门口下面(145, 61)
+-- 群狼峡(208, 147), 狼人谷(189, 268)
+-- 大boss上方(51, 222), 大boss右边(97, 246), 大boss右下(108, 282)
+-- 右下角(262, 261)
+
 
 -- 同一个门派的同一时间使用的技能数量不要超过2个，否则第三个开始会失效，例如：天山 移花+抗失明2个技能已达上限
 提前使用控制技能 = 1  -- 0:不使用, 1:使用, 控制技能大开关，提前使用控制技能，包括月落、惊涛
@@ -290,7 +313,7 @@ function GetRolePositionXY()
             if math.random(1,2) == 1 then
                 positionX, positionY = BOSS坐标X + randomDistance, BOSS坐标Y + randomDistance  -- (x+n, y+n)
             else
-                positionX, positionY = BOSS坐标X - randomDistance, BOSS坐标Y + randomDistance  -- (x+n, y+n)
+                positionX, positionY = BOSS坐标X - randomDistance, BOSS坐标Y + randomDistance  -- (x-n, y+n)
             end
         elseif GetTeamMemberId() == 2 then
             positionX, positionY = BOSS坐标X + randomDistance, BOSS坐标Y  -- (x+n, y)
