@@ -43,6 +43,21 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 使用移花接木 = 1  -- 0:不使用, 1:使用
 提前开移花时间 = 3
 
+使用横扫乾坤 = 1  -- 0:不使用, 1:使用
+提前开横扫时间 = 3
+
+使用经脉逆行 = 1  -- 0:不使用, 1:使用
+提前开经脉逆行时间 = 3
+
+使用斩情诀 = 1  -- 0:不使用, 1:使用
+提前用斩情诀时间 = 2
+
+使用笑恩仇 = 1  -- 0:不使用, 1:使用
+提前开笑恩仇时间 = 3
+
+使用净心观月 = 1  -- 0:不使用, 1:使用
+提前慕容半怒抗失明 = 3
+
 是否提前去定位 = 1  -- 0:不去定位, 1:去定位。不去定位需要把要飞的土灵珠放在最前面
 提前秒钟去定位 = 1200 -- 提前n秒去定位
 提前秒钟飞定位 = 20  -- 提前n秒飞定位
@@ -60,6 +75,7 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 
 存仓物品 = ""
 最长刷怪时间 = 180  -- 刷怪时间超过3分钟，自动取消刷怪，回城
+缓模式 = 0  -- 0: 不用10分钟去缓模式, 1: 用10分钟缓模式
 currentRoleOpenedMode = 0
 -- -------------------------------------------------------------------------------------------------------------------------------------------------
 -- -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -222,7 +238,7 @@ function CheckPetHPAndHappyThenFeed(MyPetName)
         end
 
         -- 检测宝宝快乐度小于60，自动喂养
-        if tonumber(Pet_GetHappy(index)) <= 60 then
+        if tonumber(Pet_GetHappy(index)) <= 62 then
             屏幕提示(MyPetName .. "快乐少于百分之90自动喂养")
             LUA_Call(string.format([[
           Pet:Dome(%d)
@@ -310,7 +326,7 @@ function GetRolePositionXY()
             randomDistance = math.random(2, tonumber(分散站位距离))
         end
         if GetTeamMemberId() == 1 then
-            if math.random(1,2) == 1 then
+            if math.random(1, 2) == 1 then
                 positionX, positionY = BOSS坐标X + randomDistance, BOSS坐标Y + randomDistance  -- (x+n, y+n)
             else
                 positionX, positionY = BOSS坐标X - randomDistance, BOSS坐标Y + randomDistance  -- (x-n, y+n)
@@ -349,30 +365,40 @@ function UseRoleSkillAttack(attackTargetID)
     if 门派 == "逍遥" then
         UseRoleSkills("宇越星现", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
+        UseRoleSkills("暗器连击", attackTargetID);
+        UseRoleSkills("落英剑", attackTargetID);
     elseif 门派 == "唐门" then
         UseRoleSkills("九天揽月", attackTargetID);
         UseRoleSkills("落日追星", attackTargetID);
-    elseif 门派 == "武当" then
-        UseRoleSkills("宙耀七星", attackTargetID);
+        UseRoleSkills("孔雀翎", attackTargetID);
+        UseRoleSkills("铁蒺藜", attackTargetID);
+        UseRoleSkills("流云矢", attackTargetID);
+    elseif 门派 == "丐帮" then
         UseRoleSkills("诛仙万象", attackTargetID);
-    elseif 门派 == "天龙" then
-        UseRoleSkills("黄龙怒鸣", attackTargetID);
-        UseRoleSkills("诛仙万象", attackTargetID);
+        UseRoleSkills("暗器连击", attackTargetID);
+        UseRoleSkills("暗器投掷", attackTargetID);
+        UseRoleSkills("棒打狗头", attackTargetID);
+        UseRoleSkills("蟠龙击", attackTargetID);
     elseif 门派 == "鬼谷" then
         UseRoleSkills("万宿辰光", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
+        UseRoleSkills("一气三清", attackTargetID);
+        UseRoleSkills("未老先衰", attackTargetID);
+        UseRoleSkills("暗器连击", attackTargetID);
+        UseRoleSkills("乾坤引", attackTargetID);
     elseif 门派 == "天山" then
+        UseRoleSkills("诛仙万象", attackTargetID);
+        UseRoleSkills("暗器投掷", attackTargetID);
         UseRoleSkills("洪涛碧浪", attackTargetID);
         UseRoleSkills("阳歌天钧", attackTargetID);
-    elseif 门派 == "明教" then
-        UseRoleSkills("天火穹燃", attackTargetID);
-        UseRoleSkills("炎龙无双", attackTargetID);
-    elseif 门派 == "星宿" then
-        UseRoleSkills("荒野幽魂", attackTargetID);
-        UseRoleSkills("天地同寿", attackTargetID);
+        UseRoleSkills("暗器连击", attackTargetID);
+        UseRoleSkills("内劲攻击", attackTargetID);
+        UseRoleSkills("雁南飞", attackTargetID);
     elseif 门派 == "峨嵋" then
         UseRoleSkills("混江破崖", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
+        UseRoleSkills("暗器连击", attackTargetID);
+        UseRoleSkills("貂蝉拜月", attackTargetID);
     elseif 门派 == "慕容" then
         UseRoleSkills("沌异潮落", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
@@ -395,6 +421,38 @@ function UseRoleHideSkill()
     if 判断技能冷却("初级隐遁") == 1 then
         local HideSkillID = 获取技能ID("初级隐遁")
         使用技能(HideSkillID)
+    end
+end
+
+function UseRoleAQHTSkill()
+
+    AQHTSkill = 获取技能ID("暗器护体")
+    使用技能(AQHTSkill)
+    延时(2000)
+end
+
+function UseRoleAQSkill()
+    if 获取背包物品数量("清心符箓") > 0 then
+        右键使用物品("清心符箓")
+        延时(1500)
+    elseif 获取背包物品数量("稳心兵符") > 0 then
+        右键使用物品("稳心兵符")
+        延时(1500)
+    end
+end
+
+function UseRoleMRJSSkill()
+    -- 使用七霞映日
+    MRJSSkill = 获取技能ID("七霞映日")
+    使用技能(MRJSSkill)
+    延时(2000)
+end
+
+function UseRoleCQSkill()
+    -- 使用穿刺阵法
+    if 判断技能冷却("天覆阵") == 1 then
+        local CQSkill = 获取技能ID("天覆阵")
+        使用技能(CQSkill)
     end
 end
 
@@ -439,14 +497,19 @@ function BackToCity()
         if downZQ >= 3 then
             break
         end
-        if tonumber(获取人物信息(13))== 0 then
+        if tonumber(获取人物信息(13)) == 0 then
             坐骑_下坐骑()
             延时(1000)
         else
             break
         end
     end
-
+    -- if 获取背包物品数量("清心符箓") > 0 then
+    --右键使用物品("清心符箓")
+    --延时(1500)
+    --elseif 获取背包物品数量("稳心兵符") > 0 then
+    --右键使用物品("稳心兵符")
+    --  延时(1500)
     if 获取背包物品数量("紫色定位符") > 0 then
         右键使用物品("紫色定位符")
         延时(1500)
@@ -465,6 +528,9 @@ function BackToCity()
     elseif 获取背包物品数量("黄色定位符") > 0 then
         右键使用物品("黄色定位符")
         延时(1500)
+    else
+        执行功能("大理回城")
+        延时(1500)
     end
 end
 
@@ -474,7 +540,7 @@ function AddBuff()
         if downZQ >= 3 then
             break
         end
-        if tonumber(获取人物信息(13))== 0 then
+        if tonumber(获取人物信息(13)) == 0 then
             坐骑_下坐骑()
             延时(1000)
         else
@@ -502,7 +568,10 @@ end
 
 
 function GoToStore()
-    if 获取背包物品数量("紫色定位符") > 0 then
+    if 获取背包物品数量("门派召集令") > 0 then
+        右键使用物品("门派召集令")
+        延时(1500)
+    elseif 获取背包物品数量("紫色定位符") > 0 then
         右键使用物品("紫色定位符")
         延时(1500)
     elseif 获取背包物品数量("红色定位符") > 0 then
@@ -584,6 +653,12 @@ function UseTuLingZhuPositioning()
     end
 end
 
+function WaitModeEnd()
+    if currentRoleOpenedMode == 1  and 缓模式 == 0 then
+        延时(600) -- 城里待10分钟等待模式结束
+    end
+end
+
 function main()
     执行功能("同步游戏时间")
     MentalTip("此脚本仅用于学习研究使用，用于其它途径与本人无关，出现任何问题概不负责！！！")
@@ -641,18 +716,29 @@ function main()
 
     -- 定位后回城
     延时(2000)
-    if tonumber(获取人物信息(13))== 0 then
-		坐骑_下坐骑()
+    if tonumber(获取人物信息(13)) == 0 then
+        坐骑_下坐骑()
         延时(1000)
     end
     BackToCity()  -- 纸飞机或大理回城
     跨图寻路("洛阳", 185, 335)
     延时(3000)
-    AddBuff()  -- 使用buff: 暗器护体
-    延时(1000)
+    坐骑_下坐骑()
+    延时(5000)
+    UseRoleAQSkill()
+    延时(5000)
+    UseRoleCQSkill()
+    延时(5000)
+    UseRoleMRJSSkill()
+    延时(5000)
+    UseRoleAQHTSkill()
+    延时(5000)
     执行功能("洛阳加血")
     延时(1000)
-
+    跨图寻路("天山", 95, 120)
+    延时(3000)
+    坐骑_下坐骑()
+    延时(5000)
     -- 召唤宝宝, 并喂养
     CheckAndCallPet(宝宝名字)
     CheckPetHPAndHappyThenFeed(宝宝名字)
@@ -721,6 +807,36 @@ function main()
                 --MentalTip("风雷万钧")
                 风雷阵技能ID = 获取技能ID("风雷万钧")
                 使用技能(风雷阵技能ID);
+                UseRoleHideSkill()
+            end
+        elseif 门派 == "丐帮" then
+            if os.time() == bossRefreshTimestamp - 提前开横扫时间 and 使用横扫乾坤 == 1 then
+                横扫乾坤技能ID = 获取技能ID("横扫乾坤")
+                使用技能(横扫乾坤技能ID);
+                UseRoleHideSkill()
+            end
+        elseif 门派 == "绝情谷" then
+            if os.time() == bossRefreshTimestamp - 提前开笑恩仇时间 and 使用笑恩仇 == 1 then
+                笑恩仇技能ID = 获取技能ID("笑恩仇")
+                使用技能(笑恩仇技能ID);
+                UseRoleHideSkill()
+            end
+        elseif 门派 == "峨嵋" then
+            if os.time() == bossRefreshTimestamp - 提前用斩情诀时间 and 使用斩情诀 == 1 then
+                斩情诀技能ID = 获取技能ID("斩情诀")
+                使用技能(斩情诀技能ID);
+                UseRoleHideSkill()
+            end
+        elseif 门派 == "星宿" then
+            if os.time() == bossRefreshTimestamp - 提前开经脉逆行时间 and 使用经脉逆行 == 1 then
+                经脉逆行技能ID = 获取技能ID("经脉逆行")
+                使用技能(经脉逆行技能ID);
+                UseRoleHideSkill()
+            end
+        elseif 门派 == "慕容" then
+            if os.time() == bossRefreshTimestamp - 提前慕容半怒抗失明 and 使用净心观月 == 1 then
+                净心观月技能ID = 获取技能ID("净心观月")
+                使用技能(净心观月技能ID);
                 UseRoleHideSkill()
             end
         elseif 门派 == "天山" then
@@ -792,6 +908,5 @@ GoToStore() -- 回城存仓
 SwitchRoleMode("和平")
 执行功能("洛阳加血")
 
-if currentRoleOpenedMode == 1 then
-    延时(600) -- 城里待10分钟等待模式结束
-end
+WaitModeEnd()
+
