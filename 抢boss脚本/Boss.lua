@@ -184,6 +184,18 @@ function CallPetByIndex(nIndex)
             ]], nIndex), "n");
 end
 
+function PetRelax(petName)
+    -- 珍兽休息
+    -- TODO
+    local petId = GetPetIndexByName(petName)
+    LUA_Call(string.format([[
+    if(Pet:GetIsFighting(%d)) then
+        Pet:Go_Relax(%d)
+    end
+    ]], petId, petId))
+
+end
+
 function CheckAndCallPet(MyPetName)
     -- 获取珍兽在背包中的位置即index，然后召唤宝宝
     if tonumber(获取人物信息(18)) <= 0 then
@@ -212,6 +224,26 @@ end
 function Pet_GetHappy(nIndex)
     -- 获取宝宝快乐度
     return LUA_取返回值(string.format("return Pet : GetHappy(%d)", nIndex), "n")
+end
+
+
+function AddPetHappyThen(MyPetName)
+    local index = tonumber(GetPetIndexByName(MyPetName))
+
+    -- 检测宝宝快乐度小于65，自动使用回春丹等丹
+    local feed_count = 0
+    while true do
+        if tonumber(Pet_GetHappy(index)) <= 65 then
+            LUA_Call(string.format([[
+              Pet:Feed(%d)
+            ]], index), "n");
+            feed_count = feed_count + 1
+            延时(200)
+        else
+            break
+        end
+    end
+
 end
 
 function CheckPetHPAndHappyThenFeed(MyPetName)
@@ -739,7 +771,10 @@ function main()
     延时(3000)
     坐骑_下坐骑()
     延时(5000)
+
+
     -- 召唤宝宝, 并喂养
+    AddPetHappyThen(宝宝名字) -- 召唤前检查快乐度
     CheckAndCallPet(宝宝名字)
     CheckPetHPAndHappyThenFeed(宝宝名字)
     延时(2000)
@@ -907,6 +942,6 @@ main()
 GoToStore() -- 回城存仓
 SwitchRoleMode("和平")
 执行功能("洛阳加血")
-
-WaitModeEnd()
+PetRelax(宝宝名字)   -- 收回出战宝宝，节约宝宝肉
+WaitModeEnd()  -- 根据 缓模式 判断是否在城里等模式结束
 
