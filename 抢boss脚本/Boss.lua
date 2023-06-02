@@ -228,12 +228,16 @@ end
 
 
 function AddPetHappyThen(MyPetName)
+    -- 检测宝宝快乐度小于65，自动使用回春丹等丹
     local index = tonumber(GetPetIndexByName(MyPetName))
 
-    -- 检测宝宝快乐度小于65，自动使用回春丹等丹
     local feed_count = 0
     while true do
-        if tonumber(Pet_GetHappy(index)) <= 65 then
+	    if feed_count >= 30 then
+		    break
+		end
+		屏幕提示(tonumber(Pet_GetHappy(index)))
+        if tonumber(Pet_GetHappy(index)) < 65 then
             LUA_Call(string.format([[
               Pet:Feed(%d)
             ]], index), "n");
