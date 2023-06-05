@@ -86,7 +86,12 @@
 064、自动打怪(怪物名称,打怪模式,定位地图,定位X,定位y,定位范围,抢怪模式,自动捡包,任务ID)
      --怪物名称="全部" 则打所有怪  打怪模式：1先抢后清 2、优先近身 3、优先血多 4、优先血少  抢怪模式=1 开启抢怪 自动捡包=1 开启捡包 任务ID>0任务完成自动退出
 065、LUA_取返回值("return Player:GetData('MONEY')")  --获取人物背包金币
-066、LUA_取返回值("return Player:GetData('MONEY_JZ')")   --获取背人物包交子
+066、Player:GetData('MONEY_JZ')   --获取背人物包交子
+     Player:GetData("ZENGDIAN")   赠点
+     Player:GetData("YUANBAO")  元宝
+     Player:GetData("BIND_YUANBAO")   绑定元宝
+     Player:GetData("GIFTTOKEN")  返券
+     Player:GetData("LIJIN")
 
 067、 Player:GetData("XXX")  -- XXX为类型，如下
      - 获取人物攻击属性
@@ -106,7 +111,7 @@
 
 068、返回人物坐标：g_posX, g_posY = Player:GetPos();
 
-069、str = Guild:GetMyGuildDetailInfo("xxx")  -- 本帮帮会信息
+069、str = Guild:GetMyGuildDetailInfo("xxx")  -- 本帮帮会信息, 一定要先打开一下帮会列表的帮会信息界面，才能通过该接口获取数据
      - 这一列可用                                     - 这一列待测试
      - 成立时间：FoundedTime                                   - CurBuilding
      - 等级：Level                                         - Comm
@@ -135,3 +140,160 @@
 071、获取NPC id
      - local npcObjId = Get_XParam_INT(0)
      - g_clientNpcId = DataPool : GetNPCIDByServerID(npcObjId)
+
+072、珍兽
+    - Pet:GetPet_Count() 珍兽数量
+    - Player:GetData("PET_EXTRANUM")  获取珍兽栏扩展数量
+    - PETNUM = Pet_List : GetFirstSelectItem();
+    - Pet:GetTitleNum(PET_CURRENT_SELECT_NUM)
+    - Pet : GetIsFighting(index)  返回bool类型，index对应的珍兽出战了
+    - Pet:GetTakeLevel(PET_CURRENT_SELECT ) 可携带等级
+    - 珍兽装备，5个部位
+        local ActionClaw = EnumAction(5*PET_CURRENT_SELECT, "my_pet_equip");
+        local ActionHead = EnumAction(5*PET_CURRENT_SELECT + 1, "my_pet_equip");
+        local ActionBody = EnumAction(5*PET_CURRENT_SELECT + 2, "my_pet_equip");
+        local ActionNeck = EnumAction(5*PET_CURRENT_SELECT + 3, "my_pet_equip");
+        local ActionCharm = EnumAction(5*PET_CURRENT_SELECT + 4, "my_pet_equip");
+        ActionHead : GetID()
+        ActionClaw : GetID()
+        ActionNeck : GetID()
+        ActionCharm : GetID()
+    - 珍兽攻击属性: Pet:GetData( "xx" );     xx有以下选择
+        冰攻: ATTACKCOLD          火攻: ATTACKFIRE          玄攻: ATTACKLIGHT             毒攻: ATTACKPOISON
+        冰抗: DEFENCECOLD         火抗: DEFENCEFIRE         玄抗: DEFENCELIGHT            毒抗: DEFENCEPOISON
+        减冰抗: RESISTOTHERCOLD   减火抗: RESISTOTHERFIRE    减玄抗: RESISTOTHERLIGHT      减毒抗: RESISTOTHERPOISON
+    - strName,strName2 = Pet:GetName(nIndex) 珍兽名字
+    - Pet:GetPetTypeName(nIndex); 珍兽类名
+    - PlayerPackage:IsPetLock(nIndex)  返回0,1，珍兽是否加锁
+    - strName,strName2,sex = Pet : GetID(nIndex) 名字1，名字2，性别
+    - Pet:GetLastProcreateLevel(nIndex) 上一次繁殖等级
+    - Pet : GetConsort(nIndex) 配偶ID
+    - 幻灵
+        nHuanlingId = Pet:GetHuanlingIdByIndex(nIndex)  珍兽使用的幻灵的ID， 为0表示没有幻灵
+        Pet:Lua_GetPetHuanLingInfo(nHuanlingId, "Name")
+    - 珍兽基本属性
+        Pet : GetNaturalLife(nIndex); 寿命，返回number
+        Pet : GetHappy(nIndex); 快乐，字符串
+        Pet : GetSavvy(nIndex); 悟性，字符串
+        Pet : GetLixing(nIndex);  灵性，字符串
+        Pet : GetBasic(nIndex);  根骨，字符串
+        Pet : GetFitValue(nIndex); 融合度
+        Pet : GetHP(nIndex); 当前血量
+        Pet : GetMaxHP(nIndex); 最大血量
+        Pet : GetStrAptitude(nIndex); 力量资质
+        Pet : GetIntAptitude(nIndex); 灵气资质
+        Pet : GetPFAptitude(nIndex); 体力资质
+        Pet : GetStaAptitude(nIndex); 定力资质
+        Pet : GetDexAptitude(nIndex); 身法资质
+        Pet : GetStr(nIndex);  力量
+        Pet : GetInt(nIndex);   灵气
+        Pet : GetDex(nIndex);   体力
+        Pet : GetPF(nIndex);  定力
+        Pet : GetSta(nIndex);   身法
+        Pet : GetPotential(nIndex);
+    - Pet : GetGrowRate(nIndex); 成长率
+    - 珍兽技能
+      theSkillAction:GetName()  -- 获取珍兽技能名字
+      theSkillAction = Pet:EnumPetSkill( nIndex, i-1, "petskill")  -- 生成珍兽技能对象， 参数1：nIndex珍兽的index, 参数2：格子索引从0开始
+      theSkillAction:GetID()
+      下面是示例，遍历珍兽技能，设置前端显示技能：
+                PETSKILL_BUTTONS_NUM = 12 -- 总共12个技能格子
+                i = 1
+                while i <= PETSKILL_BUTTONS_NUM do
+                    local theSkillAction = Pet:EnumPetSkill( nIndex, i-1, "petskill");
+                    i = i + 1;
+                    if theSkillAction:GetID() ~= 0 then
+
+                        PETSKILL_BUTTONS[k]:SetActionItem(theSkillAction:GetID());
+                        k = k+1;
+                    end
+
+                end
+    - food = Pet : GetFoodType(nIndex);  珍兽食性
+        food >= 1000  肉食
+        food >= 100  草食
+        food >= 10  虫食
+        food >= 1  谷食
+    - Pet : GetAttackTraitID(PET_CURRENT_SELECT) 攻击类型，11表示外功宝宝，12表示内功宝宝，13表示平衡体力宝宝
+    - 判断窗口界面是否打开
+        Pet:GetPetLocation(PETNUM)  不同操作对应的返回值不同
+        IsWindowShow("PetSavvy")  and Pet:GetPetLocation(PETNUM) == 12  成年珍兽提悟性窗口
+        IsWindowShow("PetSavvyGGD")	and Pet:GetPetLocation(PETNUM) == 3  用根骨丹提升珍兽悟性窗口
+        IsWindowShow("MissionReply") and Pet:GetPetLocation(PETNUM) == 7  任务提交物品或珍兽窗口
+        IsWindowShow("PetHuanhua") and Pet:GetPetLocation(PETNUM) == 5  珍兽在幻化窗口
+        IsWindowShow("PetRHD") and Pet:GetPetLocation(PETNUM) == 17  提升珍兽融合度窗口
+    - Pet:PossessionPet(PETNUM) 珍兽附体
+    - Pet:RestorePet(PETNUM) 附体分离
+    - Pet:Go_Relax(PETNUM); 休息
+    - Pet:Go_Fight(PETNUM); 出战
+    - Pet:Free_Confirm(PETNUM);  放生
+    - Pet:Feed(PETNUM); 喂养
+    - Pet:Dome(PETNUM); 驯养
+    - Pet : Change_Name(PETNUM,Pet_PetName : GetText());  改名字
+    - 珍兽延寿, 函数比较复杂
+            --优先扣除绑定的，其次优先扣除增加寿命少的，再次优先扣除配表绑定的珍兽延年丹
+            local bagIndex, bindstate = PlayerPackage:FindFirstBindedItemIdxByIDTable( 30606023 )
+            if bagIndex == nil or bagIndex < 0 or bindstate == 0 then
+                bagIndex, bindstate = PlayerPackage:FindFirstBindedItemIdxByIDTable( 30606001 )
+                if bagIndex == nil or bagIndex < 0 or bindstate == 0 then
+                    bagIndex, bindstate = PlayerPackage:FindFirstBindedItemIdxByIDTable( 30606024 )
+                    if bagIndex == nil or bagIndex < 0 or bindstate == 0 then
+                        bagIndex, bindstate = PlayerPackage:FindFirstBindedItemIdxByIDTable( 30606002 )
+                        if bagIndex == nil or bagIndex < 0 or bindstate == 0 then
+                            bagIndex = PlayerPackage:GetBagPosByItemIndex( 30606023 )
+                            if bagIndex == nil or bagIndex < 0 then
+                                bagIndex = PlayerPackage:GetBagPosByItemIndex( 30606001 )
+                                if bagIndex == nil or bagIndex < 0 then
+                                    bagIndex = PlayerPackage:GetBagPosByItemIndex( 30606024 )
+                                    if bagIndex == nil or bagIndex < 0 then
+                                        bagIndex = PlayerPackage:GetBagPosByItemIndex( 30606002 )
+                                        if bagIndex == nil or bagIndex < 0 then
+                                            local hid,lid = Pet:GetGUID(PET_CURRENT_SELECT);
+                                            Clear_XSCRIPT();
+                                            Set_XSCRIPT_Function_Name("PetSkillStudy_YanShou");
+                                            Set_XSCRIPT_ScriptID(311111);
+                                            Set_XSCRIPT_Parameter(0,1);
+                                            Set_XSCRIPT_Parameter(1,hid);
+                                            Set_XSCRIPT_Parameter(2,lid);
+                                            Set_XSCRIPT_ParamCount(3);
+                                            Send_XSCRIPT();
+                                            return;
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            Pet:SkillStudy_Do(3, PET_CURRENT_SELECT, bagIndex);
+    - Pet:Lua_OneKeyUnEquip(); 珍兽一键卸装备
+073、判断是否为安全时间
+    - if (tonumber(DataPool:GetLeftProtectTime()) > 0) then end
+
+074、当前NPC
+    - local targetId = Get_XParam_INT(0)
+      g_ObjCareID = DataPool:GetNPCIDByServerID(targetId);
+
+075、result, money = Player:GetLevelMoneyLimit();   金币上限
+
+076、获取背包大小
+    - 道具栏: "base"
+        CurrNum = DataPool:GetTaskBag_Num();  -- 当前已用格子数
+        BaseNum = DataPool:GetTaskBag_BaseNum();  -- 目前最大能用格子数
+        MaxNum = DataPool:GetTaskBag_MaxNum();  -- 背包最大格子数
+    - 材料栏: "material"
+        CurrNum = DataPool:GetMatBag_Num();
+		BaseNum = DataPool:GetMatBag_BaseNum();
+		MaxNum = DataPool:GetMatBag_RealMaxNum();
+    - 任务栏: "quest"
+        CurrNum = DataPool:GetTaskBag_Num();
+		BaseNum = DataPool:GetTaskBag_BaseNum();
+		MaxNum = DataPool:GetTaskBag_MaxNum();
+077、遍历背包
+    for i=1, nMaxDisplayNumber do
+        heAction,bLocked = PlayerPackage:EnumItem(szPacketName, i-1);  -- sz = "base"、"material"、"quest"
+        theAction:GetID()
+087、添加信任伙伴
+    - DataPool : AddTrustFriend("0025AE#2005");
+    - FriendGuid = DataPool:GetFriend( nChannel, nIndex, "ID_TEXT" )  第几个频道的第几个人的id
