@@ -38,7 +38,7 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 提前开风雷时间 = 3
 
 使用阳春白雪 = 1  -- 0:不使用, 1:使用
-提前天山半怒抗失明 = 4
+提前天山半怒抗失明 = 3
 
 使用移花接木 = 1  -- 0:不使用, 1:使用
 提前开移花时间 = 3
@@ -50,7 +50,7 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 提前开经脉逆行时间 = 3
 
 使用斩情诀 = 1  -- 0:不使用, 1:使用
-提前用斩情诀时间 = 2
+提前用斩情诀时间 = 3
 
 使用笑恩仇 = 1  -- 0:不使用, 1:使用
 提前开笑恩仇时间 = 3
@@ -58,13 +58,17 @@ BOSS坐标X, BOSS坐标Y = 70, 140
 使用净心观月 = 1  -- 0:不使用, 1:使用
 提前慕容半怒抗失明 = 3
 
+
+提前净化时间 = 1
+
+提前冰爆时间 = 3
+
 是否提前去定位 = 1  -- 0:不去定位, 1:去定位。不去定位需要把要飞的土灵珠放在最前面
 提前秒钟去定位 = 1200 -- 提前n秒去定位
 提前秒钟飞定位 = 20  -- 提前n秒飞定位
 
-是否开模式 = 1 -- (勿改)0:不开模式, 1:开模式
 模式形式 = "帮会"   -- (勿改)和平、个人、组队、帮会、善恶
-开始模式名单 = "" -- (勿改)多个为角色名用 | 分隔; "", 表示不判断名字，峨眉逍遥门派开模式
+开始模式名单 = "ご乘风破浪〆|﹎尛妹．ゝ" -- (勿改)多个为角色名用 | 分隔; 逍遥峨嵋，名单中的角色都开模式
 
 宝宝名字 = "．"
 
@@ -447,6 +451,7 @@ function UseRoleSkillAttack(attackTargetID)
     elseif 门派 == "桃花岛" then
         UseRoleSkills("良夜游", attackTargetID);
         UseRoleSkills("人之可诛", attackTargetID);
+        UseRoleSkills("雅颂之音", attackTargetID);
     elseif 门派 == "绝情谷" then
         UseRoleSkills("诛仙万象", attackTargetID);
     end
@@ -509,13 +514,10 @@ function SwitchRoleMode(RoleModeType)
 end
 
 function OpenRoleMode()
-    -- 指定人物开模式; 当开始模式名单为空时，有峨眉、逍遥、武当、丐帮开模式
-    if 开始模式名单 == "" or string.find(开始模式名单, 人物名称, 1, true) then
-        MentalTip(人物名称 .. "打开模式: " .. 模式形式)
-        SwitchRoleMode(模式形式);
-        currentRoleOpenedMode = 1
-        延时(200)
-    end
+    MentalTip(人物名称 .. "打开模式: " .. 模式形式)
+    SwitchRoleMode(模式形式);
+    currentRoleOpenedMode = 1
+    延时(200)
 end
 
 function GetCurTargetHPPercent()
@@ -796,6 +798,8 @@ function main()
                 OpenRoleMode()  -- 起飞前 逍遥开模式
             elseif 门派 == "峨嵋" then
                 OpenRoleMode()  -- 起飞前 峨嵋开模式
+            elseif string.find(开始模式名单, 人物名称, 1, true) then
+                OpenRoleMode()  -- 指定名字的角色开模式
             end
             延时(500)
             UseTuLingZhuTransmit()  -- 起飞
@@ -809,6 +813,14 @@ function main()
     while true do
         怪物名称, 怪物ID, 物品X坐标, 物品Y坐标, 目标血量, 物品距离, 物品类别, 物品归属, 怪物判断, 头顶标注 = 遍历周围物品(4, BOSS名称, 15)
         -- 提前扔控制技能，如月落、八阵等，开状态，如风雷、移花等
+        if os.time() == bossRefreshTimestamp - 提前冰爆时间 then
+            UsePetSkillBySkillName("高级冰爆")
+        end
+
+        if os.time() == bossRefreshTimestamp - 提前净化时间 then
+            UsePetSkillBySkillName("净化")
+        end
+
         if 提前使用控制技能 == 1 then
             local refreshLeftTime = bossRefreshTimestamp - tonumber(os.time())
             if refreshLeftTime > 0 then
