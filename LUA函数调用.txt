@@ -1,0 +1,29 @@
+1、获取当前场景ID(可能不能用): curSceneID = GetSceneID();
+
+2、自动寻路到(x,y): AutoRunToTarget( x, y );
+
+3、 nSumSkill = GetActionNum("skill");
+
+4、# life可以用其它的替代，packageitem、xinfa、skill、equip、other_pet_equip、my_pet_equip、petskill、targetequip、xiulianbook、xiulianmiji
+nAbilityNum = GetActionNum("life");
+    for i=0, nAbilityNum do
+        theAction = EnumAction(i, "life");
+        theAction:GetID()
+        strName = theAction:GetName();
+
+5、金币换交子
+    bAvailability, money = Bank : GetInputMoney( jin , yin, tong )
+    Clear_XSCRIPT( )
+		Set_XSCRIPT_Function_Name( "DoMoneyToJiaozi" )
+		Set_XSCRIPT_ScriptID( 800119 )
+		Set_XSCRIPT_Parameter( 0, money )
+		Set_XSCRIPT_ParamCount( 1 )
+	Send_XSCRIPT( )
+
+6、销毁物品
+        Clear_XSCRIPT()
+			Set_XSCRIPT_ScriptID( 124 )
+			Set_XSCRIPT_Function_Name( "OnDestroy" )
+			Set_XSCRIPT_Parameter( 0, g_posItem )   -- g_posItem表示物品在背包中的位置
+			Set_XSCRIPT_ParamCount( 1 )
+		Send_XSCRIPT()

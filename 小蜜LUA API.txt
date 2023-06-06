@@ -93,23 +93,53 @@
      Player:GetData("GIFTTOKEN")  返券
      Player:GetData("LIJIN")
 
+
 067、 Player:GetData("XXX")  -- XXX为类型，如下
      - 获取人物攻击属性
-          - 冰属性：ATTACKCOLD
-          - 火属性：ATTACKFIRE
-          - 玄属性：ATTACKLIGHT
-          - 毒属性：ATTACKPOISON
+          - 冰属性：ATTACKCOLD      冰抗：DEFENCECOLD          减冰抗：RESISTOTHERCOLD    减冰抗下限：SUBRESISTLIMITCOLD
+          - 火属性：ATTACKFIRE      火抗：DEFENCEFIRE          减火炕：RESISTOTHERFIRE    减火抗下限：SUBRESISTLIMITFIRE
+          - 玄属性：ATTACKLIGHT     玄抗：DEFENCELIGHT         减玄炕：RESISTOTHERLIGHT    减玄抗下限：SUBRESISTLIMITLIGHT
+          - 毒属性：ATTACKPOISON    毒抗：DEFENCEPOISON        减毒炕：RESISTOTHERPOISON   减毒抗下限：SUBRESISTLIMITPOISON
+     - nIce, nFire, nThunder, nPoison = Player:GetData("Attack_IFTPValue"); 获取神鼎的冰火玄毒加成
+     - LIANDANLUCONVALUE  神鼎体力加成
      - 游戏币
           - 元宝：YUANBAO
           - 交子：MONEY_JZ
-          - 金币：MONEY
-     - 门派：MEMPAI
+          - 金币：MONEY, 返回值有4个：nMoneyNow,nGold,nSilverCoin,nCopperCoin，总的、金、银、铜
+     - 门派ID：MEMPAI
+        0：少林    1：明教   2：丐帮   3：武当    4：峨嵋   5：星宿   6：天龙
+        7：天山    8：逍遥   9：无门派   10：慕容   11：唐门   12：鬼谷   13：桃花岛
+        14：绝情谷
      - 等级：LEVEL
      - GUILD
+     - 当前经验: EXP
+     - 回归专属经验: HUILIUEXP
+     - 善恶值：GOODBADVALUE
+     - 账户ID: ACCOUNTNAME
+     - ENG、MAXENG 当前共情值、最大共情值
+     - RAGE、MAXRAGE 当前怒气、最大怒气
+     - EXP、NEEDEXP 当前经验、升级需要的经验
+     - BATTLESCORE 评分
+     - EQUIPSCOREHH
+     - STR、XIULIAN_STR  力量、修炼加成力量
+     - SPR、XIULIAN_SPR  灵气、修炼加成灵气
+     - CON、XIULIAN_CON  体力、修炼加成体力
+     - INT、XIULIAN_INT  定力、修炼加成定力
+     - DEX、XIULIAN_DEX  身法、修炼加成身法
+     - ATT_PHYSICS、XIULIAN_ATTP   物理攻击、修炼加成物理攻击（外功）
+     - DEF_PHYSICS、XIULIAN_DEFP   物理防御、修炼加成物理防御
+     - ATT_MAGIC、XIULIAN_ATTM   魔法攻击、修炼加成魔法攻击 （内功）
+     - DEF_MAGIC、XIULIAN_DEFM  魔法防御、修炼加成魔法防御
+     - MISS、XIULIAN_MISS  闪避、修炼加成闪避
+     - HIT、XIULIAN_HIT  命中、修炼加成命中
+     - CRITICALATTACK   会心攻击
+     - CRITICALDEFENCE   会心防御
+     - VIGOR、MAXVIGOR  活力、最大活力
+     - ENERGY、MAXENERGY  精力、最大精力
 
-
-
-068、返回人物坐标：g_posX, g_posY = Player:GetPos();
+068、任务函数
+    - 返回人物坐标：g_posX, g_posY = Player:GetPos();
+    - Player:GetBuffNumber(); 人物buff数量
 
 069、str = Guild:GetMyGuildDetailInfo("xxx")  -- 本帮帮会信息, 一定要先打开一下帮会列表的帮会信息界面，才能通过该接口获取数据
      - 这一列可用                                     - 这一列待测试
@@ -297,3 +327,208 @@
 087、添加信任伙伴
     - DataPool : AddTrustFriend("0025AE#2005");
     - FriendGuid = DataPool:GetFriend( nChannel, nIndex, "ID_TEXT" )  第几个频道的第几个人的id
+    - DataPool:GetFriend( nChannel, nIndex, , "NAME" );  第几个频道的第几个人的名字
+    - DataPool:GetFriend( nChannel, nIndex, "ZONEWORLDID" );  第几个频道第几个人的区id
+    - DataPool:AddFriendAndGrouping( szName)   根据用户名字加好友
+    - nGroup , nIndex = DataPool:GetFriendByName(szName)
+
+088、银行
+    - Bank:GetRentBoxNum()   获取银行已租赁个数
+    - nMoney,nGoldCoin,nSilverCoin,nCopperCoin = Bank:GetBankMoney()  获取银行中的钱
+    - nBeginIndex,nGridNum = Bank:GetRentBoxInfo(nIndex);  银行中每个小包可用的格子数
+    - theAction, bLocked = Bank:EnumItem(nActIndex);  不知道什么功能，只在下面这里使用到theAction
+        GRID_BUTTONS[i]:SetActionItem(theAction:GetID());
+
+089、帮会宣战
+    - City:SendAddEnemyMsg( g_AddEnemyGuildID,1 );   本服宣战，帮会ID
+    - City:AddKServerEnemyList(g_AddEnemyZoneWorldID, g_AddEnemyGuildID);   跨服宣战，帮会ID
+    - City : GetCityManageInfo( "GuildMoney" );  帮会资金
+
+090、队伍
+    - Player:IsInTeam() 判断是否在队伍中，1和0
+    - Player:LeaveTeam()  离开队伍
+    - Player:IsLeader();  是否队长，1和0
+    - DataPool:GetApplyMemberCount(); 申请进队人数
+    - DataPool:GetTeamMemberCount();  当前队伍人数
+    - Player:KickTeamMember(currentSelectMember);  将对应ID的队员踢出队伍
+    - Player:CreateTeamSelf(); 自己创建队伍
+    - Player:AppointLeader(currentSelectMember);  将队伍中某个任命为队长
+    - Player:StopFollow();  取消组队跟随
+    - name,zoneworldid = DataPool:GetTeamMemNameByUIIndex(tonumber( currentSelectMember )) 获取队伍成员的name和worldID
+    - Friend:AskTeam( szName ); 申请好友队伍
+    - Friend:InviteTeam( szName );  邀请好友加入队伍
+    - Player:AgreeJoinTeam(); 同意加入别人的队伍
+    - Player:SendAgreeJoinTeam_TeamMemberInvite();  同意队友邀请别人加入我的队伍
+    - Player:SendAgreeJoinTeam_Apply(); 同意别人的加入我的队伍
+    - Player:SendAgreeTeamFollow(); 队长发起组队跟随
+    - Player:SendAgreeJoinGroup()
+    - Player:RejectJoinTeam(); 拒绝加入别人的队伍
+    - Player:SendRejectJoinTeam_TeamMemberInvite(); 拒绝加入别人的队伍
+    - Player:SendRejectJoinTeam_Apply();  拒绝别人加入我的队伍
+    - Player:SendRejectJoinTeam_Apply(g_iRealSelApplyIndex);   拒绝指定index的用户入队
+    - Player:SendRefuseTeamFollow();  拒绝组队跟随
+    - Player:SendRefuseJoinGroup()
+    - DataPool:IsTeamLeader();  是否是队长 返回1和0
+    - Player:IsInRaid()  判断是否在团中
+    - Player:LeaveRiad()  退出团队
+    - Player:IsRaidLeader() 是否为团长，1和0
+    - Raid:GetApplicantCount()  当前申请入团的人数
+    - 申请入队人物信息
+        g_iCurPageShowCount = 6   -- 每页显示队员数量
+        local iCurShowStart = index * g_iCurPageShowCount;      -- index为当前页数，默认从0开始
+        local iCurShowEnd = iCurShowStart + g_iCurPageShowCount;
+        for i = iCurShowStart, iCurShowEnd - 1 do
+            szNick
+            ,iFamily
+            ,iLevel
+            ,iCapID
+            ,iHead
+            ,iArmourID
+            ,iCuffID
+            ,iFootID
+            ,iWeaponID
+            ,_
+            ,sZoneWorldID
+            ,iFightScore
+            ,szGuildName
+            = DataPool:GetApplyMemberInfo(i);
+    - 申请进团人物信息
+        for i = iCurShowStart, iCurShowEnd - 1 do  -- 这里的参数同上
+            szNick
+            ,iFamily
+            ,iLevel
+            ,iCapID
+            ,iHead
+            ,iArmourID
+            ,iCuffID
+            ,iFootID
+            ,iWeaponID
+            ,_              --- 这里是性别，我不需要，所以不用读取
+            ,sZoneWorldID
+            ,iFightScore
+            ,szGuildName
+            = Raid:GetApplyMemberInfoByIdx(i);
+    - 删除一个申请者
+        iCurSelApply = g_iCurShowPage_Apply * g_iCurPageShowCount + index;
+        DataPool:EraseApply(g_iCurSelApply_Apply);  -- 这里
+
+091、模式切换
+    - Player:ChangePVPMode( 0 ); 切到和平模式
+    - Player:ChangePVPMode( 1 ); 切到个人模式
+    - Player:ChangePVPMode( 2 ); 切到善恶模式
+    - Player:ChangePVPMode( 3 ); 切到组队模式
+    - Player:ChangePVPMode( 4 ); 切到帮会同盟模式
+
+092、九州商会
+    - PlayerShop:GetMoney("open","self");   获取自己店里的资金
+    - bAvailability,nMoney = Bank:GetInputMoney(szGold,szSilver,szCopperCoin);  -- 参数分别为，金、银、铜，仓库能否拿到这些钱
+    - PlayerShop:ApplyMoney("immitbase",nMoney);  商会冲入本金
+    - PlayerShop:ApplyMoney("immit",nMoney);  商会冲入资金
+    - PlayerShop:ApplyMoney("draw_ok",nMoney);  商会取钱
+    - PlayerShop:IsSaleOut("self"); 查看是否为盘出状态，1表示盘出，0不是
+    - 店铺信息 PlayerShop:GetShopInfo("self","xx")  -- xx有以下选择
+        - ownername 店主名字
+        - ownerid  店主ID
+        - shopname  店名
+        - desc 店铺描述
+    - PlayerShop:GetMoney("base","self");  本金
+    - PlayerShop:GetMoney("base","self");  盈利资金
+    - PlayerShop:GetCommercialFactor();  商业指数
+    - PlayerShop:GetFriendNum();  获取合伙人数量
+        local nNum = PlayerShop:GetFriendNum();
+        for i=0 ,nNum-1  do
+            local szFriendName = PlayerShop:EnumFriend(i);   -- 合伙人名字
+    - PlayerShop:GetSelfPlace();  获取自己的身份，老板还是合伙人， 返回为 boss 表示老板, friend 表示合伙人
+    - PlayerShop:Modify("name",szName);  修改店铺名字
+    - PlayerShop:DealFriend("del", nIndex);     删除合作伙伴
+        local nIndex = PS_ShopMag_FriendList:GetFirstSelectItem();  获取选中的任务是index，可以用循环代替
+        PlayerShop:DealFriend("del", nIndex);
+    - PlayerShop:DealFriend("add", "friend-id")   添加合作伙伴
+
+093、DataPool:GetAccVipLevel() 获取VIP等级
+
+094、死亡处理
+    - Player:SendReliveMessage_OutGhost();  出窍
+    - Player:SendReliveMessage_Relive();  复活
+    - 复活旗复活
+        g_FHQID = Get_XParam_INT(0)
+        Clear_XSCRIPT()
+            Set_XSCRIPT_Function_Name("HerosNeverDie")
+            Set_XSCRIPT_ScriptID(998202)
+            Set_XSCRIPT_Parameter(0, g_FHQID)
+            Set_XSCRIPT_ParamCount(1)
+        Send_XSCRIPT()
+    - CityWar复活
+        Clear_XSCRIPT()
+            Set_XSCRIPT_Function_Name("FuHuo")
+            Set_XSCRIPT_ScriptID(998165)
+            Set_XSCRIPT_ParamCount(0)
+        Send_XSCRIPT()
+
+095、OSAPI:GetTickCount(); 当前时间
+
+096、Player:UseSkillInLua_Const()  召唤、召回坐骑
+
+097、nCurMountID = Player:GetMountID() 坐骑相关，不知道是什么， 貌似-1表示当前没有在坐骑上
+
+098、nSkillCount = Infant:GetMaxSkillNum() 孩子技能数量
+for i = 1, nSkillCount do
+    nSkillID, nSkillLevel, nSkillEffect, nSkillUpRate, szSkillName, szIcon, szTipsInfo = Infant:GetInfantSkillInfo(tonumber(g_CurSelInfantIndex), i - 1);
+
+099、强化
+    - iEnchanceAtt = Player:GetData("ENCHANCEATT")
+    - iEnchanceDef = Player:GetData("ENCHANCEDEF")
+    - nMinAttackLevel = DataPool:Lua_GetEnchanceMinLevel(0)  天锐等级
+    - nMinDefenceLevel = DataPool:Lua_GetEnchanceMinLevel(1)  地磐等级
+    - DataPool:Lua_GetEnchanceSetInfo( 0 , 3, nMinAttackLevel )
+    - DataPool:Lua_GetEnchanceSetInfo( 1 , 3, nMinDefenceLevel )
+
+100、装备宝石
+    g_SelfEuip_TypeList =
+    {
+        [1]  = { name="#{WBSS_120727_34}", gemConIndex=0,  equipIndex=0,  },    --- 武器
+        [2]  = { name="#{WBSS_120727_26}", gemConIndex=11, equipIndex=14, },    --- 护腕
+        [3]  = { name="#{WBSS_120727_30}", gemConIndex=6,  equipIndex=6,  },    --- 戒指（上）
+        [4]  = { name="#{WBSS_120727_31}", gemConIndex=8,  equipIndex=11, },    --- 戒指（下）
+        [5]  = { name="#{WBSS_120727_32}", gemConIndex=9,  equipIndex=12, },    --- 护符（上）
+        [6]  = { name="#{WBSS_120727_33}", gemConIndex=10, equipIndex=13, },    --- 护符（下）
+        [7]  = { name="#{WBSS_120727_35}", gemConIndex=2,  equipIndex=2,  },    --- 衣服
+        [8]  = { name="#{WBSS_120727_24}", gemConIndex=1,  equipIndex=1,  },    --- 帽子
+        [9]  = { name="#{WBSS_120727_25}", gemConIndex=12, equipIndex=15, },    --- 肩膀
+        [10] = { name="#{WBSS_120727_27}", gemConIndex=3,  equipIndex=3,  },    --- 手套
+        [11] = { name="#{WBSS_120727_28}", gemConIndex=5,  equipIndex=5,  },    --- 腰带
+        [12] = { name="#{WBSS_120727_29}", gemConIndex=4,  equipIndex=4,  },    --- 鞋子
+        [13] = { name="#{WBSS_120727_36}", gemConIndex=7,  equipIndex=7,  },    --- 项链
+        [14] = { name="#{WBSS_120727_37}", gemConIndex=13, equipIndex=17, },    --- 暗器
+        [15] = { name="#{WBSS_120727_39}", gemConIndex=15, equipIndex=19, },    --- 龙纹
+        [16] = { name="#{WBSS_120727_38}", gemConIndex=14, equipIndex=18, },    --- 武魂
+        [17] = { name="符石传说", gemConIndex=16, equipIndex=20, },    --- 符石传说
+    }
+    equipPoint = g_SelfEuip_TypeList[curSel].equipIndex
+    isHaveEquip, gemIndex1, gemIndex2, gemIndex3, gemIndex4 = LifeAbility : SplitWearedEquipGem( equipPoint )
+
+101、武魂相关
+    - DataPool:GetKfsData("XX")  XX有以下选择
+        - NAME 名字
+        - NEEDLEVEL 携带等级
+        - LEVEL  等级
+        - EXTRALEVEL
+        - ATTACT   类型
+        - LIFE  寿命
+        - MAXLIFE  最大寿命
+        - EXP  经验
+        - NEEDEXP  升级所需经验
+        - Grade  级别： 普通 优秀 杰出 卓越  完美
+        - GROW  成长率
+        - SLOT  开辟属性栏
+        - for i=1,5 do
+            DataPool:GetKfsBase(i - 1)   基础属性
+        - nSumSkill = GetActionNum("skill");  武魂技能数量
+        - for i=1,3 do
+            local skillID = DataPool:GetKfsSkill( i - 1)   武魂技能ID
+        - for i=1, nSumSkill do
+            theAction = EnumAction(i-1, "skill");
+            theAction:GetDefineID()
+            theAction:GetID()
+
+102、Player : YuanBaoToBind( 100 )   元宝变成保定
