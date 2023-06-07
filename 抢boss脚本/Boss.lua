@@ -465,14 +465,8 @@ function UseRoleHideSkill()
     end
 end
 
-function UseRoleAQHTSkill()
 
-    AQHTSkill = 获取技能ID("暗器护体")
-    使用技能(AQHTSkill)
-    延时(2000)
-end
-
-function UseRoleAQSkill()
+function UseMenPaiYao()
     if 获取背包物品数量("清心符箓") > 0 then
         右键使用物品("清心符箓")
         延时(1500)
@@ -482,20 +476,6 @@ function UseRoleAQSkill()
     end
 end
 
-function UseRoleMRJSSkill()
-    -- 使用七霞映日
-    MRJSSkill = 获取技能ID("七霞映日")
-    使用技能(MRJSSkill)
-    延时(2000)
-end
-
-function UseRoleCQSkill()
-    -- 使用穿刺阵法
-    if 判断技能冷却("天覆阵") == 1 then
-        local CQSkill = 获取技能ID("天覆阵")
-        使用技能(CQSkill)
-    end
-end
 
 function SwitchRoleMode(RoleModeType)
     -- 切换到指定模式
@@ -531,6 +511,21 @@ end
 
 function BackToCity()
     -- 回城
+    local current_map = 获取人物信息(16)
+    local mainCity = {'大理', '洛阳', '苏州', '楼兰'}
+    local inMainCity = 0
+    for k, value in pairs(mainCity) do
+        if value == current_map then
+            inMainCity = 1
+            break
+        end
+    end
+    if inMainCity == 1 then
+        -- 在主城就不使用定位回城，节省纸飞机
+        return
+    end
+
+    local downZQ = 0
     while true do
         if downZQ >= 3 then
             break
@@ -541,13 +536,9 @@ function BackToCity()
         else
             break
         end
+        downZQ = downZQ + 1
     end
-    -- if 获取背包物品数量("清心符箓") > 0 then
-    --右键使用物品("清心符箓")
-    --延时(1500)
-    --elseif 获取背包物品数量("稳心兵符") > 0 then
-    --右键使用物品("稳心兵符")
-    --  延时(1500)
+
     if 获取背包物品数量("紫色定位符") > 0 then
         右键使用物品("紫色定位符")
         延时(1500)
@@ -574,6 +565,7 @@ end
 
 function AddBuff()
     local downZQ = 0
+    -- 下坐骑
     while true do
         if downZQ >= 3 then
             break
@@ -584,21 +576,27 @@ function AddBuff()
         else
             break
         end
+        downZQ = downZQ + 1
     end
 
-
-    -- 使用buff，并满血
+    -- 使用buff
     if 判断技能冷却("暗器护体") == 1 then
         local HideSkillID = 获取技能ID("暗器护体")
         使用技能(HideSkillID)
-        延时(500)
+        延时(2000)
     end
     if 判断技能冷却("天覆阵") == 1 then
         local HideSkillID = 获取技能ID("天覆阵")
         使用技能(HideSkillID)
-        延时(500)
+        延时(2000)
     end
-    延时(2000)
+
+    -- 使用七霞映日
+    if 判断技能冷却("七霞映日") == 1 then
+        MRJSSkill = 获取技能ID("七霞映日")
+        使用技能(MRJSSkill)
+        延时(2000)
+    end
 
 end
 
@@ -763,17 +761,13 @@ function main()
     延时(3000)
     坐骑_下坐骑()
     延时(5000)
-    UseRoleAQSkill()
-    延时(5000)
-    UseRoleCQSkill()
-    延时(5000)
-    UseRoleMRJSSkill()
-    延时(5000)
-    UseRoleAQHTSkill()
+    --UseMenPaiYao()   -- 使用门派药
+    --延时(5000)
+    AddBuff()  -- 加buff
     延时(5000)
     执行功能("洛阳加血")
-    延时(1000)
-    跨图寻路("天山", 95, 120)
+    延时(2000)
+    跨图寻路("天山", 95, 120)   -- 去门派 防止被变身
     延时(3000)
     坐骑_下坐骑()
     延时(5000)
