@@ -115,34 +115,38 @@ end
 
 function GoToLingPaiNPC()
     while true do
-        跨图寻路(myGuildCityName, 111, 222)  -- TODO 修改NPC坐标
-        延时(500)
+        跨图寻路(myGuildCityName, 45, 46)
+        延时(2000)
         local myX = 获取人物信息(7)
         local myY = 获取人物信息(8)
-        if tonumber(myX) == 111 and tonumber(myY) == 222 then
-            -- TODO 修改NPC坐标
+        if tonumber(myX) == 45 and tonumber(myY) == 46 then
             break
         end
     end
 end
 
 function BaoZhuShengJi(row, col)
-    对话NPC("吴阶")  -- TODO 修改NPC名字
+    对话NPC("孔相如")
     延时(1000)
-    NPC二级对话("")  -- TODO 对话内容
+    NPC二级对话("四象宝珠打造与升级")
     延时(2000)
-    LUA_Call([[]])  -- TODO 右键点击令牌, row col可知位置
+    LUA_Call(string.format([[setmetatable(_G, {__index = Packet_Env});Packet_ItemBtnClicked(%d,%d);]], row, col))  -- 右键点击令牌, row col可知位置
     延时(500)
-    for i = 0, 3 do
-        LUA_Call([[]])  -- TODO 循环选择4条属性中的
+    for i = 1, 4 do
+        LUA_Call(string.format([[setmetatable(_G, {__index = EquipLingPai_OperatingSJ_Env});EquipLingPai_OperatingSJ_OnActionItemLClicked(%d)]], i))  -- 循环选择4条属性中的
         延时(500)
-        for j = 1, 20 do
-            LUA_Call([[]])  -- TODO 点击升级, 每个属性点20下
-            延时(200)
+        for j = 1, 50 do
+            MentalTip(string.format([[尝试升级第%d颗宝珠, 第%d次]], i, j))
+            LUA_Call([[setmetatable(_G, {__index = EquipLingPai_OperatingSJ_Env});EquipLingPai_OperatingSJ_OnOkClicked()]])  -- 点击升级, 每个属性点20下
+            延时(110)
         end
     end
+    延时(2000)
+    LUA_Call([[setmetatable(_G, {__index = EquipLingPai_OperatingSJ_Env});EquipLingPai_OperatingSJ_OnCloseClicked()]]) --关闭升级窗口
+    延时(500)
+    MentalTip("宝珠升级完成！")
+    LUA_Call(string.format([[setmetatable(_G, {__index = Packet_Env});Packet_ItemBtnClicked(%d,%d);]], row, col))  -- 装备上令牌
 end
-
 
 function MentalTip(text, ...)
     local strCode = string.format(text, ...)
@@ -185,7 +189,12 @@ function main()
     取出物品("翡翠心精")
     延时(500)
     取出物品("翡翠心精礼盒")
-    右键使用物品("翡翠心精礼盒")
+
+	local FCXJCount = 获取背包物品数量("翡翠心精礼包")
+	for i=1, tonumber(FCXJCount) do
+        右键使用物品("翡翠心精礼包")
+		延时(100)
+    end
 
     BackToBangHui()
     延时(1000)
@@ -197,7 +206,7 @@ end
 
 
 
-
+main()
 
 
 
