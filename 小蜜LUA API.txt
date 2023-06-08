@@ -223,8 +223,8 @@
         Pet : GetPotential(nIndex);
     - Pet : GetGrowRate(nIndex); 成长率
     - 珍兽技能
-      theSkillAction:GetName()  -- 获取珍兽技能名字
       theSkillAction = Pet:EnumPetSkill( nIndex, i-1, "petskill")  -- 生成珍兽技能对象， 参数1：nIndex珍兽的index, 参数2：格子索引从0开始
+      theSkillAction:GetName()  -- 获取珍兽技能名字
       theSkillAction:GetID()
       下面是示例，遍历珍兽技能，设置前端显示技能：
                 PETSKILL_BUTTONS_NUM = 12 -- 总共12个技能格子
@@ -309,9 +309,9 @@
 
 076、获取背包大小
     - 道具栏: "base"
-        CurrNum = DataPool:GetTaskBag_Num();  -- 当前已用格子数
-        BaseNum = DataPool:GetTaskBag_BaseNum();  -- 目前最大能用格子数
-        MaxNum = DataPool:GetTaskBag_MaxNum();  -- 背包最大格子数
+        CurrNum = DataPool:GetBaseBag_Num();  -- 当前已用格子数
+        BaseNum = DataPool:GetBaseBag_BaseNum();  -- 没用箱子前的格子数
+        MaxNum = DataPool:GetBaseBag_RealMaxNum();  -- 当前背包最大格子数
     - 材料栏: "material"
         CurrNum = DataPool:GetMatBag_Num();
 		BaseNum = DataPool:GetMatBag_BaseNum();
@@ -322,8 +322,9 @@
 		MaxNum = DataPool:GetTaskBag_MaxNum();
 077、遍历背包
     for i=1, nMaxDisplayNumber do
-        heAction,bLocked = PlayerPackage:EnumItem(szPacketName, i-1);  -- sz = "base"、"material"、"quest"
+        heAction,bLocked = PlayerPackage:EnumItem(szPacketName, i-1);  -- szPacketName = "base"、"material"、"quest"
         theAction:GetID()
+        strName = theAction:GetName();
 087、添加信任伙伴
     - DataPool : AddTrustFriend("0025AE#2005");
     - FriendGuid = DataPool:GetFriend( nChannel, nIndex, "ID_TEXT" )  第几个频道的第几个人的id
@@ -431,6 +432,7 @@
         - ownerid  店主ID
         - shopname  店名
         - desc 店铺描述
+        - shopindex   店铺ID
     - PlayerShop:GetMoney("base","self");  本金
     - PlayerShop:GetMoney("base","self");  盈利资金
     - PlayerShop:GetCommercialFactor();  商业指数
@@ -532,3 +534,15 @@ for i = 1, nSkillCount do
             theAction:GetID()
 
 102、Player : YuanBaoToBind( 100 )   元宝变成保定
+
+
+103、SystemSetup:GetPrivateInfo("self","Consort");  配偶信息
+    SystemSetup:GetPrivateInfo("self","Weddingtime");   结婚时间
+
+104、武意相关
+    - nMonsterNum,nReward = MaritialSys:GetLastDayMonster()
+    - nLastTip = MaritialSys:GetLastDayMonsterTip()
+
+105、行囊、格箱
+    local ActionBag 		= EnumAction(9 , "equip");   --行囊
+	local ActionBox 		= EnumAction(10, "equip");   --格箱

@@ -27,3 +27,29 @@ nAbilityNum = GetActionNum("life");
 			Set_XSCRIPT_Parameter( 0, g_posItem )   -- g_posItem表示物品在背包中的位置
 			Set_XSCRIPT_ParamCount( 1 )
 		Send_XSCRIPT()
+
+7、设置目标，获取目标ID
+    -- 返回-1表示目标死亡，否则返回目标id
+    -- 代码的意思，是否是遍历附近2000个目标，判断他们的name是否为AAA
+    for i=1,2000 do
+        if SetMainTargetFromList(i ,false, false)==1 then
+            if Target:GetName()=="AAA" then
+                return i
+            end
+        end
+    end
+    return -1
+
+8、目标属性
+    - Target:GetLevel()  目标等级
+    - Target:GetName(); 目标name
+    - Target:GetZoneWorldId()   目标的区ID
+    - Target:SendTeamRequest();  向目标发送队伍邀请
+    - Target:SendTeamApply();  申请目标队伍
+    - Target:Follow();  跟随
+    - Target:ForbidIt();  屏蔽
+    - Target:KickItOut( 0 );   踢出去，是队伍还是聊天群？？
+    - Target:Lua_ForbidItByName(szName, tZoneWorldId );   根据区id、name屏蔽
+    - Target:ReportWaiguaForInfo();  举报目标使用外挂
+    - Target:IsPresent()  目标是否存在，返货true false
+    -
