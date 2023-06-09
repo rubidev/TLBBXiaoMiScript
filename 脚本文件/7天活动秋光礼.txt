@@ -1,0 +1,16 @@
+function 慢()
+延时(1500)
+end
+function 快()
+延时(300)
+end
+
+LUA_Call ("setmetatable(_G, {__index = PlayerQuicklyEnter_Env});PlayerQuicklyEnter_Clicked(53)") ;慢()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Guide_Env});NationalDay_Guide_Clicked(4)") ;慢()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(1)") ;快()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(2)") ;快()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(3)") ;快()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(4)") ;快()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(5)") ;快()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(6)") ;快()
+LUA_Call ("setmetatable(_G, {__index = NationalDay_Env});NationalDay_OnClick(7)") ;快()

@@ -1,0 +1,722 @@
+### 1、帮会喊话
+```lua
+    LUA_Call("setmetatable(_G, {__index = ChatFrame_Env});Talk : SendChatMessage('guild', '" .. 帮派喊话内容 .. "');")
+```
+
+### 2、打开帮会界面，缓冲帮会信息
+```lua
+LUA_Call("setmetatable(_G, {__index = MainMenuBar_Env});MainMenuBar_OnOpenGruidClick();")
+延时(3000)
+```
+
+### 3、遍历帮派在线人
+```lua
+BangHuiMembersNum = tonumber(LUA_取返回值("setmetatable(_G, {__index = NewBangHui_Hygl_Env});return Guild:GetMembersNum(3);"))
+for i = 0, BangHuiMembersNum - 1 do
+    local guildIdx = tonumber(LUA_取返回值("setmetatable(_G, {__index = NewBangHui_Hygl_Env});return Guild:GetShowMembersIdx(" .. tostring(i) .. ");"))
+    -- 获取在线人中当前人的name
+    local szMsg = LUA_取返回值("setmetatable(_G, {__index = NewBangHui_Hygl_Env});return Guild:GetMembersInfo(" .. tostring(guildIdx) .. ", 'Name');")
+    LUA_Call("DataPool:AddFriend(0, '" .. szMsg .. "')")   -- 根据名字加好友，放在第一个好友分组
+    延时(1000)
+end
+```
+
+### 4、获取装备位上耐久度
+```lua
+-- downIndex 取下装备时使用该index
+-- equipIndex  装备位的index，获取装备位上装备信息时使用
+local SelfEuipList = {
+    [1] = { name = "武器", downIndex = 11, equipIndex = 0, equipName = "",
+            gem = {
+                { "红宝石(4级)", "红宝石·红利(4级)", "红宝石(3级)", "红宝石·红利(3级)" },
+                { "" },
+                { "纯净&晶石(4级)", "纯净&晶石·红利(4级)", "纯净&晶石(3级)", "纯净&晶石·红利(3级)" },
+                { "纯净&晶石(4级)", "纯净&晶石·红利(4级)", "纯净&晶石(3级)", "纯净&晶石·红利(3级)" },
+            }
+    }, --- 武器
+    [2] = { name = "护腕", downIndex = 3, equipIndex = 14, equipName = "" }, --- 护腕
+    [3] = { name = "戒指上", downIndex = 7, equipIndex = 6, equipName = "" }, --- 戒指（上）
+    [4] = { name = "戒指下", downIndex = 8, equipIndex = 11, equipName = "" }, --- 戒指（下）
+    [5] = { name = "护符上", downIndex = 9, equipIndex = 12, equipName = "" }, --- 护符（上）
+    [6] = { name = "护符下", downIndex = 10, equipIndex = 13, equipName = "" }, --- 护符（下）
+    [7] = { name = "衣服", downIndex = 12, equipIndex = 2, equipName = "" }, --- 衣服
+    [8] = { name = "帽子", downIndex = 1, equipIndex = 1, equipName = "" }, --- 帽子
+    [9] = { name = "护肩", downIndex = 2, equipIndex = 15, equipName = "" }, --- 肩膀
+    [10] = { name = "手套", downIndex = 4, equipIndex = 3, equipName = "" }, --- 手套
+    [11] = { name = "腰带", downIndex = 5, equipIndex = 5, equipName = "" }, --- 腰带
+    [12] = { name = "鞋子", downIndex = 6, equipIndex = 4, equipName = "" }, --- 鞋子
+    [13] = { name = "项链", downIndex = 13, equipIndex = 7, equipName = "" }, --- 项链
+    [14] = { name = "暗器", downIndex = 14, equipIndex = 17, equipName = "",
+             gem = {
+                 { "红宝石(4级)", "红宝石·红利(4级)", "红宝石(3级)", "红宝石·红利(3级)" },
+                 { "" },
+                 { "纯净&晶石(4级)", "纯净&晶石·红利(4级)", "纯净&晶石(3级)", "纯净&晶石·红利(3级)" },
+                 { "纯净&晶石(4级)", "纯净&晶石·红利(4级)", "纯净&晶石(3级)", "纯净&晶石·红利(3级)" },
+             }
+    }, --- 暗器
+    [15] = { name = "龙纹", downIndex = 25, equipIndex = 19, equipName = "", gem = { 体力宝石, 属性宝石, 抗性宝石, 属性宝石 }, },
+    [16] = { name = "武魂", downIndex = "", equipIndex = 18, equipName = "" }, --- 武魂
+    [17] = { name = "令牌", downIndex = 16, equipIndex = 20, equipName = "" }, --- 令牌
+    [18] = { name = "豪侠印", downIndex = "", equipIndex = 21, equipName = "",
+             gem = {
+                 { "红宝石(4级)", "红宝石·红利(4级)", "红宝石(3级)", "红宝石·红利(3级)" },
+                 { "" },
+                 { "纯净&晶石(4级)", "纯净&晶石·红利(4级)", "纯净&晶石(3级)", "纯净&晶石·红利(3级)" },
+                 { "纯净&晶石(4级)", "纯净&晶石·红利(4级)", "纯净&晶石(3级)", "纯净&晶石·红利(3级)" },
+             }
+    }, --- 令牌
+    [19] = { name = "物品包", downIndex = "", equipIndex = 9, equipName = "" },
+    [20] = { name = "材料包", downIndex = "", equipIndex = 10, equipName = "" },
+}
+```
+
+```lua
+local tem = LUA_取返回值(string.format([[
+    return EnumAction(%d,"equip"):GetEquipDur()
+]], equipIndex))   -- 是上面的 equipIndex
+```
+
+### 5、获取装备位上装备ID
+```lua
+local tem = LUA_取返回值(string.format([[
+    return EnumAction(%d,"equip"):GetID()
+]], equipIndex))   -- 上面的 equipIndex
+```
+
+### 6、获取装备位上装备名字
+```lua
+LUA_取返回值(string.format([[
+    return EnumAction(%d,"equip"):GetName()
+]], equipIndex))   -- 上面的 equipIndex
+```
+
+### 7、获取装备位上装备等级
+```lua
+LUA_取返回值(string.format([[
+    local  index = %d
+    local ID = EnumAction(index,"equip"):GetID()
+    if ID > 0 then
+        return	DataPool:GetEquipLevel(index)  --装备等级 暗器99了
+    end
+    return -1
+]], equipIndex))   -- 上面的 equipIndex
+```
+
+### 8、获取背包中装备等级
+```lua
+local aaa = LUA_取返回值(string.format([[
+    return LifeAbility : Get_Equip_Level(%d);
+]], index))     -- index是背包中的位置，获取背包物品位置(装备名称) - 1
+```
+
+### 9、获取背包装备已打孔的孔数
+```lua
+背包装备孔数量 = tonumber(LUA_取返回值(string.format([[
+    return LifeAbility:GetEquip_HoleCount(%d)
+]], index)))      -- index是背包中的位置，获取背包物品位置(装备名称) - 1
+```
+
+### 10、背包装备打孔前3个孔
+```lua
+LUA_Call(string.format([[
+    Clear_XSCRIPT()
+    Set_XSCRIPT_Function_Name("StilettoEx_3")
+    Set_XSCRIPT_ScriptID(311200)
+    Set_XSCRIPT_Parameter(0,%d)  --装备位置
+    Set_XSCRIPT_Parameter(1,%d)  --材料位置
+    Set_XSCRIPT_ParamCount(2)
+    Send_XSCRIPT()
+]], 序号, nIndex))  -- 序号表示装备在背包中的位置， nIndex表示打孔材料在背包中的位置
+```
+
+### 11、背包装备打孔第4个孔
+```lua
+材料类型 = 2
+LUA_Call(string.format([[
+    Clear_XSCRIPT()
+    Set_XSCRIPT_Function_Name("StilettoEx_4")
+    Set_XSCRIPT_ScriptID(311200)
+    Set_XSCRIPT_Parameter(0,%d)   --装备位置
+    Set_XSCRIPT_Parameter(1,%d)   -- 材料位置
+    Set_XSCRIPT_Parameter(2,%d)  -- 四孔使用材料类型, 2 表示寒玉精粹，1 表示 点金之箭
+    Set_XSCRIPT_ParamCount(3)
+    Send_XSCRIPT()
+]], 序号, nIndex, 材料类型))   -- 序号表示装备在背包中的位置， nIndex表示打孔材料在背包中的位置（获取背包物品位置(打孔材料) - 1）, 材料类型
+```
+
+### 12、获取背包装备宝石数量
+```lua
+local tem = LUA_取返回值(string.format([[
+    local gemcount = LifeAbility:GetEquip_GemCount(%d)
+    if gemcount==nil then
+        return 0
+    end
+    return gemcount
+]], bHave))  -- 背包中装备位置： bHave = 获取背包物品位置(装备名称) - 1
+```
+
+### 13、获取身上武魂的寿命
+```lua
+local tem = LUA_取返回值(string.format([[
+    local ID =EnumAction(18,"equip"):GetID()
+    if ID > 0 then
+        tem= DataPool:GetKfsData("LIFE")
+        return tem
+    end
+    return -1
+]]))
+```
+
+### 14、取下装备放入背包
+```lua
+-- 1. 普通装备下装备
+LUA_Call(string.format([[ 
+    setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_Equip_Click(%d,0)
+]], downIndex))  -- 上面列表中的downIndex
+
+
+-- 2. 侠印、武魂下装备特别对待
+if 装备位置名称 == "豪侠印" then
+    LUA_Call("setmetatable(_G, {__index = Xiulian_Env});Xiulian_JueWei_Page_Switch();");
+    延时(2000)
+    LUA_Call("setmetatable(_G, {__index = SelfJunXian_Env});SelfJunXian_Equip_Clicked(0);");
+    延时(2000)
+elseif 装备位置名称 == "武魂" then
+    LUA_Call("setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_Wuhun_Switch();")
+    延时(2000)
+    LUA_Call("setmetatable(_G, {__index =  Wuhun_Env});Wuhun_Equip_Clicked(0);")
+    延时(2000)
+end
+```
+
+
+
+
+### 15、九州商会搜索购买物品
+```lua
+-- 1. 打开搜索界面
+NPC二级对话("查看所有商店")
+延时(1000)
+if 窗口是否出现("PS_ShopList") == 1 then
+    LUA_Call([[setmetatable(_G, {__index = PS_ShopList_Env}) PS_ShopList_ChangeTabIndex(3)]])
+    延时(1000)
+end
+
+-- 2. 搜索物品
+LUA_Call(string.format([[
+     PlayerShop:PacketSend_Search(2 , 2, 1, "%s", %d)		
+]], 物品名称, qq))  -- 参数1表示目标商品名称， 参数2（qq）表示第几页
+延时(1500)
+
+-- 3. 遍历搜索结果当前页，比较名字、数量、单价是否满足，满足则购买
+-- -- 如果需要遍历多页，需在外面使用循环
+local tem = LUA_取返回值(string.format([[
+    setmetatable(_G, {__index = PS_ShopSearch_Env})
+    -- 1页有10条数据，所以遍历10次
+    for i = 1 ,10 do
+        local theAction = EnumAction( i - 1 , "playershop_cur_page")
+        if theAction:GetID() ~= 0 then
+            --物品名,店主名,所属商店ID,数量,总价格
+            local pName ,pShopName, pShopID ,pCount ,pYB = PlayerShop:GetItemPSInfo( i - 1 )
+            if pName ~= nil and pShopID ~= nil and pCount ~= nil and pYB ~= nil and pCount > 0 then
+                if pName == "%s" and pCount <= %d and pYB/pCount <= %d then
+                   --点击购买后,直接返回
+                   PlayerShop:SearchPageBuyItem(i - 1, "item")
+                   return true
+                end
+            end
+        end
+    end
+    return false
+]], 名称, 数量, 单价格), "b")
+```
+
+### 16、整理背包
+```lua
+LUA_Call(string.format("PlayerPackage:PackUpPacket(%d);", nTheTabIndex))  -- nTheTabIndex中1表示道具栏，2表示材料栏
+```
+
+### 17、宝石雕琢
+```lua
+local tem = LUA_取返回值(string.format([[
+    local g_GemItemPos = %d  -- 背包中宝石位置
+    local itemcount = PlayerPackage:GetBagItemNum(g_GemItemPos)
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("OnGemCarve");
+        Set_XSCRIPT_ScriptID(800117);
+        Set_XSCRIPT_Parameter(0,g_GemItemPos);
+        Set_XSCRIPT_Parameter(1,%d);  -- 雕琢材料位置
+        Set_XSCRIPT_Parameter(2,135);
+        Set_XSCRIPT_Parameter(3, 0);
+        Set_XSCRIPT_Parameter(4,itemcount);
+        Set_XSCRIPT_ParamCount(5);
+    Send_XSCRIPT();
+]], LPindex, Needindex), "b")  -- LPindex = 获取背包物品位置(宝石名字) - 1， Needindex = 获取背包物品位置(雕琢材料名字) - 1
+```
+
+### 18、红利特惠本周剩余次数
+```lua
+local aaa = LUA_取返回值(string.format([[
+    local nMD = math.mod(DataPool:GetPlayerMission_DataRound(1561),10);
+    return nMD 
+]]))
+```
+
+
+### 19、装备打宝石
+```lua
+LUA_Call(string.format([[
+		g_EnchaseEx_Gem_pos=%d  -- 背包中宝石位置
+		g_EnchaseEx_Equip_pos=%d    -- 背包中装备位置
+		g_EnchaseEx_Material_pos=%d  -- 背包中镶嵌符位置
+		g_EnchaseEx_Gem_hole=%d  -- 第几个孔打宝石
+		if g_EnchaseEx_Gem_hole > 0 and g_EnchaseEx_Gem_hole < 4 then
+		Clear_XSCRIPT()
+			Set_XSCRIPT_Function_Name("EnchaseEx_3")
+			Set_XSCRIPT_ScriptID(701614)
+			Set_XSCRIPT_Parameter(0,g_EnchaseEx_Gem_pos)  -- 背包中宝石位置
+			Set_XSCRIPT_Parameter(1,g_EnchaseEx_Equip_pos)  -- 背包中装备位置
+			Set_XSCRIPT_Parameter(2,g_EnchaseEx_Material_pos)  -- 背包中镶嵌符位置
+			Set_XSCRIPT_Parameter(3,-1)
+			Set_XSCRIPT_Parameter(4,g_EnchaseEx_Gem_hole-1)  -- 第几个孔打宝石
+			Set_XSCRIPT_ParamCount(5)
+		Send_XSCRIPT()
+	elseif g_EnchaseEx_Gem_hole == 4 then
+		Clear_XSCRIPT()
+			Set_XSCRIPT_Function_Name("EnchaseEx_4")
+			Set_XSCRIPT_ScriptID(701614)
+			Set_XSCRIPT_Parameter(0,g_EnchaseEx_Gem_pos)
+			Set_XSCRIPT_Parameter(1,g_EnchaseEx_Equip_pos)
+			Set_XSCRIPT_Parameter(2,g_EnchaseEx_Material_pos)
+			Set_XSCRIPT_Parameter(3,-1)
+			Set_XSCRIPT_Parameter(4,3)
+			Set_XSCRIPT_ParamCount(5)
+		Send_XSCRIPT()
+	end
+]], bIndex, bHave, nIndex, 宝石位置)) -- 参数1：背包中宝石位置  参数2：背包中装备位置  参数3：背包中镶嵌符位置  参数4：第几个孔打宝石
+```
+
+### 20、请求帮会信息
+**获取帮会信息前，必须要请求一次，否则会无法获取帮会信息**
+```lua
+LUA_Call("Guild:AskGuildDetailInfo()")
+```
+
+### 21、各种窗口汇总
+```lua
+窗口是否出现("SelfEquip")  -- 装备界面
+窗口是否出现("NewBangHui_Bhxx") -- 帮会界面
+窗口是否出现("PS_ShopSearch")  -- 九州商会搜索界面
+窗口是否出现("PS_ShopList")   -- 九州商会查看所有商店界面
+窗口是否出现("MessageBox_Self")  -- 确定、取消的confirm界面
+窗口是否出现("YuanbaoShop")   -- 元宝商店界面
+窗口是否出现("SelfJunXian")  -- 自身装备的侠印信息界面
+窗口是否出现("Wuhun")  -- 自身装备的武魂信息界面
+窗口是否出现("EquipLingPai_ShengJie")  -- 令牌升阶界面
+窗口是否出现("EquipLingPai_Star")  -- 令牌升星界面
+窗口是否出现("EquipLingPai_OperatingSJ")  -- 令牌四象宝珠打造与升级界面
+窗口是否出现("YbMarket")   -- 钱庄寄售物品界面
+窗口是否出现("EquipStrengthen")  -- 强化升级界面
+```
+
+### 22、关闭窗口
+```lua
+LUA_Call(string.format([[
+    setmetatable(_G, {__index = %s_Env}) this:Hide()  
+ ]], strWindowName))  -- 窗口名字参考上面
+```
+
+### 23、检测装备是否脱下
+```lua
+-- 返回值"0" 表示已经脱下, > 0表示已装备
+LUA_取返回值(string.format([[
+    return EnumAction(%d,'equip'):GetID();
+]], equipIndex))  -- equipIndex在上面的list中可见
+```
+
+### 24、令牌升阶
+```lua
+-- 升阶点击确定按钮
+LUA_Call("setmetatable(_G, {__index = EquipLingPai_ShengJie_Env});EquipLingPai_ShengJie_OnOK();")
+```
+
+### 25、令牌宝珠镶嵌
+```lua
+LPindex=获取背包物品位置(LPname)-1  -- 背包中令牌位置
+ZBindex =获取背包物品位置(ZBname)-1  -- 背包中宝珠位置
+index = 1 -- 宝珠要镶嵌的位置，即令牌宝珠的4个孔，可选为1、2、3、4
+LUA_Call(string.format([[
+        Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name( "RL_SetRs" );
+        Set_XSCRIPT_ScriptID( 880001 );
+        Set_XSCRIPT_Parameter( 0, %d);  
+        Set_XSCRIPT_Parameter( 1, %d-1);  
+        Set_XSCRIPT_Parameter( 2, %d );         --- 物品背包索引
+        Set_XSCRIPT_ParamCount( 3 );
+    Send_XSCRIPT();	
+]], LPindex,index,ZBindex))
+```
+
+### 26、令牌宝珠升级
+```lua
+-- 1. 选择第几颗宝珠
+LUA_Call(string.format([[
+    setmetatable(_G, {__index = EquipLingPai_OperatingSJ_Env});EquipLingPai_OperatingSJ_OnActionItemLClicked(%d);
+]], BZIndex))  -- BZIndex表示第几颗宝珠，可选1、2、3、4
+
+-- 2. 点击确定升1级
+LUA_Call("setmetatable(_G, {__index = EquipLingPai_OperatingSJ_Env});EquipLingPai_OperatingSJ_OnOkClicked();")
+```
+
+
+### 27、令牌升星
+```lua
+LUA_Call("setmetatable(_G, {__index = EquipLingPai_Star_Env});EquipLingPai_Star_OnOkClicked();")
+```
+
+
+### 28、令牌扩展属性重铸
+```lua
+for yyy=1,10 do
+    LUA_Call(string.format([[
+        local resetExAttrTarget = %s
+        LPindex=tonumber(%d)
+        -- 第一条扩展属性
+        local nExAttrID111 , nExAttrStr111 = PlayerPackage:Lua_GetBagRlExAttr(LPindex, 0)
+        if string.find(nExAttrStr111, resetExAttrTarget) then
+            aaa=1
+        else
+            aaa=0
+        end
+        
+        -- 第二条扩展属性
+        local  nExAttrID222 , nExAttrStr222 = PlayerPackage:Lua_GetBagRlExAttr(LPindex, 1)
+        if string.find(nExAttrStr222, resetExAttrTarget) then
+            bbb=1
+        else
+            bbb=0
+        end
+
+        -- 第三条扩展属性
+        local  nExAttrID333 , nExAttrStr333 = PlayerPackage:Lua_GetBagRlExAttr(LPindex, 2)
+        if string.find(nExAttrStr333, resetExAttrTarget) then
+            ccc=1
+        else
+            ccc=0
+        end
+
+        PushDebugMessage(aaa..bbb..ccc)
+
+        if aaa+bbb+ccc ==1 then
+            PushDebugMessage("已经有1个血上限了需要天荒神石2个")
+        elseif  aaa+bbb+ccc ==2 then
+            PushDebugMessage("已经有2个血上限了需要天荒神石3个")
+        elseif  aaa+bbb+ccc ==3 then
+            PushDebugMessage("已经有3个血上限了无需再洗跳出循环")
+            return
+        end
+        
+        --开始重铸
+        Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("RlResetExAttr");
+        Set_XSCRIPT_ScriptID(880001);
+        Set_XSCRIPT_Parameter(0,LPindex);
+        Set_XSCRIPT_Parameter(1,aaa);
+        Set_XSCRIPT_Parameter(2,bbb);
+        Set_XSCRIPT_Parameter(3,ccc);
+        Set_XSCRIPT_Parameter(4,0);
+        Set_XSCRIPT_ParamCount(5);
+        Send_XSCRIPT();	
+    ]], "maxhp", LPindex))  -- "maxhp" 表示血上限(其它的属性名字暂不知)    LPindex 背包中令牌位置：获取背包物品位置(龙纹名称)-1
+    延时(2000)--增加延时等待服务器响应
+end
+```
+
+
+### 29、装备精通淬炼
+```lua
+local tem =LUA_取返回值(string.format([[
+	    local index = tonumber(%d)
+		
+		local equip_level = LifeAbility : Get_Equip_Level(index);
+		if equip_level <80 then
+            PushDebugMessage("装备等级不够不能淬炼")
+            return 2
+		end
+		
+		local selfMoney = Player:GetData("MONEY") + Player:GetData("MONEY_JZ")
+		if selfMoney<50000 then
+            PushDebugMessage("离火金币不够")
+            return 2
+		end
+
+        local theAction = EnumAction(index, "packageitem")
+        JT_ABC=tostring("%s")
+        -- 第一条精通
+        local pName, pLevel, pBValue, pPercent, pRValue = theAction:GetEquipAttaProperty(0);
+        if	string.find(pName, JT_ABC)  then	
+            JT_AAA=1
+            else
+            JT_AAA=0
+        end
+        
+        -- 第二条精通
+        local pName, pLevel, pBValue, pPercent, pRValue = theAction:GetEquipAttaProperty(1);		
+        if	string.find(pName, JT_ABC)  then
+            JT_BBB=1
+        else
+            JT_BBB=0
+        end
+
+        -- 第三条精通
+        local pName, pLevel, pBValue, pPercent, pRValue = theAction:GetEquipAttaProperty(2);		
+        if string.find(pName,JT_ABC )  then
+            JT_CCC=1
+        else
+            JT_CCC=0
+        end	
+        
+        local JT_shuliang=JT_AAA+JT_BBB+JT_CCC
+        if JT_shuliang>=1 then
+            local itemneed=PlayerPackage:CountAvailableItemByIDTable(20700063) 
+            if itemneed < 15 then
+                PushDebugMessage("离火不够")
+                return 2
+            end
+        end
+		
+        PushDebugMessage(JT_AAA..JT_BBB..JT_CCC)
+        if JT_AAA+JT_BBB+JT_CCC>=%d then
+            PushDebugMessage("%d精通已洗好，不再淬炼")
+            return 2
+        end
+
+        Clear_XSCRIPT();
+            Set_XSCRIPT_Function_Name("EquipCuiLian");
+            Set_XSCRIPT_ScriptID(890088);
+            Set_XSCRIPT_Parameter(0,%d);
+            Set_XSCRIPT_Parameter(1,JT_AAA)
+            Set_XSCRIPT_Parameter(2,JT_BBB)
+            Set_XSCRIPT_Parameter(3,JT_CCC)
+            Set_XSCRIPT_ParamCount(4);
+        Send_XSCRIPT();	
+		]], LPindex,JT_SHUXING,数量,数量,LPindex), "d")
+-- 参数1：LPindex背包中装备位置: LPindex=获取背包物品位置(装备名字)-1
+-- 参数2：JT_SHUXING 目标属性：con(体力)、attack_cold(冰)、attack_fire(火)、attack_light(玄)、attack_poison(毒)
+-- 参数3：洗出几条相同的属性
+-- 参数4：洗出几条相同的属性
+-- 参数5：LPindex背包中装备位置: LPindex=获取背包物品位置(装备名字)-1
+```
+
+### 30、精通升级
+```lua
+-- 这里
+local tem =LUA_取返回值(string.format([[
+        local index = tonumber(%d)
+        local JT_ABC=tostring("%s") 
+        local nlevel= tonumber(%d)
+        
+        local equip_level = LifeAbility : Get_Equip_Level(index);
+        if equip_level <80 then
+            PushDebugMessage("装备等级不够")
+            return 2
+        end
+		
+        local theAction = EnumAction(index, "packageitem")
+        -- 获取能升级的精通序号
+        local JT_XUHAO=-1   -- 精通序号
+        for kkk=0,2 do
+            local pName, pLevel, pBValue, pPercent, pRValue = theAction:GetEquipAttaProperty(kkk);
+            if(pLevel ~= nil and pLevel > 0) then
+                if	string.find(pName, JT_ABC)  then	
+                    if tonumber(pLevel) < nlevel  then
+                        JT_XUHAO= kkk+1
+                        JT_MQDJ=pLevel
+                    end
+                end
+            else
+                PushDebugMessage("装备没有淬炼 无法升级")
+                break	
+            end		
+        end		
+        --PushDebugMessage("装备有属性对应位置:"..JT_XUHAO)
+			
+        if tonumber(JT_XUHAO)==-1 then
+            return 2	
+        end		
+
+        -- 背包中拥有的精金石数量
+        local itemneed= PlayerPackage:CountAvailableItemByIDTable(20700055)
+        -- 计算各个等级需要精金石的数量
+        if tonumber(JT_MQDJ) >= 30 and  tonumber(JT_MQDJ) < 40  then
+                JT_XYJJS=14  
+        elseif tonumber(JT_MQDJ) >= 20 and  tonumber(JT_MQDJ) < 30  then
+				JT_XYJJS=12
+        elseif tonumber(JT_MQDJ) >=1 and  tonumber(JT_MQDJ) < 10  then
+				JT_XYJJS=1		
+        elseif tonumber(JT_MQDJ) >=10 and  tonumber(JT_MQDJ) < 20  then
+				JT_XYJJS=6
+        elseif tonumber(JT_MQDJ) >=40 and  tonumber(JT_MQDJ) < 50  then
+				JT_XYJJS=16
+        elseif tonumber(JT_MQDJ) >=50 and  tonumber(JT_MQDJ) < 60  then
+				JT_XYJJS=18
+        elseif tonumber(JT_MQDJ) >=60 and  tonumber(JT_MQDJ) < 70  then
+				JT_XYJJS=20
+        elseif tonumber(JT_MQDJ) >=70 and  tonumber(JT_MQDJ) < 80  then
+				JT_XYJJS=22
+        elseif tonumber(JT_MQDJ) >=80 and  tonumber(JT_MQDJ) < 90  then
+				JT_XYJJS=24
+        elseif tonumber(JT_MQDJ) >=90 and  tonumber(JT_MQDJ) < 100  then
+				JT_XYJJS=25
+        else
+				 JT_XYJJS=20
+        end
+        --PushDebugMessage("需要精金石:"..JT_XYJJS)
+        if itemneed < JT_XYJJS then
+            PushDebugMessage("精金石:不够")
+            return 2
+        end
+								
+        Clear_XSCRIPT();
+            Set_XSCRIPT_Function_Name("EquipLevelupAtta");
+            Set_XSCRIPT_ScriptID(890088);
+            Set_XSCRIPT_Parameter(0,index); 
+            Set_XSCRIPT_Parameter(1, tonumber(JT_XUHAO));
+            Set_XSCRIPT_Parameter(2, 0);
+            Set_XSCRIPT_ParamCount(3);
+        Send_XSCRIPT();
+		]], LPindex,JT_SHUXING,等级),"d")
+-- 参数1： 背包中装备位置
+-- 参数2：精通属性：con(体力)、attack_cold(冰)、attack_fire(火)、attack_light(玄)、attack_poison(毒)
+-- 参数3：精通升级到多少级，用于判断是否需要升级
+```
+
+
+### 31、雕纹升级
+```lua
+local tem =LUA_取返回值(string.format([[
+	    local index = tonumber(%d)
+	    local todwlevel= tonumber(%d)	
+		local IsHaveDiaowen = LifeAbility:IsEquipHaveDiaowen(index)  -- 装备是否有雕纹
+	    local IsHaveDiaowenEx = LifeAbility:IsEquipHaveDiaowenEx(index)
+		if  tonumber(IsHaveDiaowen)~=1 then
+            PushDebugMessage("装备没有雕纹")
+            return 2
+		end
+		
+        local dwId,dwlevel = LifeAbility:GetEquitDiaowenID(index)  -- 雕纹ID和等级
+        local dwIdEx,dwlevelEx = LifeAbility:GetEquitDiaowenIDEx(index)
+			
+        if dwlevel>=todwlevel then
+            PushDebugMessage("雕纹已经够设置等级:"..todwlevel)
+            return 2
+        end
+		
+        Clear_XSCRIPT()
+        Set_XSCRIPT_Function_Name("DoEquipDWLevelUp")
+        Set_XSCRIPT_ScriptID(809272)
+        Set_XSCRIPT_Parameter(0, index) --背包的序号
+        Set_XSCRIPT_Parameter(1, todwlevel)  --第一个雕纹要升级的等级
+        Set_XSCRIPT_Parameter(2, 0) --第二个雕纹要升级的等级
+        Set_XSCRIPT_Parameter(3, 0)  --0代表不提示直接用 1代表有提示
+        Set_XSCRIPT_ParamCount(4)
+        Send_XSCRIPT()
+]], LPindex,等级),"n")
+-- 参数1：LPindex 背包中装备位置
+-- 参数2：雕纹要升到多少级
+```
+
+### 32、点数兑换元宝
+```lua
+-- 1. 打开兑换元宝界面
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+    Set_XSCRIPT_Function_Name("AskOpenDuihuanWindow");
+    Set_XSCRIPT_ScriptID(181000);
+    Set_XSCRIPT_ParamCount(0);
+    Send_XSCRIPT();
+]]))
+
+-- 2. 点数兑换元宝
+ LUA_Call(string.format([[
+    YB=%d
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("BuyYuanbao");
+        Set_XSCRIPT_ScriptID(181000);
+        Set_XSCRIPT_Parameter(0,tonumber(YB));
+        Set_XSCRIPT_Parameter(1,1);
+        Set_XSCRIPT_ParamCount(2);
+    Send_XSCRIPT();
+]],index), "n")
+```
+
+### 33、获取我的钱庄元宝市场物品设置的单价
+```lua
+for kkk=1 ,10 do
+    tem= LUA_取返回值(string.format([[ 
+        local aaa=tonumber(%d)
+        local theAction = EnumAction( aaa - 1 , "ybmarket_self")
+        if theAction:GetID() ~= 0 then
+            local pName , nowStatus ,price, itemlefttime = Auction:GetMySellBoxItemAuctionInfo(aaa- 1 )
+            if pName ~= nil  then 
+                g_itemNum = Auction:GetMySellBoxItemNum(aaa-1)
+                --PushDebugMessage("[晴天]元宝店管理物品下架:"..pName)
+                if  pName=="%s" then
+                    if nowStatus == 1 then
+                        return g_itemNum
+                        --Auction:GetBackWhatOnSale(2 , aaa - 1  ,1)
+                    elseif nowStatus == 2 then
+                        Auction:GetBackExpired(2 , aaa- 1  ,1)
+                    elseif  nowStatus ==  3 then
+                        Auction:GetMoney(2 , aaa- 1 )
+                    end
+                end	
+            end
+        end			
+        return -1
+    ]], kkk,strKey), "n",1)
+    -- kkk 表示我在售的多少个商品
+    -- strKey 表示物品名字
+end
+```
+
+### 34、钱庄寄售搜索物品获取市场价
+```lua
+-- 搜索指定物品
+LUA_Call(string.format([[ 
+    Auction:PacketSend_Search(2, 1, 1, "%s", 1)
+]], strKey), "s",1) -- strKey表示物品名字
+
+-- 获取物品当前市场最低价
+local wupindanjia=LUA_取返回值(string.format([[ 
+    local pName , pSeller ,pCount ,pYB = Auction:GetItemAuctionInfo(0)
+    if pName =="%s" and pSeller ~= nil and pCount ~= nil and pYB ~= nil and pCount > 0 then
+        local AAA=pYB/pCount
+        --PushDebugMessage(pName.."最低单价:"..AAA)
+        return AAA
+    end
+]], strKey), "s",1) -- strKey表示物品名字
+```
+
+### 35、钱庄寄售上架物品
+```lua
+LUA_Call(string.format([[ 
+    Auction:PacketSend_SellItem(tonumber(%d) , tonumber(%d) ,1) 
+]],nIndex,bbb), "s",1)
+-- 参数1：nIndex表示物品在背包中的位置
+-- 参数2：bbb 表示上架物品的总价
+```
+
+### 36、钱庄寄售改价
+```lua
+for kkk=1 ,10 do
+    LUA_Call(string.format([[ 
+        g_Cur_Modify_Type =2
+        g_Index =%d-1
+        wantguidh, wantguidl = Auction:GetMyAuctionSellBoxItemGuid(g_Index)
+        Auction:ChangePrice(g_Cur_Modify_Type ,g_Index , tonumber(%d), wantguidh, wantguidl)		
+    ]], kkk,bbb), "n",1)
+    -- 参数1：表示我的第几个已上架物品
+    -- 参数2：bbb 表示上架物品的总价
+end 
+```

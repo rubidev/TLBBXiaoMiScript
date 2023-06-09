@@ -52,4 +52,7 @@ nAbilityNum = GetActionNum("life");
     - Target:Lua_ForbidItByName(szName, tZoneWorldId );   根据区id、name屏蔽
     - Target:ReportWaiguaForInfo();  举报目标使用外挂
     - Target:IsPresent()  目标是否存在，返货true false
-    -
+
+
+9、帮会喊话
+    LUA_Call("setmetatable(_G, {__index = ChatFrame_Env});Talk : SendChatMessage('guild', '" .. 帮派喊话内容 .. "');")
