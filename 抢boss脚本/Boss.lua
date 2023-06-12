@@ -906,6 +906,14 @@ function main()
                 延时(110)
                 UseRoleSkillAttack(怪物ID);
             else
+                if 判断人物死亡() == 1 then
+                    -- 死亡出窍，自动定位回点捡包，只回点一次，捡完包回城
+                    死亡出窍()
+                    出监狱地府()
+                    延时(500)
+                    UseTuLingZhuTransmit()
+                    延时(2000)
+                end
                 MentalTip("BOSS怪物死亡啦")
                 延时(2000)
                 自动捡包();
@@ -918,20 +926,6 @@ function main()
                 延时(500)
                 break
             end
-        end
-
-        -- 死亡出窍，自动定位回点捡包，只回点一次，捡完包回城
-        if 判断人物死亡() == 1 then
-            死亡出窍()
-            出监狱地府()
-            延时(500)
-            UseTuLingZhuTransmit()
-            延时(2000)
-            自动捡包();
-            延时(500)
-            自动捡包();
-            延时(500)
-            break
         end
 
         -- 检测刷怪是否超时
