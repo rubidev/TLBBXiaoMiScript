@@ -41,7 +41,7 @@ function OpenSongLiao()
 
         local time = tonumber(lua("return DataPool:GetServerMinuteTime()"))
         if time > 213000 then
-            屏幕提示("来晚了")
+            屏幕提示("活动已结束, 来晚了")
             return false
         end
 
@@ -119,18 +119,9 @@ function UseRoleSkillAttack(attackTargetID)
     坐骑_下坐骑()
     坐骑_下坐骑()
 
-    -- 武魂攻击技能
-    --UseWuHunSkill(attackTargetID)   -- TODO 测试武魂技能是否能用
-
-    -- 人物组合技能，并使用
-    UseRoleSkills("诛仙万象", attackTargetID);
-    UseRoleSkills("暗器连击", attackTargetID);
-    UseRoleSkills("总决式", attackTargetID);  --
-    UseRoleSkills("破剑式", attackTargetID);  -- TODO 修改名字
-    UseRoleSkills("破气式", attackTargetID);  -- TODO 修改名字
-
     local 人物名称, 门派, PID, 远近攻击, 内外攻击, 角色账号, 门派地址, 技能状态, 性别 = 获取人物属性()
     if 门派 == "逍遥" then
+        UseRoleSkills("溪山行旅", attackTargetID);
         UseRoleSkills("宇越星现", attackTargetID);
         UseRoleSkills("诛仙万象", attackTargetID);
         UseRoleSkills("暗器连击", attackTargetID);
@@ -147,7 +138,6 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("天女散花", attackTargetID);
         UseRoleSkills("万箭齐发", attackTargetID);
         UseRoleSkills("一叶障目", attackTargetID);
-        UseRoleSkills("鬼魅随行", attackTargetID);
         UseRoleSkills("流云矢", attackTargetID);
     elseif 门派 == "鬼谷" then
         UseRoleSkills("万宿辰光", attackTargetID);
@@ -155,9 +145,6 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("未老先衰", attackTargetID);
         UseRoleSkills("荧惑守心", attackTargetID);
         UseRoleSkills("风云反覆", attackTargetID);
-        UseRoleSkills("清溪长歌", attackTargetID);
-        UseRoleSkills("太上忘情", attackTargetID);   -- TODO 不知道群攻是否会用
-        UseRoleSkills("扶摇直上", attackTargetID);
         UseRoleSkills("乾坤引", attackTargetID);
     elseif 门派 == "峨嵋" then
         UseRoleSkills("斩情诀", attackTargetID);
@@ -190,7 +177,6 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("玉女穿梭", attackTargetID);
         UseRoleSkills("天外飞仙", attackTargetID);
         UseRoleSkills("宙耀七星", attackTargetID);
-        UseRoleSkills("七星聚首", attackTargetID);   -- TODO 不知道群攻是否会用
         UseRoleSkills("游刃有余", attackTargetID);
         UseRoleSkills("八卦掌", attackTargetID);
     elseif 门派 == "星宿" then
@@ -253,6 +239,17 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("挥斥方遒", attackTargetID);
         UseRoleSkills("刃击千里", attackTargetID);
     end
+
+    -- 武魂攻击技能
+    --UseWuHunSkill(attackTargetID)   -- TODO 测试武魂技能是否能用
+
+    -- 人物组合技能，并使用
+    UseRoleSkills("诛仙万象", attackTargetID);
+    UseRoleSkills("暗器连击", attackTargetID);
+    UseRoleSkills("总决式·剑宗", attackTargetID);
+    UseRoleSkills("破箭式·剑宗", attackTargetID);
+    UseRoleSkills("破气式·剑宗", attackTargetID);
+
 end
 
 function UseJiaSuSkill()
@@ -262,7 +259,7 @@ function UseJiaSuSkill()
     elseif 门派 == "鬼谷" then
         UseRoleSkills("扶摇直上", attackTargetID);
     elseif 门派 == "天山" then
-        UseRoleSkills("雁南飞", attackTargetID);
+        UseRoleSkills("白驹过隙", attackTargetID);
     elseif 门派 == "天龙" then
         UseRoleSkills("衔枚疾走", attackTargetID);
     elseif 门派 == "少林" then
@@ -272,7 +269,7 @@ function UseJiaSuSkill()
     elseif 门派 == "明教" then
         UseRoleSkills("葵花逐日", attackTargetID);
     elseif 门派 == "慕容" then
-        UseRoleSkills("白驹过隙", attackTargetID);
+        UseRoleSkills("陌上行", attackTargetID);
     elseif 门派 == "绝情谷" then
         UseRoleSkills("任云飞", attackTargetID);
     end
@@ -285,28 +282,32 @@ function StartSongLiao()
 	]])
     local FangYuTaINFO = {}
     if ZhengRong == "157" then
+        -- 角色为辽方阵营，进攻宋方
         FangYuTaINFO = {
-            { name = "#{SLDZ_220216_168}", x = 108, y = 230 }, -- 防御塔·一
-            { name = "#{SLDZ_220216_167}", x = 160, y = 219 }, -- 防御塔·二
-            { name = "#{SLDZ_220216_169}", x = 212, y = 230 }, -- 防御塔·三
-            { name = "#{SLDZ_220216_162}", x = 192, y = 243 }, -- 四象塔
-            { name = "#{SLDZ_220216_163}", x = 212, y = 268 }, -- 四象塔
-            { name = "#{SLDZ_220216_161}", x = 127, y = 243 }, -- 四象塔
-            { name = "#{SLDZ_220216_164}", x = 107, y = 268 }, -- 四象塔
-            { name = "#{SLDZ_220216_165}", x = 159, y = 291 }, -- 帥 / 將
+            { name = "#{SLDZ_220216_168}", x = 108, y = 230 }, -- 宋的防御塔·一
+            { name = "#{SLDZ_220216_167}", x = 160, y = 219 }, -- 宋的防御塔·二
+            { name = "#{SLDZ_220216_169}", x = 212, y = 230 }, -- 宋的防御塔·三
+            { name = "#{SLDZ_220216_162}", x = 192, y = 243 }, -- 宋的四象塔
+            { name = "#{SLDZ_220216_163}", x = 212, y = 268 }, -- 宋的四象塔
+            { name = "#{SLDZ_220216_161}", x = 127, y = 243 }, -- 宋的四象塔
+            { name = "#{SLDZ_220216_164}", x = 107, y = 268 }, -- 宋的四象塔
+            { name = "#{SLDZ_220216_165}", x = 159, y = 291 }, -- 宋帅
         }
     else
+        -- 角色为宋方阵营，进攻辽方
         FangYuTaINFO = {
-            { name = "#{SLDZ_220216_172}", x = 212, y = 91 },
-            { name = "#{SLDZ_220216_170}", x = 160, y = 96 },
-            { name = "#{SLDZ_220216_171}", x = 108, y = 92 },
-            { name = "#{SLDZ_220216_161}", x = 127, y = 76 },
-            { name = "#{SLDZ_220216_164}", x = 107, y = 49 },
-            { name = "#{SLDZ_220216_162}", x = 192, y = 76 },
-            { name = "#{SLDZ_220216_163}", x = 212, y = 49 },
-            { name = "#{SLDZ_220216_166}", x = 159, y = 27 },
+            { name = "#{SLDZ_220216_172}", x = 212, y = 91 },  -- 辽的防御塔·一
+            { name = "#{SLDZ_220216_170}", x = 160, y = 96 },  -- 辽的防御塔·二
+            { name = "#{SLDZ_220216_171}", x = 108, y = 92 },  -- 辽的防御塔·三
+            { name = "#{SLDZ_220216_161}", x = 127, y = 76 },  -- 辽的四象塔
+            { name = "#{SLDZ_220216_164}", x = 107, y = 49 },  -- 辽的四象塔
+            { name = "#{SLDZ_220216_162}", x = 192, y = 76 },  -- 辽的四象塔
+            { name = "#{SLDZ_220216_163}", x = 212, y = 49 },  -- 辽的四象塔
+            { name = "#{SLDZ_220216_166}", x = 159, y = 27 },  -- 辽将
         }
     end
+
+    -- 一个一个点跑去打防御塔
     for i = 1, #FangYuTaINFO do
         if lua("return GetCurrentSceneName()") ~= "宋辽战场" then
             return
@@ -314,6 +315,7 @@ function StartSongLiao()
         等待过图完毕()
         死亡出窍()
         while true do
+            -- 循环使用技能打怪
             if lua("return GetCurrentSceneName()") ~= "宋辽战场" then
                 break
             end
@@ -325,27 +327,38 @@ function StartSongLiao()
                 跨图寻路("宋辽战场", act.x, act.y, 1)  -- 禁用坐骑
             else
                 跨图寻路("宋辽战场", act.x, act.y)
+                --延时(300)
+                --坐骑_下坐骑()
             end
 
-            延时(300)
+            --延时(300)
             -- 自动捡包()   -- 注释掉，不捡包， 捡包浪费时间
-            local ret = lua(string.format([[
-				for i=1,2000 do
-					if SetMainTargetFromList(i ,false, false)==1 then
-						if Target:GetName()=="%s" then
-							return i
-						end
-					end
-				end
-				return -1
-			]], act.name))
-            if ret ~= "-1" then
-                --攻击怪物(tonumber(ret))
-                UseRoleSkillAttack(tonumber(ret))
-                延时(800)
+            --local ret = lua(string.format([[
+			--	for i=1,2000 do
+			--		if SetMainTargetFromList(i ,false, false)==1 then
+			--			if Target:GetName()=="%s" then
+			--				return i
+			--			end
+			--		end
+			--	end
+			--	return -1
+			--]], act.name))
+            --
+            --if ret ~= "-1" then
+            --    攻击怪物(tonumber(ret))
+            --    延时(800)
+            --else
+            --    break
+            --end
+
+            怪物名称, 怪物ID, 物品X坐标, 物品Y坐标, 目标血量, 物品距离, 物品类别, 物品归属, 怪物判断, 头顶标注 = 遍历周围物品(4, act.name, 5)
+            if 目标血量 > 0 then
+                UseRoleSkillAttack(怪物ID)
+                延时(110)
             else
                 break
             end
+
         end
     end
 
@@ -399,7 +412,7 @@ end
 if lua("return GetCurrentSceneName()") == "宋辽战场" then
     StartSongLiao()
 
-    -- 领取宋辽奖励
+    -- 宋辽结束, 领取宋辽奖励
     local NPCInfo = songLiaoNPCInfo[GetLevel()]
     跨图寻路(NPCInfo.scene, NPCInfo.x, NPCInfo.y)
     延时(1000)
