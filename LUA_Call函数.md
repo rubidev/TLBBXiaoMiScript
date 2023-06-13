@@ -357,7 +357,7 @@ LUA_Call(string.format([[
 ]], LPindex,index,ZBindex))
 ```
 
-### 26、令牌宝珠升级
+### 26_1、令牌宝珠升级-模拟点击
 ```lua
 -- 1. 选择第几颗宝珠
 LUA_Call(string.format([[
@@ -368,12 +368,50 @@ LUA_Call(string.format([[
 LUA_Call("setmetatable(_G, {__index = EquipLingPai_OperatingSJ_Env});EquipLingPai_OperatingSJ_OnOkClicked();")
 ```
 
+### 26_2、令牌宝珠升级-调用源码脚本
+```lua
+LUA_Call(string.format([[	
+    local m_EquipBagIndex = %d
+    local nIndex = %d
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name( "RsLevelUp_RL" );
+        Set_XSCRIPT_ScriptID( 880001 );
+        Set_XSCRIPT_Parameter( 0, m_EquipBagIndex );         --- 令牌背包索引
+        Set_XSCRIPT_Parameter( 1,nIndex - 1   );        --- 镶嵌的符石索引
+        Set_XSCRIPT_ParamCount( 2 );
+    Send_XSCRIPT();	
+]], 背包中令牌位置, 升级宝珠位置))   -- 参数1：背包中令牌位置  参数2：要升级令牌上的哪颗宝珠（1,2,3,4）
+```
 
-### 27、令牌升星
+
+### 27_1、令牌升星-模拟点击
 ```lua
 LUA_Call("setmetatable(_G, {__index = EquipLingPai_Star_Env});EquipLingPai_Star_OnOkClicked();")
 ```
 
+### 27_2、令牌升星-调用源码脚本
+```lua
+LUA_Call(string.format([[	
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name( "RL_StarLevelup" );
+        Set_XSCRIPT_ScriptID( 880001 );
+        Set_XSCRIPT_Parameter( 0, %d);         -- 装备背包索引
+        Set_XSCRIPT_Parameter( 1, 0);         -- 参数2：0表示不购买，1 自动购买确认
+        Set_XSCRIPT_ParamCount( 2 );
+    Send_XSCRIPT();		
+]], 背包中令牌位置))
+```
+
+
+### 28、背包中令牌某个宝珠的等级
+```lua
+aaa=  LUA_取返回值(string.format([[ 
+    local m_EquipBagIndex = %d
+    local nIndex = %d
+    local uLevel = PlayerPackage:Lua_GetBagItemRl_RsLevel(m_EquipBagIndex , nIndex - 1)
+    return uLevel
+]], 令牌序号,宝珠序号))  -- 令牌序号为背包中令牌的位置，宝珠序号为令牌上宝珠的位置(可选项：1,2,3,4)
+```
 
 ### 28、令牌扩展属性重铸
 ```lua
@@ -427,11 +465,39 @@ for yyy=1,10 do
         Set_XSCRIPT_Parameter(4,0);
         Set_XSCRIPT_ParamCount(5);
         Send_XSCRIPT();	
-    ]], "maxhp", LPindex))  -- "maxhp" 表示血上限(其它的属性名字暂不知)    LPindex 背包中令牌位置：获取背包物品位置(龙纹名称)-1
+    ]], "maxhp", 背包中令牌位置))  
+    -- 参数1： "maxhp" 表示血上限，减抗下限冰火玄毒对应："equip_attr_resistother_cold"、"equip_attr_resistother_fire"、"equip_attr_resistother_light"、"equip_attr_resistother_poison"    
+    -- 参数2: 背包中令牌位置：获取背包物品位置(令牌名称)-1
     延时(2000)--增加延时等待服务器响应
 end
 ```
 
+28、获取身上令牌信息
+```lua
+LUA_取返回值(string.format([[ 
+        index = %d
+        local nType,BaoZhu1,BaoZhu2,BaoZhu3,BaoZhu4,nQual = DataPool:GetLingPaiInfo()
+        --local IconName,ItemName = DataPool:GetLingPaiBaoZhuIconName(1)
+        if nType> 0 then
+            if index == 1 then
+                return BaoZhu1
+            end
+            if index == 2 then
+                return BaoZhu2
+            end
+            if index == 3 then
+                return BaoZhu3
+            end
+            if index == 4 then
+                return BaoZhu4
+            end	
+            if index == 5 then
+                return nQual
+            end	
+        end
+        return -1
+]], index))
+```
 
 ### 29、装备精通淬炼
 ```lua
@@ -719,4 +785,152 @@ for kkk=1 ,10 do
     -- 参数1：表示我的第几个已上架物品
     -- 参数2：bbb 表示上架物品的总价
 end 
+```
+
+### 37、工具函数
+```lua
+-- 1. 字符串切分转换为列表
+function SplitString(str, sep)
+    -- str为原始字符串， sep为分隔标识符号，如 |、/等
+    local tmp = {}
+    for w in string.gmatch(str, string.format("([^%q]+)", sep)) do
+        table.insert(tmp, w)
+    end
+    return tmp
+end
+
+-- 2. 美化提示
+function 友情提示(text, ...)
+    local strCode = string.format(text, ...)
+    LUA_Call(string.format([[
+		setmetatable(_G, {__index = DebugListBox_Env})
+		str= "#cFF0000".."提示：".."#cFF0000".."%s"
+		DebugListBox_ListBox:AddInfo(str)
+		--橙色 #e0000ff#u#g0ceff3
+		--蓝色 #e0000ff#g28f1ff
+	]], strCode))
+end
+```
+
+
+### 38、天机锦囊操作
+```lua
+-- 1. 打开天际锦囊
+LUA_Call([[setmetatable(_G, {__index = Packet_Temporary_Env})]])
+
+-- 2. 统计
+```
+
+### 39、统计天机锦囊指定物品数量
+```lua
+ local num = LUA_取返回值(string.format([[
+    setmetatable(_G, {__index = Packet_Temporary_Env})  
+    local szName = "%s"
+        for i = 1, 120 do
+            local theAction, bLocked = Bank:EnumTemItem(i - 1)
+            if theAction:GetID() ~= 0 then
+                if szName == theAction:GetName() then
+                    return theAction:GetNum()
+                end
+            end
+        end
+        return 0
+]], name))  -- name为指定物品的数量
+```
+
+### 40、右键点击天机锦囊物品取出
+```lua
+LUA_Call(string.format([[
+    setmetatable(_G, {__index = Packet_Temporary_Env})
+    local GRID_BUTTONS = {}
+    local szName = "%s"
+    for i = 1, 120 do
+        local ItemBar = Packet_Temporary_ActionsList:AddItemElement( "ActionButtonItem", "Packet_Temporary", "", "")
+        local ItemAcButton = ItemBar:GetLuaActionButton("Packet_Temporary")
+        ItemAcButton:SetProperty("DragAcceptName", "p"..tostring(i))
+        table.insert(GRID_BUTTONS,ItemAcButton);
+    end
+    for i = 1, 120 do
+        local theAction, bLocked = Bank:EnumTemItem(i-1);
+        if theAction:GetID() ~= 0 then
+            GRID_BUTTONS[i]:SetActionItem(theAction:GetID())
+            if szName == theAction:GetName() then
+                GRID_BUTTONS[i]:DoAction()
+                GRID_BUTTONS[i]:SetActionItem(-1)
+            end
+        end
+    end
+]], name))  -- name 为要取出的指定物品名字
+```
+
+
+### 41、获取服务器名称
+```lua
+local tem = LUA_取返回值(string.format([[
+    local ZoneWorldID = DataPool:GetSelfZoneWorldID()  -- 当前服务器ID
+    local strName = DataPool:GetServerName( ZoneWorldID )  -- 当前服务器name
+    return strName
+]]))
+```
+
+### 42、豪侠印升级
+```lua
+LUA_Call("SelfJunXian_EquipHXYLevelup();")
+```
+
+
+### 43、遍历背包中物品
+```lua
+-- 1. 判断是否绑定
+if 是否绑定 ==0 or 是否绑定 == nil then
+    tbangding =10
+elseif  是否绑定 ==1 then
+    tbangding = 0
+elseif  是否绑定 ==2 then
+    tbangding = 1
+end
+for i=0,199 do
+    tem = LUA_取返回值(string.format([[
+        tbangding =tostring("%s")
+        i =%d
+        ttname = "%s"
+        local theAction=EnumAction(i,"packageitem")
+        local GetName=theAction:GetName()   -- 物品名字
+        local szItemNum =theAction:GetNum();   -- 物品数量
+        local Status=GetItemBindStatus(i);   -- 物品绑定状态
+            if GetName~=nil and GetName ~="" then
+                if string.find(ttname,GetName ) then
+                    if string.find(tbangding,tostring(Status)) then
+                        PushDebugMessage("出售物品:"..GetName.."|背包位置:"..i)
+                        return 1
+                    end	
+                end
+            end
+        return -1
+    ]],tbangding, i,物品名字))
+end
+
+
+-- 2. 遍历道具栏、材料栏、任务栏
+LUA_取返回值([[
+    local petEquipKeyList = {"·怯", "·慎", "·忠", "·狡", "·勇", "·怯", "·怯", }
+    local currNum = DataPool:GetBaseBag_RealMaxNum();
+    for i=1, currNum do
+        theAction,bLocked = PlayerPackage:EnumItem("base", i-1);  -- szPacketName = "base"、"material"、"quest"
+        local sName = theAction:GetName();
+        for k,v in pairs(petEquipKeyList) do
+            if string.find(sName, v) ~= nil then
+                return i
+            end
+        end
+    end
+]])
+```
+
+### 44、获取背包中装备的星星数
+```lua
+local tem =LUA_取返回值(string.format([[
+    local equipQual =PlayerPackage:GetSuperWeaponQual(%d)
+    return equipQual
+]], 背包中装备位置), "n")   -- 背包中装备位置：获取背包物品位置(装备名称)-1
 ```
