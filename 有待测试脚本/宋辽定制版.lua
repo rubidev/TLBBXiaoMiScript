@@ -185,6 +185,7 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("幽冥神掌", attackTargetID);
         UseRoleSkills("毒蟾功", attackTargetID);
         UseRoleSkills("冰蚕毒掌", attackTargetID);
+        UseRoleSkills("青蛇毒掌", attackTargetID);
         UseRoleSkills("化骨绵掌", attackTargetID);
         UseRoleSkills("天地同寿", attackTargetID);
         UseRoleSkills("蓝砂手", attackTargetID);
@@ -246,7 +247,7 @@ function UseRoleSkillAttack(attackTargetID)
     -- 人物组合技能，并使用
     UseRoleSkills("诛仙万象", attackTargetID);
     UseRoleSkills("暗器连击", attackTargetID);
-    UseRoleSkills("总决式·剑宗", attackTargetID);
+    UseRoleSkills("总诀式·剑宗", attackTargetID);
     UseRoleSkills("破箭式·剑宗", attackTargetID);
     UseRoleSkills("破气式·剑宗", attackTargetID);
 
@@ -314,6 +315,7 @@ function StartSongLiao()
         end
         等待过图完毕()
         死亡出窍()
+        UseJiaSuSkill()  -- 使用加速技能
         while true do
             -- 循环使用技能打怪
             if lua("return GetCurrentSceneName()") ~= "宋辽战场" then
@@ -322,7 +324,6 @@ function StartSongLiao()
             等待过图完毕()
             死亡出窍()
             local act = FangYuTaINFO[i]
-            UseJiaSuSkill()  -- 使用加速技能
             if i == 2 or i == 3 or i == 4 or i == 5 or i == 7 or i == 8 then
                 跨图寻路("宋辽战场", act.x, act.y, 1)  -- 禁用坐骑
             else
@@ -333,32 +334,23 @@ function StartSongLiao()
 
             --延时(300)
             -- 自动捡包()   -- 注释掉，不捡包， 捡包浪费时间
-            --local ret = lua(string.format([[
-			--	for i=1,2000 do
-			--		if SetMainTargetFromList(i ,false, false)==1 then
-			--			if Target:GetName()=="%s" then
-			--				return i
-			--			end
-			--		end
-			--	end
-			--	return -1
-			--]], act.name))
-            --
-            --if ret ~= "-1" then
-            --    攻击怪物(tonumber(ret))
-            --    延时(800)
-            --else
-            --    break
-            --end
+            local ret = lua(string.format([[
+				for i=1,2000 do
+					if SetMainTargetFromList(i ,false, false)==1 then
+						if Target:GetName()=="%s" then
+							return i
+						end
+					end
+				end
+				return -1
+			]], act.name))
 
-            怪物名称, 怪物ID, 物品X坐标, 物品Y坐标, 目标血量, 物品距离, 物品类别, 物品归属, 怪物判断, 头顶标注 = 遍历周围物品(4, act.name, 5)
-            if 目标血量 > 0 then
+            if ret ~= "-1" then
                 UseRoleSkillAttack(怪物ID)
-                延时(110)
+                延时(800)
             else
                 break
             end
-
         end
     end
 
