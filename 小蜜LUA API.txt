@@ -309,7 +309,7 @@
 
 076、获取背包大小
     - 道具栏: "base"
-        CurrNum = DataPool:GetBaseBag_Num();  -- 当前已用格子数
+        CurrNum = DataPool:GetBaseBag_Num();  -- 当前拥有的格子数
         BaseNum = DataPool:GetBaseBag_BaseNum();  -- 没用箱子前的格子数
         MaxNum = DataPool:GetBaseBag_RealMaxNum();  -- 当前背包最大格子数
     - 材料栏: "material"
