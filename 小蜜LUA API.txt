@@ -546,3 +546,49 @@ for i = 1, nSkillCount do
 105、行囊、格箱
     local ActionBag 		= EnumAction(9 , "equip");   --行囊
 	local ActionBox 		= EnumAction(10, "equip");   --格箱
+
+106、家园
+    - BieYeFurniture:IsBieYeScene()   是否在家园场景，返回true、false
+    - BieYeUI:GetBieYeBaseInfo("Guid")  家园GUID
+    - Player:GetGUID();  人物GUID
+    - isHaveSpouse , spouseGuid = Friend:Lua_GetSpouseGuid()  配偶GUID
+    - 家园GUID 和 人物/配偶的GUID 相等
+    - nBeginIndex,nGridNum = Bank:GetRentBoxInfo(8);  家园银行可用格子数
+    - 家园银行
+        - 遍历查看md文档
+        - 获取银行格子状态
+            BieYeBankIndex = 8  -- 8表示银行是家园里的银行
+            nBeginIndex, nGridNum = Bank:GetRentBoxInfo(BieYeBankIndex);
+            nBoxLock = Bank:GetAccess(nBeginIndex)    1：实心锁，2：红锁，3：可用
+        - 整理银行：Bank:PackUpBank(BieYeBankIndex)
+        - BieYeUI:AskBieYeBaseInfo(0)  请求家园信息，不然后续的API无法获取信息
+        - 庄园信息：BieYeUI:GetBieYeBaseInfo("XX")  XX可选
+            主人：MasterName
+            木材数量：ResWoods
+            石材数量：ResStones
+            食物数量：ResFoods
+            房间舒适度：HouseComfort
+            庭院舒适度：YardComfort
+        - 家具
+            家园家具：a1,a2 = BieYeUI:GetBieYeBaseInfo("HouseFurniturePair")
+            庭院家具：a1,a2 = BieYeUI:GetBieYeBaseInfo("YardFurniturePair")
+        - 家园等级：
+            BieYeUI:GetBieYeBaseInfo("BuildingLevel", 0)
+            level[1],level[2],level[3],level[4],level[5],level[6],level[7],level[8] = BieYeUI:GetBuildingsLevel()
+            level[1],level[2],level[3],level[4],level[5],level[6],level[7],level[8] = BieYeUI:GetBuildingsLevelTime()
+        - 建筑等级：
+            for i=0,6 do
+                BieYeUI:GetBieYeBaseInfo("BuildingLevel", i)
+            end
+        - 园丁信息
+            for i=0,5 do
+                local WorkType,BuildingIndex, Remains, PlantType = BieYeUI:GetBieYeBaseInfo("GardnerInfo",i)
+            end
+        - 工作园丁数量: 工作中普通园丁 + 工作中额外雇佣园丁 <= 5
+            normalCount = BieYeUI:GetBieYeBaseInfo("WorkingGardener")  工作中普通园丁
+            ybCount = BieYeUI:GetBieYeBaseInfo("WorkingYbGardener")   工作中额外雇佣园丁
+        - 升级信息，配合家园等级使用
+            MoneyNum, WoodNum, FoodNum, StoneNum, BedRoomValue, ParkValue,BieYeValue, NeedTime = BieYeUI:GetBuildingsLevelupData(index-1, level[index])
+        - 升级建筑
+            BieYeUI:BuildingLevelUpWithIndex(g_curBieYeBuildingIndex-1, 1, 0)
+

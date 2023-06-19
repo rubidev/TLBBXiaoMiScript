@@ -934,3 +934,63 @@ local tem =LUA_取返回值(string.format([[
     return equipQual
 ]], 背包中装备位置), "n")   -- 背包中装备位置：获取背包物品位置(装备名称)-1
 ```
+
+
+### 45、遍历家园银行
+```lua
+local nBeginIndex, nGridNum = Bank:GetRentBoxInfo(8);
+local nActIndex = nBeginIndex;
+for i = 1, nGridNum do
+    local theAction, bLocked = Bank:EnumItem(nActIndex);
+    if theAction:GetID() ~= 0 then
+        local itemName = theAction:GetName()
+    end
+end
+```
+
+
+### 46、家具仓库
+```lua
+local g_FurnitureInnerType = {
+    [0] = { Name = "床帐", Pos = 1, Type = 1 },
+    [1] = { Name = "桌", Pos = 1, Type = 2 },
+    [2] = { Name = "条案", Pos = 1, Type = 3 },
+    [3] = { Name = "茶几", Pos = 1, Type = 4 },
+    [4] = { Name = "椅", Pos = 1, Type = 5 },
+    [5] = { Name = "凳", Pos = 1, Type = 6 },
+    [6] = { Name = "柜架", Pos = 1, Type = 7 },
+    [7] = { Name = "屏风", Pos = 1, Type = 8 },
+    [8] = { Name = "灯烛", Pos = 1, Type = 9 },
+    [9] = { Name = "装饰", Pos = 1, Type = 10 },
+    [10] = { Name = "隔断", Pos = 1, Type = 11 },
+    [11] = { Name = "地毯", Pos = 1, Type = 12 },
+}
+local g_FurnitureOuterType = {
+    [0] = { Name = "庭院桌", Pos = 0, Type = 1 },
+    [1] = { Name = "庭院凳", Pos = 0, Type = 2 },
+    [2] = { Name = "喷泉", Pos = 0, Type = 3 },
+    [3] = { Name = "影壁", Pos = 0, Type = 4 },
+    [4] = { Name = "风灯", Pos = 0, Type = 5 },
+    [5] = { Name = "鼎", Pos = 0, Type = 6 },
+    [6] = { Name = "奇石", Pos = 0, Type = 7 },
+    [7] = { Name = "树木", Pos = 0, Type = 8 },
+    [8] = { Name = "植栽", Pos = 0, Type = 9 },
+    [9] = { Name = "玩物", Pos = 0, Type = 10 },
+    [10] = { Name = "栏杆", Pos = 0, Type = 11 },
+    [11] = { Name = "花草", Pos = 0, Type = 12 },
+}
+
+-- 庭院仓库中，某种类型的家具有多少种
+local nXiYouCount = BieYeFurniture:GetFurTypeCntQulityInTbl(5, g_FurnitureOuterType[i].Type, g_FurnitureOuterType[i].Pos, 0)
+for j = 1, nXiYouCount do
+    local nQuality = BieYeFurniture:GetFurQulityInTbl(5, g_FurnitureOuterType[i].Type, g_FurnitureOuterType[i].Pos, 0, j)
+    local nName = BieYeFurniture:GetFurNamenTbl(5, g_FurnitureOuterType[i].Type, g_FurnitureOuterType[i].Pos, 0, j)
+end
+
+-- 居室仓库中，某种类型的家具有多少种
+local nXiYouCount = BieYeFurniture:GetFurTypeCntQulityInTbl(5, g_FurnitureInnerType[i].Type, g_FurnitureInnerType[i].Pos, 0)
+for j = 1, nXiYouCount do
+    local nQuality = BieYeFurniture:GetFurQulityInTbl(5, g_FurnitureInnerType[i].Type, g_FurnitureInnerType[i].Pos, 0, j)
+    local nName = BieYeFurniture:GetFurNamenTbl(5, g_FurnitureInnerType[i].Type, g_FurnitureInnerType[i].Pos, 0, j)
+end
+```
