@@ -676,8 +676,29 @@ function UseTuLingZhuTransmit()
     end
 end
 
+function GetTLZPos(TLZName, TLZNum)
+    return LUA_取返回值(string.format([[
+        local currNum = DataPool:GetBaseBag_Num();
+        local TLZName = "%s"
+        local TLCNum = %d
+        local TLZCount = 0
+        for i=1, currNum do
+            theAction,bLocked = PlayerPackage:EnumItem("base", i-1);  -- szPacketName = "base"、"material"、"quest"
+            local sName = theAction:GetName();
+            if string.find(TLZName, sName) ~= nil then
+                TLZCount = TLZCount + 1
+                if TLZCount == TLCNum then
+                    return i
+                end
+            end
+        end
+        return -1
+    ]], TLZName, tonumber(TLZNum)))
+end
+
 function UseTuLingZhuPositioning()
     -- 使用土灵珠定位
+    -- 定位第1个土灵珠
     if 获取背包物品数量("土灵珠") > 0 then
         右键使用物品("土灵珠", 1);
         延时(1000)
@@ -686,6 +707,28 @@ function UseTuLingZhuPositioning()
             延时(1000)
             LUA_Call("setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();")
         end
+    end
+    延时(1000)
+
+    -- 定位第2个土灵珠
+    local secondTLZPos = GetTLZPos("土灵珠", 2)
+    if tonumber(secondTLZPos) == -1 then
+        return
+    end
+
+    local row = math.floor(tonumber(secondTLZPos) / 10)
+    local col = math.floor(tonumber(secondTLZPos) % 10)
+    if col == 0 then
+        col = 10
+    else
+        row = row + 1
+    end
+    LUA_Call(string.format([[setmetatable(_G, {__index = Packet_Env});Packet_ItemBtnClicked(%d,%d);]], row, col))
+    延时(1000)
+    if 窗口是否出现("Item_TuDunZhu") == 1 then
+        LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_OK_Clicked();")
+        延时(1000)
+        LUA_Call("setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();")
     end
 end
 
