@@ -286,8 +286,9 @@ function CleanAnQiMaterial()
 end
 
 function CleanXBS()
-    local weaponStart = GetEquipStar(0)
-    if weaponStart == 8 or weaponStart == 9 then
+    local weaponStarInfo = GetEquipStar(0)
+    local weaponStar = string.sub(tostring(weaponStarInfo), 1, 1)
+    if weaponStar == 8 or weaponStar == 9 then
         MentalTip("您身上的神器已达8星或9星, 销毁玄兵石")
         取出物品("玄兵石")
         取出物品("玄兵石碎片")
