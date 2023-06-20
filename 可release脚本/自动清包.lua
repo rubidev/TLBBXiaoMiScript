@@ -287,7 +287,7 @@ end
 
 function CleanXBS()
     local weaponStarInfo = GetEquipStar(0)
-    local weaponStar = string.sub(tostring(weaponStarInfo), 1, 1)
+    local weaponStar = tonumber(string.sub(tostring(weaponStarInfo), 1, 1))
     if weaponStar == 8 or weaponStar == 9 then
         MentalTip("您身上的神器已达8星或9星, 销毁玄兵石")
         取出物品("玄兵石")

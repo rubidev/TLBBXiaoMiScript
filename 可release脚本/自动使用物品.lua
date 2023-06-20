@@ -7,6 +7,7 @@ function FirstUse()
         '赤铜添福礼箱',
         '竹香筒粽',
         '动作：江湖我行',
+        "表情包："
     }
 
     坐骑_下坐骑()
@@ -30,6 +31,8 @@ function FirstUse()
                             break
                         end
                         右键使用物品(pkgItem)
+                        延时(500)
+                        LUA_Call([[setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();]])
                         延时(100)
                     end
                 end
