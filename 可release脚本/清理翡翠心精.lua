@@ -94,6 +94,7 @@ function checkPkgLingPaiBaoZhu()
             return -1
         end
     else
+        MentalTip("背包中没有第二个霸王令")
         return 1
     end
 end
