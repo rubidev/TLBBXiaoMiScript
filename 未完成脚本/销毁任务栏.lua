@@ -40,7 +40,7 @@ for i = 1, tonumber(taskNum) do
 		延时(500)
 		NPC二级对话("我想删除任务道具")
 		延时(1000)
-		LUA_Call(string.format([[setmetatable(_G, {__index = Packet_Env});Packet_ItemBtnClicked(%d,%d);]], row, col))  -- 右键选中物品
+		LUA_Call(string.format([[]]))  -- TODO 拖拽到窗口中
 		延时(500)
 		LUA_Call(string.format([[]]))  -- TODO 点击销毁按钮
 		延时(500)
