@@ -994,3 +994,346 @@ for j = 1, nXiYouCount do
     local nName = BieYeFurniture:GetFurNamenTbl(5, g_FurnitureInnerType[i].Type, g_FurnitureInnerType[i].Pos, 0, j)
 end
 ```
+
+### 47、右键使用物品
+```lua
+--背包序号
+LUA_Call(string.format([[
+    local theAction = EnumAction(%d, "packageitem");
+    if theAction:GetID() ~= 0 then
+        setmetatable(_G, {__index = Packet_Env});
+        local oldid = Packet_Space_Line1_Row1_button:GetActionItem();
+        Packet_Space_Line1_Row1_button:SetActionItem(theAction:GetID());
+        Packet_Space_Line1_Row1_button:DoAction();
+        Packet_Space_Line1_Row1_button:SetActionItem(oldid);
+    end
+]], itemPos))   -- itemPos 为背包中物品的位置
+```
+
+### 48、(有待测试)彻地符箓和VIP的瞬影符箓定位/传送
+```lua
+--
+-- 1. 彻底符拍定位
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("SetPosition");
+        Set_XSCRIPT_ScriptID(330059);
+        Set_XSCRIPT_Parameter(0, %d)
+        Set_XSCRIPT_Parameter(1, %d)
+        Set_XSCRIPT_ParamCount(2)
+    Send_XSCRIPT();
+]], CTFLPos, CTFLIndex))
+-- 参数1：彻地符箓的索引：获取背包物品位置("彻地符箓") - 1
+-- 参数2：使用彻底符的第几个坐标位置拍定位
+
+-- 2. VIP瞬影符箓拍定位
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("SetPosition");
+        Set_XSCRIPT_ScriptID(330061);
+        Set_XSCRIPT_Parameter(0, %d)
+        Set_XSCRIPT_Parameter(1, %d)
+        Set_XSCRIPT_ParamCount(2)
+    Send_XSCRIPT();
+]], SYFLPos, SYFLIndex))
+-- 参数1：瞬影符箓的索引：获取背包物品位置("瞬影符箓") - 1
+-- 参数2：使用瞬影符箓的第几个坐标位置拍定位
+
+-- 3. 彻底符飞定位
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("SetUISelIdx");
+        Set_XSCRIPT_ScriptID(330059);
+        Set_XSCRIPT_Parameter(0, %d)
+        Set_XSCRIPT_Parameter(1, %d)
+        Set_XSCRIPT_ParamCount(2);
+    Send_XSCRIPT();
+    PlayerPackage:UseItem(Client_ItemIndex)
+]], CTFLPos, CTFLIndex))
+-- 参数1：彻地符箓的索引：获取背包物品位置("彻地符箓") - 1
+-- 参数2：使用彻底符的第几个坐标位置飞定位
+
+-- 4. 瞬影符箓飞定位
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("SetUISelIdx");
+        Set_XSCRIPT_ScriptID(330061);
+        Set_XSCRIPT_Parameter(0, %d)
+        Set_XSCRIPT_Parameter(1, %d)
+        Set_XSCRIPT_ParamCount(2);
+    Send_XSCRIPT();
+    PlayerPackage:UseItem(Client_ItemIndex)
+]], SYFLPos, SYFLIndex))
+-- 参数1：瞬影符箓的索引：获取背包物品位置("瞬影符箓") - 1
+-- 参数2：使用瞬影符箓的第几个坐标位置飞定位
+```
+
+
+### 49、(有待测试)彻地符箓补充次数
+```lua
+-- 1. 使用绑定元宝补充
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("YuanbaoBind_AddFuZhou");
+        Set_XSCRIPT_ScriptID(330059);
+        Set_XSCRIPT_Parameter(0, %d);
+        Set_XSCRIPT_ParamCount(1);
+    Send_XSCRIPT();
+]], SYFLPos)) -- 参数1：彻地符箓的索引：获取背包物品位置("彻地符箓") - 1
+
+-- 2. 使用元宝补充
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("Yuanbao_AddFuZhou");
+        Set_XSCRIPT_ScriptID(330059);
+        Set_XSCRIPT_Parameter(0, %d);
+        Set_XSCRIPT_ParamCount(1);
+    Send_XSCRIPT();
+]], SYFLPos)) -- 参数1：彻地符箓的索引：获取背包物品位置("彻地符箓") - 1
+
+-- 3. 不知道是什么, 确认补充
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("AddFuZhou");
+        Set_XSCRIPT_ScriptID(330059);
+        Set_XSCRIPT_Parameter(0, Client_ItemIndex)
+        Set_XSCRIPT_ParamCount(1);
+    Send_XSCRIPT();
+]], SYFLPos)) -- 参数1：彻地符箓的索引：获取背包物品位置("彻地符箓") - 1
+```
+
+### 50、(有待测试)彻底符信息
+```lua
+-- 1. 必须请求一次背包中彻底符的数据，不然无法获取数据
+LUA_Call([[
+    PlayerPackage:AskDunJiaShuPosInfo()
+]])
+
+-- 2. 获取彻底符每个按钮上坐标信息
+-- 总共有3页，每页有10个坐标
+LUA_Call(string.format([[
+    local flPos = %d
+    for pageNum = 1, 3 do
+        for i = 1, 10 do
+            local nIdx = (pageNum-1)*10 + i-1
+            -- 场景id，地图名字，符箓可用次数，X坐标，Y坐标，是否第一次使用
+            local sceneid, strText, count, posx, posy, init = PlayerPackage:GetDunJiaShuPosInfo(flPos, nIdx)
+        end
+    end 
+]], FLPos))  -- 参数1：符箓索引，获取背包物品位置("彻地符箓") - 1
+```
+
+### 51、(有待测试)瞬影符箓信息
+```lua
+-- 1. 必须请求一次背包中彻底符的数据，不然无法获取数据
+LUA_Call([[
+    PlayerPackage:AskDunJiaShuPosInfo()
+]])
+
+-- 2. 获取彻底符每个按钮上坐标信息
+-- 总共有3页，每页有10个坐标
+LUA_Call(string.format([[
+    local flPos = %d
+    for pageNum = 1, 3 do
+        for i = 1, 10 do
+            local nIdx = (pageNum-1)*10 + i-1
+            -- 场景id，地图名字，X坐标，Y坐标，符箓已用用次数，最大次数
+            local sceneid, strText, posx, posy, usedCount, maxUseCount = PlayerPackage:GetDunJiaShuVIPPosInfo(flPos, nIdx)
+        end
+    end 
+]], FLPos))  -- 参数1：符箓索引，获取背包物品位置("彻地符箓") - 1
+```
+
+### 52、武意属性点
+```lua
+local g_Martial_WuYi_ShuXingLevelPoint = {
+    [1] = 750, --血上限	
+    [2] = 10, --冰攻击	
+    [3] = 10, --火攻击	
+    [4] = 10, --玄攻击	
+    [5] = 10, --毒攻击	
+    [6] = 110, --命中	
+    [7] = 35, --闪避	
+    [8] = 13, --穿刺伤害
+    [9] = 13, --穿刺减免
+    [10] = 5, --所有属性
+    [11] = 100, --外功攻击
+    [12] = 100, --内功攻击
+}
+local g_Martial_WuYi_ShuXing2Name = {
+    [1] = "血上限",
+    [2] = "冰攻击",
+    [3] = "火攻击",
+    [4] = "玄攻击",
+    [5] = "毒攻击",
+    [6] = "命中",
+    [7] = "闪避",
+    [8] = "穿刺伤害",
+    [9] = "穿刺减免",
+    [10] = "所有属性",
+    [11] = "外功攻击",
+    [12] = "内功攻击",
+}
+
+LUA_Call([[
+    local data = MaritialSys:GetMaritiaAttrInfo()  -- 武意属性
+    if(data ~= nil) then
+		g_Martial_WuYi_ShuXing2Name = {}
+		g_Martial_WuYi_ShuXingLevelPoint = {}
+	end
+    for i, v in ipairs(data) do
+        g_Martial_WuYi_ShuXing2Name[v[1] + 1] = v[2];
+        g_Martial_WuYi_ShuXingLevelPoint[v[1] + 1] = v[3];
+    end
+]])
+```
+
+### 53、武意等级信息
+```lua
+LUA_Call("
+    local data = MaritialSys:GetMartialLevelInfo()
+    
+    if(data ~= nil) then
+		g_Martial_WuYi_LevelExp = {}
+		g_Martial_TalenLayerNeedLevel = {}
+		g_Martial_WuYi_LevelAttrPoint = {}
+		g_Martial_WuYi_LevelTalentPoint = {}
+		g_Martial_WuYi_LevelLimit = {}
+	end
+	
+	for i,v in ipairs(data) do
+		local nLayer = v[5]
+		g_Martial_WuYi_LevelExp[v[1]] = v[2]
+		g_Martial_WuYi_LevelAttrPoint[v[1]] = v[3]
+		g_Martial_WuYi_LevelTalentPoint[v[1]] = v[4]
+		g_Martial_WuYi_LevelLimit[v[1]] = v[6]
+ 		if(nLayer ~= 0 and (g_Martial_TalenLayerNeedLevel[nLayer] == nil or g_Martial_TalenLayerNeedLevel[nLayer] > v[1])) then
+			g_Martial_TalenLayerNeedLevel[nLayer] = v[1]
+		end
+	end
+")
+```
+
+### 54、武意属性界面数据
+```lua
+-- 1. 今天的武意刷怪数
+LUA_Call([[
+    local nWuYiMonsterNum = MaritialSys:GetMaritialTodayNum()
+]])
+
+-- 2. 今天的多倍武意刷怪数
+LUA_Call([[
+    local nMultiWuYiMonsterNum = MaritialSys:GetMaritiaLTodayMultiNum()
+]])
+
+-- 3. 昨日剩余武意刷怪数
+LUA_Call([[
+    local nMonsterNum,nReward = MaritialSys:GetLastDayMonster()
+]])
+
+-- 4. 可分配点数
+LUA_Call([[
+    local nRemainPoint = MaritialSys:GetMaritiaRemainPoint()
+]])
+
+-- 5. 武意冻结状态
+LUA_Call([[
+    local nState = MaritialSys:GetMaritiaFreezeState()
+]])
+
+-- 6. 武意等级
+LUA_Call([[
+    local nMartialLevel = MaritialSys:GetMaritiaLevel()
+]])
+
+-- 7. 当前武意经验
+LUA_Call([[
+    local nCurExp = MaritialSys:GetMaritiaExp()
+]])
+```
+
+### 55、 武意天赋界面数据
+```lua
+-- 1. 天赋信息, 天赋的所有信息，返回为一个table
+LUA_Call([[
+    local data = MaritialSys:GetTalentDescInfo()
+]])
+
+-- 2. 遍历天赋等级
+LUA_Call([[
+    for i=1,5 do
+		local nId,nLevel = MaritialSys:GetTalentLevelBylayerID(i - 1)
+    end
+]])
+
+-- 3. 天赋可分配点
+LUA_Call([[
+    local nRemain = MaritialSys:GetTalentRemainPoint()
+]])
+```
+
+### 56、武意加点
+```lua
+LUA_Call([[
+    Clear_XSCRIPT()
+		Set_XSCRIPT_Function_Name( "AddAttr" )
+		Set_XSCRIPT_ScriptID( 507010 )
+	Send_XSCRIPT()
+]])
+```
+
+### 57、武意洗点
+```lua
+LUA_Call(string.format([[
+    local nIdx = %d
+    --武意接口脚本
+    local g_Martial_WuYi_ScriptId = 507010 
+    local g_Martial_WuYi_YuanbaoPay=1 -- 是否使用元宝购买
+    -- 武意洗点道具ID
+    local g_Martial_WuYi_ReclyItemID = 38002046
+    local g_Martial_WuYi_ReclyItemID1 = 38002047
+    local nValue = MaritialSys:GetMaritiaAttrByIndex(nIdx)  -- 某个属性的点数
+    
+    -- 检查洗点材料是否存在
+    local bExist = IsItemExist(g_Martial_WuYi_ReclyItemID)
+	local bExist1 = IsItemExist(g_Martial_WuYi_ReclyItemID1)
+	
+	-- 判断是否开启洗点确认
+	local bComfirm = Martial_WuYi_Top_xidianqueren:GetCheck()
+	
+	-- 洗点
+	Clear_XSCRIPT()
+		Set_XSCRIPT_Function_Name( "RecycleAttrPoint" )
+		Set_XSCRIPT_ScriptID( g_Martial_WuYi_ScriptId )
+		Set_XSCRIPT_Parameter(0,nIdx)
+		Set_XSCRIPT_Parameter(1,g_Martial_WuYi_YuanbaoPay)
+		Set_XSCRIPT_ParamCount(2)
+	Send_XSCRIPT()
+]], pointIndex)) -- 参数1：重洗点属性的索引
+```
+
+
+### 58、帮会成员信息
+```lua
+-- 1. 请求帮会成员信息，必须请求一次，否则无法获取数据
+LUA_Call([[
+    Guild:AskGuildMembersInfo();
+]])
+
+-- 2. 成员信息
+LUA_Call([[
+    local totalNum = Guild:GetMembersNum(4);
+		local i = 0;
+		while i < totalNum do
+			local guildIdx = Guild:GetShowMembersIdx(i);
+			local color,strTips = Guild:GetMembersInfo(guildIdx, "ShowColor");
+			szMsg = Guild:GetMembersInfo(guildIdx, "Name");
+			local FirstManGuid = Guild:GetMembersInfo(guildIdx, "FirstManGuid");
+			local tPos = Guild:GetMembersInfo(guildIdx, "Position")
+			local level = Guild:GetMembersInfo(guildIdx, "Level")
+			local nMenpai = Guild:GetMembersInfo(guildIdx, "MenPai")
+			local nContriPerWeek = Guild:GetMembersInfo(guildIdx, "ContriPerWeek")
+			local nEquipPoint = Guild:GetMembersInfo(guildIdx, "EquipPoint")
+			local nguid = Guild:GetMembersInfo(guildIdx, "GUID")
+]])
+```

@@ -137,10 +137,12 @@
      - VIGOR、MAXVIGOR  活力、最大活力
      - ENERGY、MAXENERGY  精力、最大精力
 
-068、任务函数
+068、人物坐标
     - 返回人物坐标：g_posX, g_posY = Player:GetPos();
     - Player:GetBuffNumber(); 人物buff数量
 
+069、请求帮会信息
+    - Guild:AskGuildDetailInfo();
 069、str = Guild:GetMyGuildDetailInfo("xxx")  -- 本帮帮会信息, 一定要先打开一下帮会列表的帮会信息界面，才能通过该接口获取数据
      - 这一列可用                                     - 这一列待测试
      - 成立时间：FoundedTime                                   - CurBuilding
@@ -591,4 +593,15 @@ for i = 1, nSkillCount do
             MoneyNum, WoodNum, FoodNum, StoneNum, BedRoomValue, ParkValue,BieYeValue, NeedTime = BieYeUI:GetBuildingsLevelupData(index-1, level[index])
         - 升级建筑
             BieYeUI:BuildingLevelUpWithIndex(g_curBieYeBuildingIndex-1, 1, 0)
+107、武意，具体参考md文档
+    - 武意等级：MaritialSys:GetMartialLevelInfo()
+    - 武意属性：MaritialSys:GetMaritiaAttrInfo()
 
+108、帮会成员信息
+    - 请求帮会成员信息：Guild:AskGuildMembersInfo();
+    - 帮会人数：Guild:GetMembersNum(index);   index选项
+        1：总人数
+        2：最大可容纳人数
+        3：在线人数
+        4：总人数
+        5：预备会员
