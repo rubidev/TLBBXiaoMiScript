@@ -605,3 +605,59 @@ for i = 1, nSkillCount do
         3：在线人数
         4：总人数
         5：预备会员
+
+109、刷新装备评分
+    - Guild:ReflashEquipPoint();
+
+110、发红包
+    - 左边红包发放：Guild:DeliverGuildGift(0)
+    - 右边红包发放：Guild:DeliverGuildGift(1)
+
+111、锦囊(临时背包)  -- 参考md文档
+    - local itemCount = Bank:GetTemBankItemNum()  -- 获取锦囊有多少中物品
+    - Bank:MoveAllTemBankItemToPacket()  -- 锦囊所有物品移动背包中
+    - Bank:TemBankPackUp()  -- 锦囊整理
+
+112、宝鉴， i 是1~5, j是0~4
+    - bElementsActive = Player:IsFiveElements_ElementsActive( i - 1 )  --  指定宝玉是否激活
+    - bElementsLevel = Player:GetFiveElements_ElementsLevel( i - 1 )   -- 指定宝玉的等级
+    - bElementsType = Player:GetFiveElements_ElementsType( i - 1 )  -- 指定宝玉的类型
+    - nElementsValue = DataPool:Lua_GetFiveElementsValueWithEquipAndJade( i - 1 )
+    - bJadeType = Player:GetFiveElements_JadeType( i - 1  , j )
+      nExtendValue = Player:GetFiveElements_JadeExtend( i - 1 ,  bJadeType)
+    - local nEquipExtend_1 = DataPool:Lua_GetEquipZhiZunExtend(1)  -- 王权加成
+      local nEquipExtend_2 = DataPool:Lua_GetEquipZhiZunExtend(2)   -- 天道加成
+    - local nExtendLevel_1 = DataPool:Lua_GetEquipZhiZunExtendLevel( 1 )    -- 王权等级：1,2,3
+	  local nExtendLevel_2 = DataPool:Lua_GetEquipZhiZunExtendLevel( 2 )    -- 天道等级：1,2,3
+
+113、豪侠印(军衔) 参考md文档
+    - 军衔等级：nRankLvl = SelfJunXian_GetMilitaryRankLvl();
+    - 军衔名字：szName = GetMilitaryRankName(nRankLvl)
+    - 爵位等级：nJueWeiLevel = Player:GetData( "NobilityLevel" )
+    - 爵位名字：strJueWeiName = Lua_GetNobilityName(nJueWeiLevel)
+    - 侠印经验值
+        local nMaxMilitaryLvl = GetMaxMilitaryRankLevel();
+        local nMilitaryExp = Player:GetData( "MILITARYEXP" );
+        local nRankExpTop = GetMilitaryRankExpTop( nRankLvl )
+    - 角色的荣誉值：nMilitaryValue = Player:GetData( "MILITARYEXCHANGE" );
+    - 角色的功勋值：nComprehend = Player:GetData( "MILITARYXIUWEI" );
+    - 侠印等级：nEquipLevel = DataPool:Lua_GetHXYLevel(  )
+    - 侠印升级所需材料数量：nUpgradeCost = DataPool:Lua_GetHXYUpgradeCost(  )
+    - DataPool:Lua_GetHXYGrade()  -- ???
+    - 侠印减免效果信息(for遍历)：nIndex , iEffectLevel, iCost , iNeedHXYLevel , iValue = DataPool:Lua_GetHXYEffect( i - 1 )   -- i范围为1~7
+        - iEffectLevel == 0  没激活该条减免效果
+        - iCost  升级该条减免效果需要的功勋值
+    - 侠印减免多少秒(for遍历): DataPool:Lua_GetHXYEffectRefixValue( i - 1 )  -- i范围为1~7
+    - strExAttr = DataPool:Lua_GetHXYExAttrInfo( i - 1 )  -- ???
+    - nRefixValue = DataPool:Lua_GetHXYExAttrRefixValue( i - 1 )    -- ???
+
+114、单选框状态：例如确认购买、元宝购买确认
+    - XXX:GetCheck()
+
+115、获取物品ID
+    - local nItemID = PlayerPackage : GetItemTableIndex( nBagPos )  -- 背包中位置
+
+116、九星神器
+    - DataPool:IsSuperWeapon9() -- 是否为9星神器，返回1为9星
+    - slotLevel = DataPool:GetSuperWeaponDIYSkillSlotLevel(n)  -- 获取插槽n技能等级, n可选1,2,3
+    -

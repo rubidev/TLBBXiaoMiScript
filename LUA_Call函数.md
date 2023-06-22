@@ -1327,13 +1327,328 @@ LUA_Call([[
 		while i < totalNum do
 			local guildIdx = Guild:GetShowMembersIdx(i);
 			local color,strTips = Guild:GetMembersInfo(guildIdx, "ShowColor");
-			szMsg = Guild:GetMembersInfo(guildIdx, "Name");
+			szMsg = Guild:GetMembersInfo(guildIdx, "Name");   -- 成员名字
 			local FirstManGuid = Guild:GetMembersInfo(guildIdx, "FirstManGuid");
-			local tPos = Guild:GetMembersInfo(guildIdx, "Position")
-			local level = Guild:GetMembersInfo(guildIdx, "Level")
-			local nMenpai = Guild:GetMembersInfo(guildIdx, "MenPai")
-			local nContriPerWeek = Guild:GetMembersInfo(guildIdx, "ContriPerWeek")
-			local nEquipPoint = Guild:GetMembersInfo(guildIdx, "EquipPoint")
+			local tPos = Guild:GetMembersInfo(guildIdx, "Position")  -- 职位
+			local level = Guild:GetMembersInfo(guildIdx, "Level")   -- 等级
+			local nMenpai = Guild:GetMembersInfo(guildIdx, "MenPai")  -- 门派
+			local nContriPerWeek = Guild:GetMembersInfo(guildIdx, "ContriPerWeek")   -- 每周帮贡
+			local nEquipPoint = Guild:GetMembersInfo(guildIdx, "EquipPoint")   -- 装备评分
 			local nguid = Guild:GetMembersInfo(guildIdx, "GUID")
 ]])
+```
+
+### 59、遍历锦囊
+```lua
+LUA_Call([[
+    setmetatable(_G, {__index = Packet_Temporary_Env})  
+    local szName = "%s"
+    for i = 1, 120 do
+        local theAction, bLocked = Bank:EnumTemItem(i - 1)
+        if theAction:GetID() ~= 0 then
+            local szName = theAction:GetName()
+        end
+    end
+]])
+```
+
+### 60、锦囊右键取出物品
+```lua
+LUA_Call(string.format([[
+    setmetatable(_G, {__index = Packet_Temporary_Env})
+    local GRID_BUTTONS = {}
+    local szName = "%s"
+    for i = 1, 120 do
+        local ItemBar = Packet_Temporary_ActionsList:AddItemElement( "ActionButtonItem", "Packet_Temporary", "", "")
+        local ItemAcButton = ItemBar:GetLuaActionButton("Packet_Temporary")
+        ItemAcButton:SetProperty("DragAcceptName", "p"..tostring(i))
+        table.insert(GRID_BUTTONS,ItemAcButton);
+    end
+    for i = 1, 120 do
+        local theAction, bLocked = Bank:EnumTemItem(i-1);
+        if theAction:GetID() ~= 0 then
+            GRID_BUTTONS[i]:SetActionItem(theAction:GetID())
+            if szName == theAction:GetName() then
+                GRID_BUTTONS[i]:DoAction()
+                GRID_BUTTONS[i]:SetActionItem(-1)
+            end
+        end
+    end
+	]],name))  -- name表示要取出物品名字
+```
+
+### 61、(有待测试)人物Buff
+```lua
+LUA_Call([[
+    -- 获取玩家身上的buff数量
+    local buff_num = Player:GetBuffNumber();  
+    if ( buff_num > 30 ) then
+		buff_num = 30;
+	end
+	
+	-- 生成buffIndex列表
+	local BUFFINDEX_LIST = {};
+	for jj=1,IMPACT_NUM do
+		BUFFINDEX_LIST[jj] = -1;
+	end
+	
+	-- buff优先级列表
+	local BuffPriority = {}   
+	for jj=1,buff_num do
+		BuffPriority[jj] = {}
+		BuffPriority[jj].key = jj-1;
+		BuffPriority[jj].val = Player:GetBuffPriorityByIndex(jj-1);
+	end
+	
+    -- 根据优先级从高到低排序buff
+    for jj=buff_num,1,-1 do   
+		for kk=1,jj-1 do
+			if BuffPriority[kk].val < BuffPriority[kk+1].val then
+				BuffPriority[kk],BuffPriority[kk+1] = BuffPriority[kk+1],BuffPriority[kk]
+			end
+		end
+	end
+	
+	-- 将buffIndex和优先级关联
+	for jj=1,buff_num do
+		BUFFINDEX_LIST[jj] = BuffPriority[jj].key;
+	end
+	
+	local i = 0;
+    while i<buff_num do
+        szIconName = Player:GetBuffIconNameByIndex(BUFFINDEX_LIST[i+1]);  -- buff名字？
+        szToolTips = Player:GetBuffToolTipsByIndex(BUFFINDEX_LIST[i+1]);
+        szTimeText = Player:GetBuffTimeTextByIndex(BUFFINDEX_LIST[i+1]);  -- buff剩余时间
+]])
+```
+
+
+### 62、获取装备的属性
+```lua
+-- 获取背包中装备的所有属性，并拼接成字符串
+LUA_Call(string.format([[
+    local index = %d
+    local theAction = EnumAction(index, "packageitem")
+    if theAction:GetID() ~= 0 then
+        local icon =  tostring(LifeAbility : Get_Item_Icon_Name(index))
+        local num = theAction:GetEquipAttrCount()  -- 装备属性条数
+		local str = ""
+		for i = 0, num-1 do
+			local tempstr = theAction:EnumEquipExtAttr(i)  -- 获取每一条属性
+			str = str..tempstr
+		end
+		return str
+    end
+]], Index))  -- Index为装备在背包中的索引：获取背包位置(xxx) - 1
+```
+
+
+### 63、取装备重洗后的属性
+```lua
+local isWQ = LUA_取返回值(string.format([[
+    local num =  DataPool : Lua_GetRecoinNum();
+	local str = ""
+	for i = 0, num-1 do
+		local tempstr = DataPool :Lua_GetRecoinEnumAttr(i)
+		if string.find(tempstr, "#{") then
+			local left = string.find(tempstr, "#{")
+			local left2 = string.find(tempstr, "}")
+			strTemp = GetDictionaryString(string.sub(tempstr, left+2, left2-1))	
+		end 
+        str = str..strTemp.."|"
+	end
+	return  str
+	]], "s"))
+```
+
+
+### 64、侠印升级
+```lua
+LUA_Call([[
+    Clear_XSCRIPT();
+		Set_XSCRIPT_Function_Name( "HXY_LevelUp" )
+		Set_XSCRIPT_ScriptID( 880006 )
+		Set_XSCRIPT_ParamCount( 0 );
+	Send_XSCRIPT();
+]])
+```
+
+
+### 65、侠印减免效果激活/升级
+```lua
+-- 1. 获取减免效果
+LUA_Call([[
+    for i=1,7 do
+        --    索引         减免等级  升级所需功勋  升级所需侠印等级   值
+        local nIndex , iEffectLevel, iCost , iNeedHXYLevel , iValue = DataPool:Lua_GetHXYEffect( i - 1 )
+        local nAddValueEffect = DataPool:Lua_GetHXYEffectRefixValue( i - 1 )   -- ???
+        local strExAttr = strExAttr = DataPool:Lua_GetHXYExAttrInfo( i - 1 )  -- ???
+        local nRefixValue = DataPool:Lua_GetHXYExAttrRefixValue( i - 1 )    -- ???
+    end
+]])
+
+-- 2. 激活、升级
+LUA_Call(string.format([[
+    Clear_XSCRIPT()
+		Set_XSCRIPT_ScriptID( 880006 )
+		Set_XSCRIPT_Function_Name( "HXY_EffectLevelUp" )
+		Set_XSCRIPT_Parameter( 0, %d )
+		Set_XSCRIPT_Parameter( 1 , 1)
+		Set_XSCRIPT_ParamCount( 2 )
+	Send_XSCRIPT()
+]], aryIndex))  -- aryIndex 为减免的索引：0~6
+```
+
+### 66、秘籍信息
+```lua
+-- 1. 遍历自己的3个秘籍
+LUA_Call([[
+    for Index = 1, 3 do
+        local theAction = EnumAction(Index - 1, "combobook")
+        if (theAction:GetID() ~= 0 ) then
+            local nSumSkill = GetActionNum("skill");  -- 获取秘籍的技能数量，一般为3个
+            local bookname = Player:GetComboBookInfo(Index, "bookname");  -- 秘籍名字
+            local bookitemid = Player:GetComboBookInfo(Index, "bookitemId");   -- 秘籍ID
+            local bookdesc = Player:GetComboBookInfo(Index, "bookdesc");    -- 秘籍描述
+            local nLevel = Player:GetComboBookInfo(Index, "level");  -- 秘籍等级
+            local skill1, skill2, skill3 = Player:GetComboBookInfo(Index, "comboskill");  -- 秘籍的3个技能的ID，如总决式、破箭式、破气式
+            local rate1, rate2 = Player:GetComboBookInfo(Index, "rate");  -- 触发下一个技能的概率
+            local nextrate1, nextrage2 = Player : GetComboBookInfo(Index, "nextlevelrate");
+            local levelupneed =  Player : GetComboBookInfo(Index, "nextlevelexp");  -- 升到下一级需要的经验
+            local nextlevelallxiuwei = Player : GetComboBookInfo(Index, "allxiuwei");  -- 秘籍的所有修为
+        end
+]])
+
+-- 2. 获取自己的修为信息
+LUA_Call([[
+    local xiuweivalue =  Player : GetData( "XIUWEI" );  -- 自己当前修为值
+    local tilte,level = SelfMiji_GetXiuWeiLevel(xiuweivalue)
+    local nextlevelneed = GetXiuweiNextNeed(xiuweivalue)
+    local lilianvalue =  Player : GetData( "LILIAN" );  历练值
+]])
+
+-- 3.遍历秘籍的技能
+LUA_Call([[
+    local nSumSkill = GetActionNum("skill");  -- 获取秘籍的技能数量，一般为3个
+    local skill1, skill2, skill3 = Player:GetComboBookInfo(Index, "comboskill");
+    for i = 1, nSumSkill do
+        local thetempAction = EnumAction(i, "skill");
+        local temp = thetempAction:GetID();
+        local nCommonId = LifeAbility : GetLifeAbility_Number(temp);
+        if nCommonId == skill1 then 
+            local combobookSkill1Name = thetempAction:GetName()
+        end
+    end
+]])
+
+-- 4.遗忘某个秘籍
+LUA_Call(string.format([[
+    Clear_XSCRIPT();
+		Set_XSCRIPT_Function_Name("CheckDeleteBook");
+		Set_XSCRIPT_ScriptID(890099);
+		Set_XSCRIPT_Parameter(0,Index);
+		Set_XSCRIPT_ParamCount(1);
+	Send_XSCRIPT();
+]], miJiIndex))  -- miJiIndex秘籍索引：0,1,2
+
+-- 5. 秘籍升级
+LUA_Call(string.format([[
+    AskLevelupComboBook(%d);
+]], miJiIndex))   -- miJiIndex秘籍索引：0,1,2
+```
+
+
+### 67、九星神器
+```lua
+LUA_Call(string.format([[
+    local g_SuperWeapon9_Change_WeaponIndex = %d
+    local n9ID,str9WG,n8ID,str8WG,n5ID,str5WG,needMoney = PlayerPackage:GetSuperWeapon9WG(g_SuperWeapon9_Change_WeaponIndex,"tbl")
+]], Index)) -- Index是啥，背包中神器的位置？
+
+-- 2. 9星神器技能
+LUA_Call([[
+    local nSkillId = DataPool:GetSuperWeaponDIYSkillId()
+	if nSkillId == nil or nSkillId <= 0 then
+	    -- 未激活主动技能
+		return
+	end
+
+    local theActionSkill = EnumAction(0 , "superweapondiyskill");
+    if theActionSkill:GetID() ~= 0 then 
+        local slotLevel = DataPool:GetSuperWeaponDIYSkillSlotLevel(1)
+        if slotLevel ~= nil and slotLevel > 0 then
+            PushDebugMessage("技能可用")
+        end
+    end
+]])
+
+-- 3. 9星神器3个技能等级
+local g_SuperWeapon9_DIYSkill_Data = 
+{
+	[1] = { itemId = 38002040, bindId = 38002041, nameText = "#{JXSQ_170804_67}", lockText = "#{JXSQ_170804_70}", title = "#{JXSQ_170804_92}", costText = "#{JXSQ_170804_98}", itemText = "#{JXSQ_170804_102}", itemTextRed = "#{JXSQ_170829_265}", itemTip = "#{JXSQ_170829_219}", levelTip = "#{JXSQ_170829_207}", },
+	[2] = { itemId = 38002042, bindId = 38002043, nameText = "#{JXSQ_170804_68}", lockText = "#{JXSQ_170804_71}", title = "#{JXSQ_170804_93}", costText = "#{JXSQ_170804_99}", itemText = "#{JXSQ_170804_103}", itemTextRed = "#{JXSQ_170829_266}", itemTip = "#{JXSQ_170829_220}", levelTip = "#{JXSQ_170829_247}", },
+	[3] = { itemId = 38002044, bindId = 38002045, nameText = "#{JXSQ_170804_69}", lockText = "#{JXSQ_170804_72}", title = "#{JXSQ_170804_94}", costText = "#{JXSQ_170804_100}", itemText = "#{JXSQ_170804_104}", itemTextRed = "#{JXSQ_170829_267}", itemTip = "#{JXSQ_170829_221}", levelTip = "#{JXSQ_170829_248}", },
+}
+
+LUA_Call([[
+    for nIndex = 1,3 do
+        local slotLevel = DataPool:GetSuperWeaponDIYSkillSlotLevel(nIndex)   -- 获取当前第nIndex个插槽的等级
+        if slotLevel == nil or slotLevel <= 0 then
+            return
+        end
+        
+        -- 3个插槽中每个升级需要魂玉数量
+        local nCostNum, nCostMoney = DataPool:GetSuperWeaponDIYSkillLevelupData(slotLevel, nIndex)
+        if nCostNum ~= nil and nCostNum > 0 then
+			local nItemId = g_SuperWeapon9_DIYSkill_Data[nIndex].itemId
+			local itemName = PlayerPackage:GetItemName(nItemId)
+        end
+        
+        -- 获得当前插槽技能
+        local impactIndex = DataPool:GetSuperWeaponDIYSkillImpactIndex(nIndex)
+        if impactIndex == nil or impactIndex <= 0 then
+            return
+        end	
+        local slotType, nCostNum, nSkillId = DataPool:GetSuperWeaponDIYSkillActiveData(impactIndex)
+        if nCostNum == nil or nCostNum < 0 or nSkillId == nil or nSkillId <= 0 then
+            return
+        end
+        local bRet,skillName = DataPool:GetSkillName(nSkillId)  -- 根据id获取技能名字
+    end
+]])
+
+-- 4. 获取背包魂玉数量
+LUA_Call([[
+    for nIndex=1,3 do
+        -- 1表示魂玉，2表示地魂玉，3表示天魂玉
+        local itemId = g_SuperWeapon9_DIYSkill_Data[nIndex].itemId  -- 不绑定魂玉ID
+		local bindId = g_SuperWeapon9_DIYSkill_Data[nIndex].bindId  -- 绑定魂玉ID
+		local itemNum = PlayerPackage:CountAvailableItemByIDTable(itemId)  -- 不绑定魂玉数量
+		local bindNum = PlayerPackage:CountAvailableItemByIDTable(bindId)   -- 绑定魂玉数量
+    end
+]])
+
+
+-- 5. 神器3个插槽升级
+LUA_Call(string.format([[
+    local objCared = DataPool:GetCurDialogNpcId();
+    g_TargetServerID = Get_XParam_INT(0);   -- 是否会报错
+    g_ObjCared = objCared
+    
+    local g_TargetServerID = %d
+    local g_SuperWeapon9_DIYSkill_WeaponIndex = %d
+    local nIndex = %d
+    Clear_XSCRIPT()
+		Set_XSCRIPT_Function_Name("SuperWeaponDIYSkill_LevelupSlot")
+		Set_XSCRIPT_ScriptID(892471)
+		Set_XSCRIPT_Parameter(0, g_TargetServerID)
+		Set_XSCRIPT_Parameter(1, g_SuperWeapon9_DIYSkill_WeaponIndex)
+		Set_XSCRIPT_Parameter(2, nIndex)
+		Set_XSCRIPT_Parameter(3, 0)
+		Set_XSCRIPT_ParamCount(4)
+	Send_XSCRIPT()
+]], a, b, c))
+-- 参数1：？？？
+-- 参数2：背包中神器的索引
+-- 参数3：第几个插槽
 ```
