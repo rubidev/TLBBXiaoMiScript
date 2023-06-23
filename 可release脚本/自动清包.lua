@@ -151,7 +151,7 @@ function CleanLiHuo()
                 end
             ]], SelfEquipList[i].equipIndex, mainAttr))
 
-            if tonumber(isJTMaxLevel) == 0 then
+            if tonumber(JTAttrOK) == 0 then
                 needClean = 0
                 break
             end
@@ -348,7 +348,7 @@ function CleanZLS()
         存物品("缀龙石·伤", 不存物品, 0, 1, 0)
         取出物品("缀龙石·暴")
         存物品("缀龙石·暴", 不存物品, 0, 1, 0)
-        延时(500)
+        延时(1500)
         自动清包("缀龙石·元")
         自动清包("缀龙石·伤")
         自动清包("缀龙石·暴")
