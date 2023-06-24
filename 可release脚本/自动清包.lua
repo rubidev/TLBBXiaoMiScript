@@ -84,7 +84,7 @@ function CleanLiHuo()
     -- 清理离火
     local level = tonumber(LUA_取返回值("return Player:GetData('LEVEL')"))
     if level < 80 then
-        MentalTip("您的等级小于80, 不清理精金石")
+        MentalTip("您的等级小于80, 不清理离火")
         return
     end
 
