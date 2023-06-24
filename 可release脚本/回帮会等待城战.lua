@@ -122,11 +122,11 @@ function 准备城战()
     end
 
     while true do
-        跨图寻路(myGuildCityName, 94, 55)
+        跨图寻路(myGuildCityName, 107, 55)
         延时(500)
         local myX = 获取人物信息(7)
         local myY = 获取人物信息(8)
-        if tonumber(myX) == 94 and tonumber(myY) == 55 then
+        if tonumber(myX) == 107 and tonumber(myY) == 55 then
             break
         end
 
@@ -146,8 +146,7 @@ function 准备城战()
         else
             NPC二级对话("前往备战凤鸣镇-坤")
             延时(1000)
-            -- TODO 点击确定按钮
-            LUA_Call([[]])
+            LUA_Call([[setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();]])
             break
         end
     end
