@@ -7,7 +7,8 @@ function FirstUse()
         '赤铜添福礼箱',
         '竹香筒粽',
         '动作：江湖我行',
-        "表情包："
+        "表情包：",
+        '端午节礼包',
     }
 
     坐骑_下坐骑()
@@ -41,6 +42,8 @@ function FirstUse()
     end
 end
 
+FirstUse()
+延时(1000)
 FirstUse()
 延时(1000)
 FirstUse()
