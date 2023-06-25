@@ -1,3 +1,18 @@
+local SelfEquipList = {
+    [1] = { name = "衣服", downIndex = 12, equipIndex = 2, equipName = "" }, --- 衣服
+    [2] = { name = "帽子", downIndex = 1, equipIndex = 1, equipName = "" }, --- 帽子
+    [3] = { name = "鞋子", downIndex = 6, equipIndex = 4, equipName = "" }, --- 鞋子
+    [4] = { name = "护肩", downIndex = 2, equipIndex = 15, equipName = "" }, --- 肩膀
+    [5] = { name = "手套", downIndex = 4, equipIndex = 3, equipName = "" }, --- 手套
+    [6] = { name = "腰带", downIndex = 5, equipIndex = 5, equipName = "" }, --- 腰带
+    [7] = { name = "项链", downIndex = 13, equipIndex = 7, equipName = "" }, --- 项链
+    [8] = { name = "护腕", downIndex = 3, equipIndex = 14, equipName = "" }, --- 护腕
+    [9] = { name = "戒指上", downIndex = 7, equipIndex = 6, equipName = "" }, --- 戒指（上）
+    [10] = { name = "戒指下", downIndex = 8, equipIndex = 11, equipName = "" }, --- 戒指（下）
+    [11] = { name = "护符上", downIndex = 9, equipIndex = 12, equipName = "" }, --- 护符（上）
+    [12] = { name = "护符下", downIndex = 10, equipIndex = 13, equipName = "" }, --- 护符（下）
+}
+
 function MentalTip(text, ...)
     local strCode = string.format(text, ...)
     LUA_Call(string.format([[
