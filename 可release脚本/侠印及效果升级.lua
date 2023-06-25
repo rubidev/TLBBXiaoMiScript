@@ -42,7 +42,7 @@ end
 
 function GetHXYLevelUpCost()
     -- 侠印升级所需豪侠勋章数量
-    local nUpgradeCost = LUA_Call([[
+    local nUpgradeCost = LUA_取返回值([[
 		local nUpgradeCost = DataPool:Lua_GetHXYUpgradeCost(  )
 		return nUpgradeCost
 	]])
@@ -192,7 +192,7 @@ function BuyHAYMaterial(itemIndex)
     延时(1000)
     LUA_Call([[setmetatable(_G, {__index = NEWShop_MBuy_Env});NEWShop_MBuy_BuyMulti_Clicked();]])  -- 确认购买
     延时(1000)
-    LUA_Call([[setmetatable(_G, {__index = NEWShop_MBuy_Env});JueweiShop_OnHiden();]])  -- TODO 关闭战功商店
+    LUA_Call([[setmetatable(_G, {__index = JueweiShop_Env});JueweiShop_OnHiden();]])  -- 关闭战功商店
 end
 
 function HXYLeveUp()
@@ -206,13 +206,26 @@ function HXYLeveUp()
 end
 
 function HXYEffectLevelUp(effectIndex)
+    -- 巨坑：获取减免等级索引为0~6， 升级脚本索引为1~7
+    --EffectLevelIndex2Name = {[0]="散功", [1]="封印", [2]="围困", [3]="失明", [4]="麻痹", [5]="封穴", [6]="昏睡"}
+    --EffectUpgradeIndex2Name = {[1]="散功", [2]="封印", [3]="围困", [4]="失明", [5]="麻痹", [6]="封穴", [7]="昏睡"}
     local ret = LUA_取返回值(string.format([[
         local effectIndex = %d
         local myGongXun = Player:GetData( "MILITARYXIUWEI" )
-        local nIndex , iEffectLevel, iCost , iNeedHXYLevel , iValue = DataPool:Lua_GetHXYEffect( effectIndex )
+        local nIndex , iEffectLevel, iCost , iNeedHXYLevel , iValue = DataPool:Lua_GetHXYEffect( effectIndex - 1 )
 		if nIndex ~= nil then
-		    if iEffectLevel < 20 and myGongXun > iCost then
-		        -- PushDebugMessage("")
+		    if iEffectLevel == 0 and myGongXun > iCost then
+		        -- 激活
+                Clear_XSCRIPT()
+                    Set_XSCRIPT_Function_Name("HXY_EffectLevelUp");
+                    Set_XSCRIPT_ScriptID( 880006);
+                    Set_XSCRIPT_Parameter(0, effectIndex);
+                    Set_XSCRIPT_Parameter(1 , 0)
+                    Set_XSCRIPT_ParamCount(2);
+                Send_XSCRIPT()
+                return 1
+		    elseif iEffectLevel < 20 and myGongXun > iCost then
+		        -- 升级
                 Clear_XSCRIPT()
                     Set_XSCRIPT_ScriptID( 880006 )
                     Set_XSCRIPT_Function_Name( "HXY_EffectLevelUp" )
@@ -260,7 +273,7 @@ function main()
     else
         取出物品("御赐令赏")
         延时(1000)
-        右键使用物品("御赐令赏")
+        执行功能("自动清包")  -- 调动小蜜自动使用御赐令赏
     end
 
     if HXYLevelMax ~= 1 then
@@ -282,7 +295,7 @@ function main()
         -- 已有的豪侠勋章使用完还没100级，去战功商店购买使用
         if GetHXYLevel() < 100 then
             MentalTip("前往战功商店购买【豪侠勋章】并升级侠印等级")
-            BuyHAYMaterial(0)  -- 战功商店购买豪侠勋章  -- TODO 修改豪侠勋章index
+            BuyHAYMaterial(0)  -- 战功商店购买豪侠勋章
             延时(1000)
             while true do
                 local curXYXZCount = 获取背包物品数量("豪侠勋章")
@@ -302,7 +315,7 @@ function main()
         -- 使用已有的功勋升级减免效果
         for i = 1, 7 do
             while true do
-                local levelUpRet = HXYEffectLevelUp(i - 1)
+                local levelUpRet = HXYEffectLevelUp(i)
                 if levelUpRet == -1 then
                     break
                 end
@@ -311,6 +324,7 @@ function main()
         end
 
         -- 检查当前减免效果等级是否满级，没满再去买御赐令赏
+        allEffectLevel = 0
         for i = 1, 7 do
             local effectLevel = GetJianMianLevel(i - 1)
             if effectLevel == -1 then
@@ -320,15 +334,15 @@ function main()
         end
         if allEffectLevel < 7 * 20 then
             MentalTip("前往战功商店购买【御赐令赏】并升级减免效果")
-            BuyHAYMaterial(1)   -- TODO 御赐令赏的Index
+            BuyHAYMaterial(1)
             延时(1000)
-            右键使用物品("御赐令赏")
+            执行功能("自动清包") -- 调动小蜜自动使用御赐令赏
             延时(500)
 
             -- 使用功勋升级减免效果
             for i = 1, 7 do
                 while true do
-                    local levelUpRet = HXYEffectLevelUp(i - 1)
+                    local levelUpRet = HXYEffectLevelUp(i)
                     if levelUpRet == -1 then
                         break
                     end
