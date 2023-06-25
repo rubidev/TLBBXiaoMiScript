@@ -642,7 +642,7 @@ for i = 1, nSkillCount do
     - 角色的荣誉值：nMilitaryValue = Player:GetData( "MILITARYEXCHANGE" );
     - 角色的功勋值：nComprehend = Player:GetData( "MILITARYXIUWEI" );
     - 侠印等级：nEquipLevel = DataPool:Lua_GetHXYLevel(  )
-    - 侠印升级所需材料数量：nUpgradeCost = DataPool:Lua_GetHXYUpgradeCost(  )
+    - 侠印升级所需豪侠勋章数量：nUpgradeCost = DataPool:Lua_GetHXYUpgradeCost(  )
     - DataPool:Lua_GetHXYGrade()  -- ???
     - 侠印减免效果信息(for遍历)：nIndex , iEffectLevel, iCost , iNeedHXYLevel , iValue = DataPool:Lua_GetHXYEffect( i - 1 )   -- i范围为1~7
         - iEffectLevel == 0  没激活该条减免效果
@@ -660,4 +660,3 @@ for i = 1, nSkillCount do
 116、九星神器
     - DataPool:IsSuperWeapon9() -- 是否为9星神器，返回1为9星
     - slotLevel = DataPool:GetSuperWeaponDIYSkillSlotLevel(n)  -- 获取插槽n技能等级, n可选1,2,3
-    -
