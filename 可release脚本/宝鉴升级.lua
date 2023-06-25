@@ -68,4 +68,4 @@ function BaoJianCohesion()
 end
 
 -- ------------------- MAIN --------------------------------------------------
-main()
+BaoJianCohesion()
