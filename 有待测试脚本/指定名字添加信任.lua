@@ -44,9 +44,17 @@ function GetTrustFriendName(nIndex)
 	return trustFriendName
 end
 
+function GetTrustFriendGuid(nIndex)
+	local trustFriendGuidStr = LUA_取返回值(string.format([[
+		local nIndex = %d
+		local guid = DataPool : GetTrustFriend( nIndex, "GUID" );
+		return guid
+	]], nIndex))
+	local trustFriendGuid = string.sub(trustFriendGuidStr, 3)
+	return trustFriendGuidStr
+end
 
-
-function HasRoleExistTrust(roleName)
+function HasRoleExistTrust(curFriendId)
 	local nowTrustFriCount = GetTrustFriendCount()
 	if nowTrustFriCount >= 10 then
 		return -1
@@ -54,8 +62,8 @@ function HasRoleExistTrust(roleName)
 
 	local index = 0
 	while index < nowTrustFriCount do
-		local truFriName = GetTrustFriendName(index)
-		if truFriName == roleName then
+		local truFriendGuid = GetTrustFriendGuid(index)
+		if truFriendGuid == curFriendId then
 			return -2
 		end
 		index = index + 1
@@ -82,25 +90,28 @@ function GetFriendID(roleName)
 end
 
 function main()
-	local myName = 获取人物信息(16)
+	local myName = 获取人物信息(12)
 	local needAddRole = StringSplit(信任角色, "|")
 	for i= 1, #needAddRole do
 		local roleName = needAddRole[i]
 		if roleName ~= myName then
-			local checkExist = HasRoleExistTrust(roleName)
+			local curFriendId = GetFriendID(roleName)
+			local checkExist = HasRoleExistTrust(curFriendId)
 			if checkExist == -1 then
 				MentalTip("您的信任角色已打上限, 无法继续添加")
 				return
+			elseif checkExist == -2 then
+				MentalTip(string.format("【%s】已存在于信任列表, 跳过", roleName))
 			elseif checkExist == 1 then
-				local curFriendId = GetFriendID(roleName)
 				if curFriendId ~= "-1" then
 					AddTrustFriend(curFriendId)
 					MentalTip(string.format("添加信任【%s】成功", roleName))
 				else
-					MentalTip(string.format("【%s】不是您的好友, 无法添加信任", roleName))
+					MentalTip(string.format("【%s】不是您的好友, 无法添加信任, 跳过", roleName))
 				end
 			end
 		end
+		延时(1000)  -- 只能延长时间，否则回导致添加失败
 	end
 end
 
