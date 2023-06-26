@@ -13,6 +13,9 @@ function BuyGood(goodIndex)
     延时(1000)
 
     LUA_Call([[setmetatable(_G, {__index = GuiShi_ShopMBuy_Env});GuiShi_ShopMBuy_OnOK();]])  -- 购买
+    延时(1000)
+
+    LUA_Call([[setmetatable(_G, {__index = GuiShi_Shop_Env});GuiShi_Shop_BuyMult();]])  -- 关闭千金阁
     延时(400)
 end
 

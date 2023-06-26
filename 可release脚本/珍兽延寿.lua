@@ -129,6 +129,8 @@ function BuyYanShouDanByYBBind(missCount)
         end
         start = start + 1
     end
+    延时(1000)
+    LUA_Call([[setmetatable(_G, {__index = YuanbaoShop_Env});YuanBao_OnHiden()();]])  -- 关闭元宝商店
 end
 
 function BuyYanShouDanByHongLi(missCount)
