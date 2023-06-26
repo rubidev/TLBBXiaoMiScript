@@ -1306,7 +1306,7 @@ LUA_Call(string.format([[
 		Set_XSCRIPT_Function_Name( "RecycleAttrPoint" )
 		Set_XSCRIPT_ScriptID( g_Martial_WuYi_ScriptId )
 		Set_XSCRIPT_Parameter(0,nIdx)
-		Set_XSCRIPT_Parameter(1,g_Martial_WuYi_YuanbaoPay)
+		Set_XSCRIPT_Parameter(1, 1)  -- 后面为0, 会购买紫府星髓，但是不会使用
 		Set_XSCRIPT_ParamCount(2)
 	Send_XSCRIPT()
 ]], pointIndex)) -- 参数1：重洗点属性的索引

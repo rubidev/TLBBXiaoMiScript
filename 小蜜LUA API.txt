@@ -328,7 +328,7 @@
         theAction:GetID()
         strName = theAction:GetName();
 087、添加信任伙伴
-    - DataPool : AddTrustFriend("0025AE#2005");
+    - DataPool : AddTrustFriend("ID");
     - FriendGuid = DataPool:GetFriend( nChannel, nIndex, "ID_TEXT" )  第几个频道的第几个人的id
     - DataPool:GetFriend( nChannel, nIndex, , "NAME" );  第几个频道的第几个人的名字
     - DataPool:GetFriend( nChannel, nIndex, "ZONEWORLDID" );  第几个频道第几个人的区id
