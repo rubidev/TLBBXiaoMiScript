@@ -205,15 +205,20 @@ function HXYLeveUp()
 	]])
 end
 
-function HXYEffectLevelUp(effectIndex)
+function HXYEffectLevelUp(effectIndex, HXYLevel)
     -- 巨坑：获取减免等级索引为0~6， 升级脚本索引为1~7
     --EffectLevelIndex2Name = {[0]="散功", [1]="封印", [2]="围困", [3]="失明", [4]="麻痹", [5]="封穴", [6]="昏睡"}
     --EffectUpgradeIndex2Name = {[1]="散功", [2]="封印", [3]="围困", [4]="失明", [5]="麻痹", [6]="封穴", [7]="昏睡"}
     local ret = LUA_取返回值(string.format([[
         local effectIndex = %d
+        local HXYLevel = %d
         local myGongXun = Player:GetData( "MILITARYXIUWEI" )
         local nIndex , iEffectLevel, iCost , iNeedHXYLevel , iValue = DataPool:Lua_GetHXYEffect( effectIndex - 1 )
 		if nIndex ~= nil then
+		    if iNeedHXYLevel > HXYLevel then
+		        return -1
+		    end
+
 		    if iEffectLevel == 0 and myGongXun > iCost then
 		        -- 激活
                 Clear_XSCRIPT()
@@ -237,7 +242,7 @@ function HXYEffectLevelUp(effectIndex)
             end
 		end
         return -1
-    ]], effectIndex))
+    ]], effectIndex, HXYLevel))
     return tonumber(ret)
 end
 
@@ -310,12 +315,14 @@ function main()
     end
     MentalTip("豪侠印等级升级完成")
 
+    --local temp = {[10]=1, [25]=2, [40]=3, [55]=4, [70]=5, [85]=6, [100]=7}  -- 不同等级开放的减免效果条数不同
+    local curHXYLevel = GetHXYLevel()
     if HXYEffectMax ~= 1 then
         MentalTip("开始升级豪侠印减免效果等级")
         -- 使用已有的功勋升级减免效果
         for i = 1, 7 do
             while true do
-                local levelUpRet = HXYEffectLevelUp(i)
+                local levelUpRet = HXYEffectLevelUp(i, curHXYLevel)
                 if levelUpRet == -1 then
                     break
                 end
@@ -342,7 +349,7 @@ function main()
             -- 使用功勋升级减免效果
             for i = 1, 7 do
                 while true do
-                    local levelUpRet = HXYEffectLevelUp(i)
+                    local levelUpRet = HXYEffectLevelUp(i, curHXYLevel)
                     if levelUpRet == -1 then
                         break
                     end
