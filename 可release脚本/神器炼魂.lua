@@ -20,6 +20,7 @@ end
 
 function GetWeaponLevel(weaponIndex)
     local weaponLevel = LUA_取返回值(string.format([[
+        local BagIndex = %d
         local eqLevel = LifeAbility : Get_Equip_Level(BagIndex)
         return eqLevel
     ]], weaponIndex))
@@ -29,19 +30,18 @@ end
 function GetOldAttr(weaponIndex)
     local weaponOldAttr = LUA_取返回值(string.format([[
         local weaponIndex = %d
-
-        local ItemID = PlayerPackage : GetItemTableIndex( BagIndex )
-        if ItemID <= 0 then
-            PushDebugMessage("这个物品不是可兑换的神器！")
-            return -1
-        end
-
         local theAction = EnumAction( weaponIndex, "packageitem" )
         local num = theAction:GetEquipAttrCount()
         local str = ""
         for i = 0, num-1 do
             local tempstr = theAction:EnumEquipExtAttr(i)
-            str = str .. "|" .. tempstr
+            local strTemp = ""
+            if string.find(tempstr, "#{") then
+                local left = string.find(tempstr, "#{")
+                local left2 = string.find(tempstr, "}")
+                strTemp = GetDictionaryString(string.sub(tempstr, left+2, left2-1))
+            end
+            str = str .. "|" .. strTemp
         end
         return str
     ]], weaponIndex))
@@ -50,16 +50,17 @@ end
 
 function GetWashAfterAttr()
     local newAttr = LUA_取返回值(string.format([[
-		local num =  DataPool : Lua_GetRecoinNum();
+		local num =  DataPool : Lua_GetSuperRecoinNum();
 		local str = ""
 		for i = 0, num-1 do
-			local tempstr = DataPool :Lua_GetRecoinEnumAttr(i)
-			if string.find(tempstr, "#{") then
-				local left = string.find(tempstr, "#{")
-				local left2 = string.find(tempstr, "}")
-				strTemp = GetDictionaryString(string.sub(tempstr, left+2, left2-1))
-			end
-			str = str..strTemp.."|"
+			local tempstr = DataPool :Lua_GetSuperRecoinEnumAttr(i)
+            local strTemp = ""
+            if string.find(tempstr, "#{") then
+                local left = string.find(tempstr, "#{")
+                local left2 = string.find(tempstr, "}")
+                strTemp = GetDictionaryString(string.sub(tempstr, left+2, left2-1))
+            end
+			str = str .. "|" .. strTemp
 		end
 		return  str
 	]], "s"))
@@ -67,20 +68,6 @@ function GetWashAfterAttr()
 end
 
 function SuperWeaponWash(weaponIndex)
-    -- LUA_Call("setmetatable(_G, {__index = SuperWeaponUpNEW_Env});SuperWeaponUpNEW_Buttons_Clicked();")
-    if g_Accept_Clicked_Num == 0 then
-        LUA_Call(string.format([[
-            local weaponIndex = %d
-            Clear_XSCRIPT()
-                Set_XSCRIPT_Function_Name( "ShenQiConfirm" )
-                Set_XSCRIPT_ScriptID( 500505 )
-                Set_XSCRIPT_Parameter( 0, weaponIndex )
-                Set_XSCRIPT_Parameter( 1, 160 )
-                Set_XSCRIPT_ParamCount( 2 )
-            Send_XSCRIPT()
-        ]], weaponIndex))
-        g_Accept_Clicked_Num = 1
-    else
         LUA_Call(string.format([[
             local weaponIndex = %d
             Clear_XSCRIPT()
@@ -92,7 +79,15 @@ function SuperWeaponWash(weaponIndex)
 				Set_XSCRIPT_ParamCount( 3 )
 			Send_XSCRIPT()
         ]], weaponIndex))
-    end
+end
+
+function SaveSuperWeaponNewAttr()
+    LUA_Call(string.format([[setmetatable(_G, {__index = SuperWeaponUpNEW_Env});SuperWeaponUpNEW_Tihuan_Clicked();]]))
+end
+
+function GetAllMoney()
+    local allMoney = 获取人物信息(52) +获取人物信息(45)
+    return tonumber(allMoney)
 end
 
 function main()
@@ -154,12 +149,13 @@ function main()
     右键使用物品(目标神器)
     延时(1000)
 
-    g_Accept_Clicked_Num = 0
+    local LHNum = 1
     while true do
-        if 获取背包物品数量(washMaterial) < 5 or 取所有钱() <= 5 then
+        if 获取背包物品数量(washMaterial) < 5 or GetAllMoney() <= 5 * 10000 then
             MentalTip("材料或金币不足,自动停止")
             break
         end
+        MentalTip(string.format("开始第%d次炼魂", LHNum))
         SuperWeaponWash(weaponPos - 1)
         延时(1000)
         local newMatched = 0
@@ -171,8 +167,13 @@ function main()
         end
         if newMatched == #需要的属性 then
             MentalTip("您的神器属性已洗好")
+            延时(500)
+            SaveSuperWeaponNewAttr()
             return
+        else
+			MentalTip(string.format("第%d次炼魂不满足", LHNum))
         end
+        LHNum = LHNum + 1
     end
 end
 
