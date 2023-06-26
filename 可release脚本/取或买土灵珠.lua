@@ -238,7 +238,7 @@ function main()
         return
     end
 
-
+    延时(2000)
     -- 不够，用战功买
     backpackTLZCount = tonumber(获取背包物品数量("土灵珠"))
     if backpackTLZCount < 1 then
@@ -249,6 +249,7 @@ function main()
         return
     end
 
+    延时(2000)
     -- 不够，用绑定元宝买
     backpackTLZCount = tonumber(获取背包物品数量("土灵珠"))
     if backpackTLZCount < 1 then
@@ -259,6 +260,7 @@ function main()
         return
     end
 
+    延时(2000)
     -- 不够，用红利买
     backpackTLZCount = tonumber(获取背包物品数量("土灵珠"))
     if backpackTLZCount < 1 then
