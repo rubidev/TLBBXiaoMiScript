@@ -1435,7 +1435,13 @@ LUA_Call(string.format([[
 		local str = ""
 		for i = 0, num-1 do
 			local tempstr = theAction:EnumEquipExtAttr(i)  -- 获取每一条属性
-			str = str..tempstr
+			local strTemp = ""
+            if string.find(tempstr, "#{") then
+                local left = string.find(tempstr, "#{")
+                local left2 = string.find(tempstr, "}")
+                strTemp = GetDictionaryString(string.sub(tempstr, left+2, left2-1))	
+            end 
+			str = str..strTemp
 		end
 		return str
     end
@@ -1450,6 +1456,7 @@ local isWQ = LUA_取返回值(string.format([[
 	local str = ""
 	for i = 0, num-1 do
 		local tempstr = DataPool :Lua_GetRecoinEnumAttr(i)
+		local strTemp = ""
 		if string.find(tempstr, "#{") then
 			local left = string.find(tempstr, "#{")
 			local left2 = string.find(tempstr, "}")
