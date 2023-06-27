@@ -80,15 +80,15 @@ if 对话NPC("燕青")==1 then
 	if 窗口是否出现("AnqiShuxingNEW") == 1 then
 		右键使用物品(暗器名称, 1)
 		延时(1000)
-			while (判断背包金钱是否充足() == true and 获取背包物品数量("忘无石") > 0) do
-				LUA_Call("setmetatable(_G, {__index = AnqiShuxingNEW_Env});AnqiShuxingNEW_OK_Clicked();")--这里是洗的确认按钮
-				延时(2000)
-				local aS1, aS2, aS3 = GetAfterAttr()
-				if string.find(aS3,"血上限") then
-					LUA_Call("setmetatable(_G, {__index = AnqiShuxingNEW_Env});AnqiShuxingNEW_SaveChange_Clicked(0);")--点击替换按钮
-					break
-				end
+		while (判断背包金钱是否充足() == true and 获取背包物品数量("忘无石") > 0) do
+			LUA_Call("setmetatable(_G, {__index = AnqiShuxingNEW_Env});AnqiShuxingNEW_OK_Clicked();")--这里是洗的确认按钮
+			延时(1000)
+			local aS1, aS2, aS3 = GetAfterAttr()
+			if string.find(aS3,"血上限")  and string.find(aS3, "气上限") and string.find(aS2, "散功") then
+				LUA_Call("setmetatable(_G, {__index = AnqiShuxingNEW_Env});AnqiShuxingNEW_SaveChange_Clicked(0);")--点击替换按钮
+				break
 			end
+		end
 	end
 end
 跨图寻路("洛阳",208,321)

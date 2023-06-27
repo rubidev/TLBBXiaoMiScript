@@ -48,6 +48,6 @@ function GetPkgWuHunOldSkill(skillIndex, wuHunPos)
             end
         end
         return -1
-    ]]))
+    ]], skillIndex, wuHunPos - 1))
     return skillName
 end
