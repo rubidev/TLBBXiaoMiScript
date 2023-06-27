@@ -104,27 +104,27 @@ function getMainAttr()
     return tem
 end
 
-function 修鞋匠_取身上装备持久(aaa)
+function 取身上装备持久(aaa)
     local tem = LUA_取返回值(string.format([[
 		return EnumAction(%d,"equip"):GetEquipDur()
 	]], aaa))
     return tonumber(tem)
 end
 
-function 修鞋匠_取身上装备ID(aaa)
+function 取身上装备ID(aaa)
     local tem = LUA_取返回值(string.format([[
 		return EnumAction(%d,"equip"):GetID()
 	]], aaa))
     return tonumber(tem)
 end
 
-function 修鞋匠_取身上装备名字(aaa)
+function 取身上装备名字(aaa)
     return LUA_取返回值(string.format([[
 		return EnumAction(%d,"equip"):GetName()
 	]], aaa))
 end
 
-function 修鞋匠_判断关闭窗口(strWindowName)
+function 判断关闭窗口(strWindowName)
     for i = 1, 3 do
         if 窗口是否出现(strWindowName) == 1 then
             LUA_Call(string.format([[
@@ -135,26 +135,26 @@ function 修鞋匠_判断关闭窗口(strWindowName)
     end
 end
 
-function 修鞋匠_取下装备获取名字(装备位置名称)
+function 取下装备获取名字(装备位置名称)
     for i = 1, #SelfEuipList do
         if SelfEuipList[i].name == 装备位置名称 then
             MentalTip("准备取下装备位置:" .. 装备位置名称)
-            local 装备持久 = 修鞋匠_取身上装备持久(SelfEuipList[i].equipIndex)
+            local 装备持久 = 取身上装备持久(SelfEuipList[i].equipIndex)
             if 装备持久 <= 0 then
                 MentalTip("装备持久不够,不取下")
                 return 0
             end
-            if 修鞋匠_取身上装备ID(SelfEuipList[i].equipIndex) <= 0 then
+            if 取身上装备ID(SelfEuipList[i].equipIndex) <= 0 then
                 return 0
             end
 
             for k = 1, 5 do
                 if 窗口是否出现("SelfEquip") == 1 then
-                    local 装备名称 = 修鞋匠_取身上装备名字(SelfEuipList[i].equipIndex)
+                    local 装备名称 = 取身上装备名字(SelfEuipList[i].equipIndex)
                     LUA_Call(string.format([[ setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_Equip_Click(%d,0)]], SelfEuipList[i].downIndex))
                     延时(2000)
-                    if 修鞋匠_取身上装备ID(SelfEuipList[i].equipIndex) == 0 then
-                        修鞋匠_判断关闭窗口("SelfEquip")
+                    if 取身上装备ID(SelfEuipList[i].equipIndex) == 0 then
+                        判断关闭窗口("SelfEquip")
                         return 装备名称
                     end
                 else
@@ -169,7 +169,7 @@ function 修鞋匠_取下装备获取名字(装备位置名称)
     延时(2000)
 end
 
-function 修鞋匠_取身上装备名字(aaa)
+function 取身上装备名字(aaa)
     local tem = LUA_取返回值(string.format([[
 		local index =%d
 		local theaction = EnumAction(index,"equip")
@@ -185,7 +185,7 @@ function 修鞋匠_取身上装备名字(aaa)
     return tostring(tem)
 end
 
-function 修鞋匠_取身上精通最小等级(equipIndex, shuxing)
+function 取身上精通最小等级(equipIndex, shuxing)
     local tem = LUA_取返回值(string.format([[
 		local index = 0
 		local equipIndex = %d
@@ -223,17 +223,17 @@ function 修鞋匠_取身上精通最小等级(equipIndex, shuxing)
     return tonumber(tem)
 end
 
-function 修鞋匠_取身上装备位置精通最小等级(装备位置名称, shuxing)
+function 取身上装备位置精通最小等级(装备位置名称, shuxing)
     local tem = 0
     for i = 1, #SelfEuipList do
         if SelfEuipList[i].name == 装备位置名称 then
-            tem = 修鞋匠_取身上精通最小等级(SelfEuipList[i].equipIndex, shuxing)
+            tem = 取身上精通最小等级(SelfEuipList[i].equipIndex, shuxing)
         end
     end
     return tonumber(tem)
 end
 
-function 修鞋匠_使用物品(物品列表, 是否绑定)
+function 使用物品(物品列表, 是否绑定)
     if 是否绑定 == 0 or 是否绑定 == nil then
         tbangding = 10
     elseif 是否绑定 == 1 then
@@ -278,11 +278,11 @@ function 修鞋匠_使用物品(物品列表, 是否绑定)
     end
 end
 
-function 修鞋匠_穿上装备(装备位置名称, 装备名称)
+function 穿上装备(装备位置名称, 装备名称)
     if 装备名称 == "" then
-        MentalTip("参数错误,修鞋匠_穿上装备")
-        MentalTip("参数错误,修鞋匠_穿上装备")
-        MentalTip("参数错误,修鞋匠_穿上装备")
+        MentalTip("参数错误,穿上装备")
+        MentalTip("参数错误,穿上装备")
+        MentalTip("参数错误,穿上装备")
         延时(2000)
         return
     end
@@ -291,11 +291,11 @@ function 修鞋匠_穿上装备(装备位置名称, 装备名称)
         if SelfEuipList[i].name == 装备位置名称 then
             for k = 1, 5 do
                 if 窗口是否出现("SelfEquip") == 1 then
-                    修鞋匠_使用物品(装备名称);
+                    使用物品(装备名称);
                     延时(2000)
-                    if 修鞋匠_取身上装备ID(SelfEuipList[i].equipIndex) > 0 then
+                    if 取身上装备ID(SelfEuipList[i].equipIndex) > 0 then
                         MentalTip("修鞋匠成功穿上" .. 装备名称 .. "|在位置:" .. 装备位置名称)
-                        修鞋匠_判断关闭窗口("SelfEquip")
+                        判断关闭窗口("SelfEquip")
                         break
                     end
                 else
@@ -307,7 +307,7 @@ function 修鞋匠_穿上装备(装备位置名称, 装备名称)
     end
 end
 
-function 修鞋匠_精通升级(装备位置名称, 属性, 等级)
+function 精通升级(装备位置名称, 属性, 等级)
 
     if tonumber(等级) >= 30 and tonumber(等级) < 40 then
         需要材料数量 = 14
@@ -359,7 +359,7 @@ function 修鞋匠_精通升级(装备位置名称, 属性, 等级)
         return
     end
     --屏幕提示("装备精通升级的属性为:" .. 属性)
-    local 精通最小等级 = 修鞋匠_取身上装备位置精通最小等级(装备位置名称, JT_SHUXING)
+    local 精通最小等级 = 取身上装备位置精通最小等级(装备位置名称, JT_SHUXING)
     屏幕提示(装备位置名称 .. "属性:" .. JT_SHUXING .. "最小精通:" .. 精通最小等级)
     if 精通最小等级 > 等级 or 精通最小等级 == 0 then
         屏幕提示("精通已满足目标等级: " .. tostring(等级))
@@ -367,7 +367,7 @@ function 修鞋匠_精通升级(装备位置名称, 属性, 等级)
     end
     跨图寻路("苏州", 364, 245)
 
-    local 装备名称 = 修鞋匠_取下装备获取名字(装备位置名称)
+    local 装备名称 = 取下装备获取名字(装备位置名称)
     if 装备名称 == 0 then
         return
     end
@@ -461,11 +461,11 @@ function 修鞋匠_精通升级(装备位置名称, 属性, 等级)
             break
         end
     end
-    修鞋匠_穿上装备(装备位置名称, 装备名称)
+    穿上装备(装备位置名称, 装备名称)
 end
 
 
-function 修鞋匠_精通智能升级(index)
+function 精通智能升级(index)
     MentalTip("精通智能升级到:  " .. index)
 
     if 获取背包物品数量("精金石") < 12 then
@@ -479,40 +479,40 @@ function 修鞋匠_精通智能升级(index)
     end
 
     if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("护符上", 属性攻击, index)
+        精通升级("护符上", 属性攻击, index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("护符下", 属性攻击, index)
+    if CheckSpecifiedJingTong("护符下", index) == -1 then
+        精通升级("护符下", 属性攻击, index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("戒指上", 属性攻击, index)
+    if CheckSpecifiedJingTong("戒指上", index) == -1 then
+        精通升级("戒指上", 属性攻击, index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("戒指下", 属性攻击, index)
+    if CheckSpecifiedJingTong("戒指下", index) == -1 then
+        精通升级("戒指下", 属性攻击, index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("护腕", 属性攻击, index)
+    if CheckSpecifiedJingTong("护腕", index) == -1 then
+        精通升级("护腕", 属性攻击, index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("项链", 属性攻击, index)
+    if CheckSpecifiedJingTong("项链", index) == -1 then
+        精通升级("项链", 属性攻击, index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("腰带", "体力", index)
+    if CheckSpecifiedJingTong("腰带", index) == -1 then
+        精通升级("腰带", "体力", index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("护肩", "体力", index)
+    if CheckSpecifiedJingTong("护肩", index) == -1 then
+        精通升级("护肩", "体力", index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("手套", "体力", index)
+    if CheckSpecifiedJingTong("手套", index) == -1 then
+        精通升级("手套", "体力", index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("鞋子", "体力", index)
+    if CheckSpecifiedJingTong("鞋子", index) == -1 then
+        精通升级("鞋子", "体力", index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("帽子", "体力", index)
+    if CheckSpecifiedJingTong("帽子", index) == -1 then
+        精通升级("帽子", "体力", index)
     end
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        修鞋匠_精通升级("衣服", "体力", index)
+    if CheckSpecifiedJingTong("衣服", index) == -1 then
+        精通升级("衣服", "体力", index)
     end
 
 end
@@ -525,9 +525,9 @@ end
 属性攻击 = getMainAttr()
 取出物品("金币", 99999999)
 取出物品("精金石")
-修鞋匠_精通智能升级(30)
-修鞋匠_精通智能升级(50)
-修鞋匠_精通智能升级(100)
+精通智能升级(30)
+精通智能升级(50)
+精通智能升级(100)
 
 
 
