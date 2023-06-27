@@ -1659,3 +1659,77 @@ LUA_Call(string.format([[
 -- 参数2：背包中神器的索引
 -- 参数3：第几个插槽
 ```
+
+
+### 68、(有待测试)好友列表
+```lua
+-- 1. 好友列表处理
+-- 婚姻  Special 特殊处理
+-- 结拜  Special 特殊处理
+-- 师门  Special 特殊处理
+-- 徒弟  Special 特殊处理
+-- ①
+-- ②
+-- ③
+-- ④
+-- 黑名单
+-- 仇人
+-- 仇敌
+-- 临时好友
+-- 畅游精灵     其它处理
+
+
+-- 2. 8个普通组
+LUA_Call([[
+    for i = 1 , 8 do   -- 8个普通组
+		local j = i
+		if i == 8 then
+			j = 13
+		end
+		
+		local FriendCount = 0 --好友总数
+        local FriendInfo = {} --分组好友人数和在线好友人数
+        FriendInfo[j] = ""
+		for iTmp = 1, 4 do
+            FriendCount = FriendCount + DataPool:GetFriendNumber( tonumber( iTmp ) );
+            local groupCount = DataPool:GetFriendNumberCommon( tonumber( iTmp ) );--每组人数
+            local onlienCount= DataPool:GetFriendOnlineNumberCommon( tonumber( iTmp ) );--每组在线人数
+        end
+        
+        
+        -- 当前channel的好友数量， j 范围：1~7, 13
+        local relealFriendNumber = DataPool:GetFriendNumber( tonumber( j ) )  
+]])
+
+
+-- 每个channel中索引为Index的用户信息
+LUA_Call([[
+    for i = 1 , 8 do   -- 8个普通组
+		local nChannel = i
+		if i == 8 then
+			nChannel = 13
+		end
+		
+		-- 当前channel的好友数量， j 范围：1~7, 13
+        local relealFriendNumber = DataPool:GetFriendNumber( tonumber( nChannel ) ) 
+        
+        local nIndex = 0;
+        while nIndex < relealFriendNumber do
+            local name = DataPool:GetFriend( nChannel, nIndex, "NAME" );  -- 名字
+            local remark =  Friend_GetSpecialRemark( nChannel, nIndex )     -- 备注
+            local emotion = DataPool:GetFriend( nChannel, nIndex, "MOOD" );     -- 心情
+            local friendship = DataPool:GetFriend( nChannel, nIndex, "FRIENDSHIP" );    -- 友好度？？？
+            local relationtype = DataPool:GetFriend( nChannel, nIndex, "RELATION_TYPE" );   -- 关系： 7:师傅 8：徒弟 3：结婚 2：结拜
+            local imOnlineTime = DataPool:GetFriend( nChannel, nIndex, "IM_ONLINE_TIME" );
+            local IMst = DataPool:GetFriend( nChannel, nIndex, "IM_STATUS" );
+            local Sex = DataPool:GetFriend( nChannel, nIndex, "SEX" );
+            local haveMsg = DataPool:GetFriend( nChannel, nIndex, "MSG" );
+            local guid =  DataPool:GetFriend( nChannel, nIndex, "ID" );  -- ID
+            local havePresent = DataPool:GetFriend(nChannel, nIndex, "FRIEND_PRESENT" );
+            local nLevel = DataPool:GetFriend(nChannel, nIndex, "LEVEL");
+            local zoneWorldID = DataPool:GetFriend(nChannel, nIndex, "ZONEWORLDID" )  -- 好友的服务器ID
+            local selfZoneWorldID = DataPool:GetSelfZoneWorldID()  -- 我的服务器ID
+        end
+]])
+
+```
