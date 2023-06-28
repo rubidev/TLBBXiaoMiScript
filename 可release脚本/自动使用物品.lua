@@ -10,6 +10,7 @@ function FirstUse()
         "±íÇé°ü£º",
         '¶ËÎç½ÚÀñ°ü',
         "×øÆï£ºº£²¨êÌ", "×øÆï£º¹íÂíÁúÖÛ",
+        "ËÎÁÉÆÆÖñÀñ¡¤º×Ãù", "ËÎÁÉï¡ÓğÀñ¡¤º×Ãù", "ËÎÁÉÆÆÖñÀñ¡¤Ó¥Ñï", "ËÎÁÉï¡ÓğÀñ¡¤Ó¥Ñï", "ËÎÁÉÆÆÖñÀñ¡¤»¢Ğ¥", "ËÎÁÉï¡ÓğÀñ¡¤»¢Ğ¥", "ËÎÁÉÆÆÖñÀñ¡¤ÁúÌÚ", "ËÎÁÉï¡ÓğÀñ¡¤ÁúÌÚ",
     }
 
     ×øÆï_ÏÂ×øÆï()
@@ -34,7 +35,10 @@ function FirstUse()
                         end
                         ÓÒ¼üÊ¹ÓÃÎïÆ·(pkgItem)
                         ÑÓÊ±(500)
-                        LUA_Call([[setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();]])
+                        if ´°¿ÚÊÇ·ñ³öÏÖ("MessageBox_Self") == 1 then
+                            LUA_Call([[setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();]])
+                            ÑÓÊ±(1000)
+                        end
                         ÑÓÊ±(100)
                     end
                 end
