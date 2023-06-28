@@ -8,7 +8,6 @@ function MentalTip(text, ...)
 end
 
 function CaiLiaoCompound(numPerTime, materialType, compoundLevel)
-    -- TODO 确定NPCID
     -- 参数1：合成几个
     -- 参数2：合成秘银、棉布、精铁(1、2、3)
     -- 参数3：合成几级材料：1,2,3,4
@@ -19,7 +18,7 @@ function CaiLiaoCompound(numPerTime, materialType, compoundLevel)
             local nSubIndex = %d
             Set_XSCRIPT_Function_Name( "CaiLiaoCompound_New" )
             Set_XSCRIPT_ScriptID(701602)
-            Set_XSCRIPT_Parameter(0,npcObjId)			--npcid  -- TODO 确定NPCID
+            Set_XSCRIPT_Parameter(0,135)			--npcid
             Set_XSCRIPT_Parameter(1,g_CurNum_PerTime)	--每次合成的数量
             Set_XSCRIPT_Parameter(2,nIndex)				--类型, 合成哪种材料，范围：1~3 (秘银， 棉布， 精铁)
             Set_XSCRIPT_Parameter(3,nSubIndex)			--子类型,合成几级材料，范围：1~4
@@ -51,24 +50,24 @@ function CompoundToThree(materialName, materialType)
     level1Count = 获取背包物品数量(level1Name)
     if level1Count > 5 then
         local canMergeNum = math.floor(level1Count / 5)
-        if GetMyMoney() > canMergeNum * 1000 then
+        if GetMyMoney() < canMergeNum * 1000 then
             MentalTip("金钱不足, 退出")
             return
         end
         CaiLiaoCompound(canMergeNum, materialType, 2)
-        延时(500)
+        延时(1000)
     end
 
     -- 所有2级合成3级
     level2Count = 获取背包物品数量(level2Name)
     if level2Count > 5 then
         local canMergeNum = math.floor(level2Count / 5)
-        if GetMyMoney() > canMergeNum * 1500 then
+        if GetMyMoney() < canMergeNum * 1500 then
             MentalTip("金钱不足, 退出")
             return
         end
         CaiLiaoCompound(canMergeNum, materialType, 3)
-        延时(500)
+        延时(1000)
     end
 
     -- 处理剩余2级材料
@@ -85,21 +84,21 @@ function CompoundToThree(materialName, materialType)
             return
         end
 
-        if GetMyMoney() > realLackLevel1To2Count * 500 then
+        if GetMyMoney() < realLackLevel1To2Count * 500 then
             MentalTip("金钱不足, 退出")
             return
         end
         CaiLiaoCompound(realLackLevel1To2Count, materialType, 1) -- 合成1级材料
-        延时(500)
+        延时(1000)
 
-        if GetMyMoney() > lackLevel2To3Count * 1000 then
+        if GetMyMoney() < lackLevel2To3Count * 1000 then
             MentalTip("金钱不足, 退出")
             return
         end
         CaiLiaoCompound(lackLevel2To3Count, materialType, 2) -- 合成2级材料
-        延时(500)
+        延时(1000)
 
-        if GetMyMoney() > 1500 then
+        if GetMyMoney() < 1500 then
             MentalTip("金钱不足, 退出")
             return
         end
@@ -112,21 +111,21 @@ function CompoundToThree(materialName, materialType)
     if canCompLevel3Count > 0 then
         local canCompLevel2Count = canCompLevel3Count * 5
         local canCompLevel1Count = canCompLevel2Count * 5
-        if GetMyMoney() > canCompLevel1Count * 500 then
+        if GetMyMoney() < canCompLevel1Count * 500 then
             MentalTip("金钱不足, 退出")
             return
         end
         CaiLiaoCompound(canCompLevel1Count, materialType, 1) -- 合成1级材料
-        延时(500)
+        延时(1000)
 
-        if GetMyMoney() > canCompLevel2Count * 1000 then
+        if GetMyMoney() < canCompLevel2Count * 1000 then
             MentalTip("金钱不足, 退出")
             return
         end
         CaiLiaoCompound(canCompLevel2Count, materialType, 2) -- 合成2级材料
-        延时(500)
+        延时(1000)
 
-        if GetMyMoney() > canCompLevel3Count * 1500 then
+        if GetMyMoney() < canCompLevel3Count * 1500 then
             MentalTip("金钱不足, 退出")
             return
         end
@@ -144,7 +143,7 @@ function main()
     存物品("2级棉布", 不存物品, 0, 1, 0)
     存物品("2级秘银", 不存物品, 0, 1, 0)
 
-    跨图寻路("洛阳", 1, 2)  -- TODO
+    跨图寻路("洛阳", 280, 321)
     延时(2000)
 
     local materialType2Name = {
