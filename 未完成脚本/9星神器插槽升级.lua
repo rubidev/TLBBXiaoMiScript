@@ -52,7 +52,10 @@ function SlotLevelUp(slotIndex)
                 MentalTip(string.format("第%d个槽位已达满级", slotIndex))
                 break
             end
-            LUA_Call(string.format([[local slotIndex = %d]], slotIndex))   -- TODO 升级点击
+            LUA_Call(string.format([[
+                setmetatable(_G, {__index = SuperWeapon9_DIYSkill_Env});
+                SuperWeapon9_DIYSkill_MainButtonLevelUp(%d);
+            ]], slotIndex))
             延时(200)
         end
     end
