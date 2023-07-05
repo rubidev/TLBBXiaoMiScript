@@ -750,7 +750,12 @@ end
 ```lua
 -- 搜索指定物品
 LUA_Call(string.format([[ 
-    Auction:PacketSend_Search(2, 1, 1, "%s", 1)
+    Auction:PacketSend_Search(2, 1, 1, "%s", 1) 
+        -- 参数1：上方的类型：2 是物品市场, 1 是珍兽市场, 3 是装备市场
+        -- 参数2：左边的子类型：从上到下一次为 1~8
+        -- 参数3：排序方式：
+        -- 参数4：物品名字
+        -- 参数5：第几页
 ]], strKey), "s",1) -- strKey表示物品名字
 
 -- 获取物品当前市场最低价
