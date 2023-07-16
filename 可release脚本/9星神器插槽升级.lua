@@ -40,6 +40,12 @@ function SlotLevelUp(slotIndex)
     }
     local slotLevel = GetSlotLevel(slotIndex)
     if slotLevel ~= -1 and slotLevel ~= 10 then
+		LUA_Call([[setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_CloseFunction();]])
+		延时(500)
+		LUA_Call([[setmetatable(_G, {__index = MainMenuBar_Env});MainMenuBar_SelfEquip_Clicked();]])
+		延时(500)
+		LUA_Call([[setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_OpenShenQi();]])
+		延时(1000)
         while true do
             local newSlotLevel = GetSlotLevel(slotIndex)
             local MHYCount = 获取背包物品数量(hunYuList[slotIndex])
@@ -58,17 +64,14 @@ function SlotLevelUp(slotIndex)
             ]], slotIndex))
             延时(200)
         end
+		LUA_Call([[setmetatable(_G, {__index = SuperWeapon9_DIYSkill_Env});SuperWeapon9_DIYSkill_CloseFunction();]])
     end
 end
 
 function main()
     MentalTip("升级9星神器的3个槽位")
-    if DataPool:IsSuperWeapon9() ~= 1 then
-        MentalTip("您的神器尚未9星")
-        return
-    end
 
-    取出物品("命魂玉|地魂玉|天魂玉|金币")
+    取出物品("命魂玉|地魂玉|天魂玉")
 
     -- 升级插槽
     for j = 1, 3 do
@@ -76,8 +79,17 @@ function main()
         SlotLevelUp(j)
     end
 
+    local nowSlot1Level = GetSlotLevel(1)
+    if nowSlot1Level ~= 10 then
+        return
+    end
     执行功能("合成地魂玉")
     SlotLevelUp(2)
+
+    local nowSlot2Level = GetSlotLevel(2)
+    if nowSlot2Level ~= 10 then
+        return
+    end
 
     执行功能("合成天魂玉")
     SlotLevelUp(3)
