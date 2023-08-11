@@ -56,6 +56,8 @@ function CompoundToThree(materialName, materialType)
         end
         CaiLiaoCompound(canMergeNum, materialType, 2)
         延时(1000)
+    else
+        MentalTip(string.format("%s 数量小于5个, 跳过", level1Name))
     end
 
     -- 所有2级合成3级
@@ -68,6 +70,8 @@ function CompoundToThree(materialName, materialType)
         end
         CaiLiaoCompound(canMergeNum, materialType, 3)
         延时(1000)
+    else
+        MentalTip(string.format("%s 数量小于5个, 跳过", level2Name))
     end
 
     -- 处理剩余2级材料
@@ -105,6 +109,8 @@ function CompoundToThree(materialName, materialType)
         CaiLiaoCompound(1, materialType, 3) -- 合成3级材料
     end
 
+    延时(2000)
+
     -- ---------------------- 每125个材料合成1个3级，不够的部分不合成 --------------------------------
     level0Count = 获取背包物品数量(level0Name)
     local canCompLevel3Count = math.floor(level0Count / 125)
@@ -135,7 +141,8 @@ end
 
 function main()
     MentalTip('只有够125个碎片才合成1次3级材料')
-    取出物品('棉布碎片|秘银碎片|1级棉布|1级秘银|2级棉布|2级秘银|金币')
+    取出物品('棉布碎片|秘银碎片|1级棉布|1级秘银|2级棉布|2级秘银')
+    取出物品('金币')
     存物品("棉布碎片", 不存物品, 0, 1, 0)  -- 存仓不绑定的
     存物品("秘银碎片", 不存物品, 0, 1, 0)
     存物品("1级棉布", 不存物品, 0, 1, 0)
