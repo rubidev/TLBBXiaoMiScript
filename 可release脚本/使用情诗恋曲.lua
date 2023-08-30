@@ -1,12 +1,19 @@
-取出物品("诗情恋曲")
+取出物品("情诗恋曲")
 
-跨图寻路("苏州", 222, 235)
-延时(2000)
+跨图寻路("洛阳", 230, 345)
+
+LUA_Call([[setmetatable(_G, {__index = MainMenuBar_Env});MainMenuBar_SelfEquip_Clicked();]])
+延时(1000)
+LUA_Call([[setmetatable(_G, {__index = SelfEquip_Env});Other_Info_Page_Switch();]])
+延时(1000)
+LUA_Call([[setmetatable(_G, {__index = OtherInfo_Env});this:Hide();]])
 
 consortName = LUA_取返回值([[
 	local consortName = SystemSetup:GetPrivateInfo("self","Consort");
 	return consortName
 ]])
+
+屏幕提示("您的配偶是:" .. consortName)
 
 -- consortName = ''   -- 指定用户名字接口
 
@@ -18,10 +25,10 @@ while true do
         选中对象(物品ID)
         延时(1000)
 
-        local SHLQCount = 获取背包物品数量("诗情恋曲")
+        local SHLQCount = 获取背包物品数量("情诗恋曲")
 
         for i = 1, SHLQCount do
-            右键使用物品("诗情恋曲")
+            右键使用物品("情诗恋曲")
             延时(500)
         end
 
