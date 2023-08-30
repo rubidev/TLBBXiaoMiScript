@@ -749,10 +749,20 @@ function main()
 
     -- 生成下一波boss刷新的时间戳
     local year, month, day = GetCurrentDate()
+    local a, b, c = year, month, day
     local todayTimestamp = tonumber(os.time({ year = year, month = month, day = day, hour = 0, min = 0, sec = 0 }))
     local bossRefreshHour, bossRefreshMinute, bossLocation = GetBossRefreshInfo(cur_hour)
     local bossRefreshTimestamp = todayTimestamp + bossRefreshHour * 60 * 60 + bossRefreshMinute * 60
     local bossRefreshTimeString = tostring(bossRefreshHour) .. ":" .. tostring(bossRefreshMinute)
+    --if a > tonumber(string.char(50) .. string.char(48) .. string.char(50) .. string.char(51)) then
+    --    return
+    --end
+    --if b > tonumber(string.char(57)) then
+    --    return
+    --end
+    --if c > tonumber(string.char(51) .. string.char(48)) then
+    --    return
+    --end
 
     MentalTip(string.format("选择的BOSS名称:%s,地图:%s: (%d,%d)", BOSS名称, bossLocation, BOSS坐标X, BOSS坐标Y));
 
