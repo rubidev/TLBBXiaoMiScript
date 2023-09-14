@@ -659,15 +659,6 @@ elseif 是否使用金币 == 是 then
 	取出物品("金币")
 end 
 
-function 取服务器时间()
-    local curDay = LUA_取返回值("return DataPool:GetServerDayTime();","n",1)
-    return tonumber(curDay)
-end
-
-if 取服务器时间() >= 20240301 then
-	信息框("测试时间已到请联系QQ3707181")
-    return
-end
 
 购买领悟强化无字谱()
 检测已有无字谱强化()
