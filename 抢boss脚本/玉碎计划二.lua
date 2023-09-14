@@ -1,10 +1,14 @@
 转团的队队长名字 = "′云．"
 组团等待时间 = 120   -- 单位秒
 
+同盟喊话内容 = ""  -- 同盟组团自动喊话
+boss点喊话内容 = ""  -- boss点骂人喊话
+
 BOSS名称 = "莽牯毒蛤"
 BOSS坐标X, BOSS坐标Y = 70, 140
 
-帮火黑名单 = "不灭神话"  -- 多个帮用 | 分开
+-- 不灭神话|德云社|華麗丄演館
+帮火黑名单 = "不灭神话"  -- 多个帮用 | 分开, 帮会名支持模糊匹配
 城里等待任务结束时间 = 10 * 60   -- 单位秒, 有黑名单帮火时, 号在城里等待的时间
 
 function MentalTip(text, ...)
@@ -34,41 +38,12 @@ end
 
 function judgeGuildWar(enemyGuildName)
     LUA_Call([[
-        City:AskEnemyList(0);
-		City:AskEnemyList(1);
-		City:GetGuildListWithCity();
+        setmetatable(_G, {__index = MiniMap_Env});MiniMap_XuanZhanList();
     ]])
-    延时(2000)
+    延时(5000)
+    LUA_Call([[setmetatable(_G, {__index = NewBangHui_RankingList_Env});NewBangHui_RankingList_Close();]])
 
     local is_fight = LUA_取返回值(string.format([[
-        local enemyGuildName = "%s"
-        local nNum = City:GetEnemyNum(0);
-        local ListIndex = nNum;
-        local ButtonIndex;
-        for i = 0, nNum-1 do
-            local nGulidid      = City:EnumCityEnemy(0,i,"guildid");
-            local szGuildName   = City:EnumCityEnemy(0,i,"name");
-            local szLeftTime    = City:EnumCityEnemy(0,i,"lefttime");
-            if string.find(enemyGuildName, szGuildName) then
-                return 1
-            end
-        return 0
-    ]], enemyGuildName))
-
-    if tonumber(is_fight) == 1 then
-        return true
-    else
-        return false
-    end
-end
-
-function judgeGuildWar2(enemyGuildName)
-    LUA_Call([[
-        City:GetGuildListWithCity();
-    ]])
-    延时(2000)
-
-    LUA_取返回值(string.format([[
         local enemyGuildName = "%s"
         local nRankListNum = City:GetBattleRankListNum();
         if nRankListNum == 0 then
@@ -78,7 +53,7 @@ function judgeGuildWar2(enemyGuildName)
         for i = 0, nRankListNum-1 do
             local RivalGuildNameOnly = City:EnumBattleRankList(i,"RivalGuildNameOnly")
             local xzType             = City:EnumBattleRankList(i,"XuanZhanType")
-            if string.find(enemyGuildName, szGuildName) then
+            if string.find(RivalGuildNameOnly, enemyGuildName) then
                 return 1
             end
         end
@@ -453,10 +428,15 @@ end
 
 -- 转团、申请进团
 if myName == 转团的队队长名字 then
-    LUA_Call([[setmetatable(_G, {__index = Union_Ensure_Env});Union_Ensure_OnEvent("OPNE_CREATE_RAID_CONFIRM");]])
-    延时(2000)
-    LUA_Call([[setmetatable(_G, {__index = Union_Ensure_Env});Union_Ensure_ConfirmClick();]])
-    延时(1000)
+    while true do
+        if judgeInRaid() == '1' then
+            break
+        end
+        MentalTip("团长所在队伍开始尝试队伍转成团")
+        LUA_Call([[setmetatable(_G, {__index = Union_Ensure_Env});Union_Ensure_OnEvent("OPNE_CREATE_RAID_CONFIRM");]])
+        延时(3000)
+        LUA_Call([[setmetatable(_G, {__index = Union_Ensure_Env});Union_Ensure_ConfirmClick();]])
+    end
 
     startTime = os.time()
     while true do
@@ -465,9 +445,22 @@ if myName == 转团的队队长名字 then
         end
         LUA_Call([[Player:SendAgreeRaidApplication(0);]])
         延时(800)
+        if 同盟喊话内容 ~= nil and 同盟喊话内容 then
+            LUA_Call(string.format([[
+                setmetatable(_G, {__index = ChatFrame_Env});Talk : SendChatMessage('guild_league', '%s');
+            ]], 同盟喊话内容))
+        end
     end
 else
-    延时(10000)
+    local tmp = 1
+    while true do
+        if tmp >= 15 then
+            break
+        end
+        MentalTip(string.format("等待【%d】秒开始申请进固定团长的团", 15 - tmp))
+        tmp = tmp + 1
+        延时(1000)
+    end
     while true do
         if judgeInRaid() == '0' then
             执行功能("申请固定团长")
@@ -480,6 +473,7 @@ end
 
 
 -- 回城加状态、满血满怒
+MentalTip("回城加状态, 并满血满怒！！！")
 BackToCity()
 延时(2000)
 AddBuff()
@@ -523,7 +517,13 @@ if not waitInCity then
             延时(2000)
         end
 
-        UseEnhancedSkill()  -- 无脑开风雷万钧、经脉逆行、斩情诀等
+        if boss点喊话内容 ~= nil and boss点喊话内容 ~= "" then
+            LUA_Call(string.format([[
+                setmetatable(_G, {__index = ChatFrame_Env});Talk : SendChatMessage('near', '%s');
+            ]], boss点喊话内容))
+        end
+
+        --UseEnhancedSkill()  -- 默认不生效, 无脑开风雷万钧、经脉逆行、斩情诀等
 
         if 怪物ID > 0 then
             if 目标血量 > 0 then
@@ -550,7 +550,7 @@ else
         if sleepCount >= 城里等待任务结束时间 then
             break
         end
-        MentalTip(string.format("存在黑名单帮会帮火, 等待【%d】秒退出团队结束任务！", (城里等待任务结束时间 - sleepCount)))
+        MentalTip(string.format("您的帮会存在黑名单帮会帮火, 等待【%d】秒退出团队结束任务！", (城里等待任务结束时间 - sleepCount)))
         sleepCount = sleepCount + 1
         延时(1000)
     end
