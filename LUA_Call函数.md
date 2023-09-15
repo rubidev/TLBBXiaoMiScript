@@ -1738,3 +1738,19 @@ LUA_Call([[
 ]])
 
 ```
+
+
+### 69、阵法升级
+```lua
+LUA_Call(string.format([[
+    local zfIndex = %d
+    Clear_XSCRIPT();
+        Set_XSCRIPT_Function_Name("QueryLevel");
+        Set_XSCRIPT_ScriptID(891175);
+        Set_XSCRIPT_Parameter(0,index);
+        Set_XSCRIPT_ParamCount(1);
+    Send_XSCRIPT();	
+
+]], zfIndex))  
+-- zfIndex 阵法索引
+```

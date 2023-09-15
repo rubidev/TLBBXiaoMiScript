@@ -660,3 +660,16 @@ for i = 1, nSkillCount do
 116、九星神器
     - DataPool:IsSuperWeapon9() -- 是否为9星神器，返回1为9星
     - slotLevel = DataPool:GetSuperWeaponDIYSkillSlotLevel(n)  -- 获取插槽n技能等级, n可选1,2,3
+
+117、 结拜
+    - local m_DataCount = DataPool:GetBrotherCount()  -- 获取结拜数量，1~6
+    - local hguid = DataPool:GetBrotherInfoByInd(g_selectIndex, "CharGuidH")   -- g_selectIndex选中结拜，0~5
+	- local lguid = DataPool:GetBrotherInfoByInd(g_selectIndex, "CharGuidL")
+	- local temp1,temp2,temp3,temp4 = Player:GetData("ZHENFAINFO")    -- 结拜阵法信息
+	- advance = math.floor(info/1000)  -- 阵法阶数, info 是temp1,temp2,temp3,temp4,
+	- level = math.mod(info,1000)   -- 阵法级数, info 是temp1,temp2,temp3,temp4    -- advance.."阶"..(level-advance*10).."级"
+	- local nExp, nMoney, nqingyi = Player:GetZhenFaDemand(level)   -- 升级所需信息
+	- local bsNum = Player:GetBrotherShip()   -- 阵法当前拥有情义值总和
+	- local wbsNum = Player:GetWeekBrotherShip()   -- 阵法情义值周值
+	- local totaljifen = Player:GetZhenFaTotalpoint()   -- 阵法修为
+
