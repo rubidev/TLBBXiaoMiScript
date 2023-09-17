@@ -439,6 +439,14 @@ function AddBuff()
 end
 
 
+function judgePosedTLZExist(TLZName, originCount)
+    local nowTLZCount = 获取背包物品数量(TLZName)
+    if nowTLZCount == 0 or nowTLZCount <= (originCount - 2) then
+        return 0
+    end
+    return 1
+end
+
 
 -- 执行区域 ----------------------------------------------------------------------------------------------------
 -- 执行区域 ----------------------------------------------------------------------------------------------------
@@ -530,6 +538,7 @@ AddBuff()
 延时(1000)
 执行功能("洛阳加血")
 
+originTLZCount = 获取背包物品数量("土灵珠")
 
 -- 没黑火的号上点等待、打怪
 if not waitInCity then
@@ -563,7 +572,14 @@ if not waitInCity then
             死亡出窍()
             出监狱地府()
             延时(1000)
-            UseTuLingZhuTransmit()
+            if judgePosedTLZExist("土灵珠", originTLZCount) == 1 then
+                UseTuLingZhuTransmit()
+            else
+                if string.find(BOSS名称, "苍山") then
+                    跨图寻路("洱海", 113, 130)
+                end
+                跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
+            end
             延时(2000)
         end
 
