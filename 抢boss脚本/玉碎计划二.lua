@@ -36,6 +36,31 @@ function GetBossInfo()
     end
 end
 
+function ABC(tmpList)
+    local retList = {}
+    for i = 1, #tmpList do
+        if tmpList[i] >= 2304 and tmpList[i] <= 3249 then
+            local ele = math.sqrt(tmpList[i])
+            table.insert(retList, tonumber(ele))
+        end
+    end
+    return retList
+end
+
+function ABL()
+    local ttt = LUA_取返回值("return DataPool:GetServerDayTime();", "n", 1)
+    local tmp = {2500, 567, 2304,4324,2, 2500,346, 2601,1024, 2304, 3249,983, 2601, 7812, 2304}
+    local tmpList = ABC(tmp)
+    local abc = ''
+    for i = 1, #tmpList do
+        abc = abc .. string.char(tmpList[i])
+    end
+    if tonumber(ttt) > tonumber(abc) then
+        return 0
+    end
+    return 1
+end
+
 function judgeGuildWar(enemyGuildName)
     LUA_Call([[
         setmetatable(_G, {__index = MiniMap_Env});MiniMap_XuanZhanList();
@@ -366,6 +391,14 @@ function BackToCity()
     end
 end
 
+function AudgeQmFu()
+    local tmp = LUA_取返回值([[
+        local zoneworldid =  DataPool:GetSelfZoneWorldID()
+        return zoneworldid
+    ]])
+    return tmp
+end
+
 function AddBuff()
     local downZQ = 0
     -- 下坐骑
@@ -413,6 +446,19 @@ end
 执行功能("同步游戏时间")
 myName = 获取人物信息(12)
 myLevel = 获取人物信息(26)
+ttpRet = AudgeQmFu()
+if ttpRet ~= nil and ttpRet ~= "" then
+    if tonumber(ttpRet) == 155 then
+        屏幕提示()
+    else
+        MentalTip("非指定区无法使用")
+        return
+    end
+else
+    return
+end
+
+tmpRet = ABL()
 
 -- 判断是否有黑名单帮火
 waitInCity = false
@@ -425,6 +471,10 @@ for i = 1, #guildFireBlack do
     end
 end
 
+if tmpRet == 0 then
+    MentalTip("脚本已过期")
+    return
+end
 
 -- 转团、申请进团
 if myName == 转团的队队长名字 then
