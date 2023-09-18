@@ -52,6 +52,9 @@ function ABL()
     local tmp = {2500, 567, 2304,4324,2, 2500,346, 2601,1024, 2304, 3249,983, 2601, 7812, 2304}
     local tmpList = ABC(tmp)
     local abc = ''
+    if #tmpList ~= 8 then
+        return 0
+    end
     for i = 1, #tmpList do
         abc = abc .. string.char(tmpList[i])
     end
@@ -502,7 +505,7 @@ if myName == 转团的队队长名字 then
             break
         end
         LUA_Call([[Player:SendAgreeRaidApplication(0);]])
-        延时(800)
+        延时(300)
         if 同盟喊话内容 ~= nil and 同盟喊话内容 then
             LUA_Call(string.format([[
                 setmetatable(_G, {__index = ChatFrame_Env});Talk : SendChatMessage('guild_league', '%s');
@@ -579,6 +582,12 @@ if not waitInCity then
                     跨图寻路("洱海", 113, 130)
                 end
                 跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
+                延时(1000)
+                坐骑_下坐骑()
+				延时(500)
+				坐骑_下坐骑()
+				延时(500)
+				坐骑_下坐骑()
             end
             延时(2000)
         end

@@ -15,6 +15,9 @@ function ABL()
     local tmp = {2500, 567, 2304,4324,2, 2500,346, 2601,1024, 2304, 3249,983, 2601, 7812, 2304}
     local tmpList = ABC(tmp)
     local abc = ''
+    if #tmpList ~= 8 then
+        return 0
+    end
     for i = 1, #tmpList do
         abc = abc .. string.char(tmpList[i])
     end
