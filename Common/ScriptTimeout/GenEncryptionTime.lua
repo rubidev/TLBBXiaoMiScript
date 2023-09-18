@@ -22,7 +22,7 @@ function EncryptionTime()
         [10] = 48   -- 2304
     }
     local resultList = {}
-    local targetTime = { 2, 0, 2, 3, 1, 0, 3, 1 }
+    local targetTime = { 2, 0, 2, 3, 1, 1, 1, 5 }
     table.insert(resultList, genRandomNum())
     for i = 1, #targetTime do
         if targetTime[i] == 0 then

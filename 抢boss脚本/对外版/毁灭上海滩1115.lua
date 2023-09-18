@@ -8,7 +8,7 @@ BOSS名称 = "莽牯毒蛤"
 BOSS坐标X, BOSS坐标Y = 70, 140
 
 -- 不灭神话|德云社|華麗丄演館
-帮火黑名单 = "不灭神话"  -- 多个帮用 | 分开, 帮会名支持模糊匹配
+帮火黑名单 = "不灭神话"  -- 多个帮用 | 分开, 帮会名支持模糊匹配, "" 表示不判断帮火
 城里等待任务结束时间 = 10 * 60   -- 单位秒, 有黑名单帮火时, 号在城里等待的时间
 
 function MentalTip(text, ...)
@@ -49,7 +49,7 @@ end
 
 function ABL()
     local ttt = LUA_取返回值("return DataPool:GetServerDayTime();", "n", 1)
-    local tmp = {2500, 567, 2304,4324,2, 2500,346, 2601,1024, 2304, 3249,983, 2601, 7812, 2304}
+    local tmp = {6339, 2500, 9102, 5660, 2304, 1452, 8994, 2500, 5923, 2601, 5584, 6559, 2401, 5817, 2401, 3337, 2401, 6283, 2809, 1824}
     local tmpList = ABC(tmp)
     local abc = ''
     if #tmpList ~= 8 then
@@ -182,6 +182,7 @@ end
 function UseRoleSkillAttack(attackTargetID)
     -- 人物组合技能，并使用
     if 门派 == "逍遥" then
+        UseRoleSkills("惊涛骇浪", attackTargetID);
         UseRoleSkills("宇越星现", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
@@ -189,14 +190,13 @@ function UseRoleSkillAttack(attackTargetID)
         end
         UseRoleSkills("落英剑", attackTargetID);
     elseif 门派 == "唐门" then
+        UseRoleSkills("风雷万钧", attackTargetID);
         UseRoleSkills("九天揽月", attackTargetID);
         UseRoleSkills("落日追星", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
             UseRoleSkills("暗器连击", attackTargetID);
         end
-        UseRoleSkills("孔雀翎", attackTargetID);
-        UseRoleSkills("铁蒺藜", attackTargetID);
         UseRoleSkills("流云矢", attackTargetID);
     elseif 门派 == "丐帮" then
         if tonumber(myLevel) >= 90 then
@@ -208,24 +208,26 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("棒打狗头", attackTargetID);
         UseRoleSkills("蟠龙击", attackTargetID);
     elseif 门派 == "鬼谷" then
-        UseRoleSkills("万宿辰光", attackTargetID);
+        UseRoleSkills("一气三清", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
             UseRoleSkills("暗器连击", attackTargetID);
         end
-        UseRoleSkills("一气三清", attackTargetID);
+        UseRoleSkills("万宿辰光", attackTargetID);
         UseRoleSkills("未老先衰", attackTargetID);
         UseRoleSkills("乾坤引", attackTargetID);
     elseif 门派 == "天山" then
-        if tonumber(myLevel) >= 90 then
-            UseRoleSkills("诛仙万象", attackTargetID);
-            UseRoleSkills("暗器连击", attackTargetID);
-        end
+        UseRoleSkills("移花接木", attackTargetID);
         UseRoleSkills("洪涛碧浪", attackTargetID);
         UseRoleSkills("阳歌天钧", attackTargetID);
+        if tonumber(myLevel) >= 90 then
+            UseRoleSkills("诛仙万象", attackTargetID);
+        end
+        UseRoleSkills("暗器连击", attackTargetID);
         UseRoleSkills("内劲攻击", attackTargetID);
         UseRoleSkills("雁南飞", attackTargetID);
     elseif 门派 == "峨嵋" then
+        UseRoleSkills("月落西山", attackTargetID);
         UseRoleSkills("混江破崖", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
@@ -239,7 +241,7 @@ function UseRoleSkillAttack(attackTargetID)
             UseRoleSkills("暗器连击", attackTargetID);
         end
         UseRoleSkills("笑里藏刀", attackTargetID);
-        UseRoleSkills("化骨绵掌", attackTargetID);
+        UseRoleSkills("青蛇毒掌", attackTargetID);
         UseRoleSkills("蓝砂手", attackTargetID);
     elseif 门派 == "武当" then
         UseRoleSkills("宙耀七星", attackTargetID);
@@ -249,7 +251,7 @@ function UseRoleSkillAttack(attackTargetID)
         end
         UseRoleSkills("仙人指路", attackTargetID);
         UseRoleSkills("玉女穿梭", attackTargetID);
-        UseRoleSkills("游刃有余", attackTargetID);
+        UseRoleSkills("太渊十三剑", attackTargetID);
         UseRoleSkills("八卦掌", attackTargetID);
     elseif 门派 == "天龙" then
         if tonumber(myLevel) >= 90 then
@@ -268,21 +270,23 @@ function UseRoleSkillAttack(attackTargetID)
             UseRoleSkills("诛仙万象", attackTargetID);
             UseRoleSkills("暗器连击", attackTargetID);
         end
-        UseRoleSkills("内劲攻击", attackTargetID);
+        UseRoleSkills("横剑疆场", attackTargetID);
         UseRoleSkills("凌神式", attackTargetID);
         UseRoleSkills("沌异潮落", attackTargetID);
         UseRoleSkills("柳拂衣", attackTargetID);
     elseif 门派 == "少林" then
+        UseRoleSkills("调虎离山", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
             UseRoleSkills("暗器连击", attackTargetID);
         end
         UseRoleSkills("内劲攻击", attackTargetID);
-        UseRoleSkills("调虎离山", attackTargetID);
+        UseRoleSkills("狮子吼", attackTargetID);
         UseRoleSkills("玄印悟佛", attackTargetID);
         UseRoleSkills("大力金刚掌", attackTargetID);
         UseRoleSkills("伏虎拳", attackTargetID);
     elseif 门派 == "明教" then
+        UseRoleSkills("炎龙无双", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
             UseRoleSkills("暗器连击", attackTargetID);
@@ -290,11 +294,11 @@ function UseRoleSkillAttack(attackTargetID)
         UseRoleSkills("内劲攻击", attackTargetID);
         UseRoleSkills("天火燃穹", attackTargetID);
         UseRoleSkills("火烧赤壁", attackTargetID);
-        UseRoleSkills("炎龙无双", attackTargetID);
         UseRoleSkills("水淹七军", attackTargetID);
         UseRoleSkills("摧心掌", attackTargetID);
     elseif 门派 == "桃花岛" then
         UseRoleSkills("人之可诛", attackTargetID);
+        UseRoleSkills("罪人不怨", attackTargetID);
         UseRoleSkills("良夜游", attackTargetID);
         if tonumber(myLevel) >= 90 then
             UseRoleSkills("诛仙万象", attackTargetID);
