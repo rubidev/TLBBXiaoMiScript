@@ -1,7 +1,3 @@
-转团的队队长名字 = "′云．"
-组团等待时间 = 120   -- 单位秒
-
-同盟喊话内容 = ""  -- 同盟组团自动喊话
 boss点喊话内容 = ""  -- boss点骂人喊话
 
 BOSS名称 = "莽牯毒蛤"
@@ -49,7 +45,7 @@ end
 
 function ABL()
     local ttt = LUA_取返回值("return DataPool:GetServerDayTime();", "n", 1)
-    local tmp = {2500, 567, 2304,4324,2, 2500,346, 2601,1024, 2304, 3249,983, 2601, 7812, 2304}
+    local tmp = {6339, 2500, 9102, 5660, 2304, 1452, 8994, 2500, 5923, 2601, 5584, 6559, 2401, 5817, 2401, 3337, 2401, 6283, 2809, 1824}
     local tmpList = ABC(tmp)
     local abc = ''
     if #tmpList ~= 8 then
@@ -445,7 +441,6 @@ function AddBuff()
     end
 end
 
-
 function judgePosedTLZExist(TLZName, originCount)
     local nowTLZCount = 获取背包物品数量(TLZName)
     if nowTLZCount == 0 or nowTLZCount <= (originCount - 2) then
@@ -463,7 +458,7 @@ myName = 获取人物信息(12)
 myLevel = 获取人物信息(26)
 ttpRet = AudgeQmFu()
 if ttpRet ~= nil and ttpRet ~= "" then
-    if tonumber(ttpRet) == 155 then
+    if tonumber(ttpRet) == 2020 then
         屏幕提示()
     else
         MentalTip("非指定区无法使用")
@@ -490,52 +485,6 @@ if tmpRet == 0 then
     MentalTip("脚本已过期")
     return
 end
-
--- 转团、申请进团
-if myName == 转团的队队长名字 then
-    while true do
-        if judgeInRaid() == '1' then
-            break
-        end
-        MentalTip("团长所在队伍开始尝试队伍转成团")
-        LUA_Call([[setmetatable(_G, {__index = Union_Ensure_Env});Union_Ensure_OnEvent("OPNE_CREATE_RAID_CONFIRM");]])
-        延时(3000)
-        LUA_Call([[setmetatable(_G, {__index = Union_Ensure_Env});Union_Ensure_ConfirmClick();]])
-    end
-
-    startTime = os.time()
-    while true do
-        if os.time() - startTime > 组团等待时间 then
-            break
-        end
-        LUA_Call([[Player:SendAgreeRaidApplication(0);]])
-        延时(300)
-        if 同盟喊话内容 ~= nil and 同盟喊话内容 then
-            LUA_Call(string.format([[
-                setmetatable(_G, {__index = ChatFrame_Env});Talk : SendChatMessage('guild_league', '%s');
-            ]], 同盟喊话内容))
-        end
-    end
-else
-    local tmp = 1
-    while true do
-        if tmp >= 15 then
-            break
-        end
-        MentalTip(string.format("等待【%d】秒开始申请进固定团长的团", 15 - tmp))
-        tmp = tmp + 1
-        延时(1000)
-    end
-    while true do
-        if judgeInRaid() == '0' then
-            执行功能("申请固定团长")
-        else
-            break
-        end
-        延时(1000)
-    end
-end
-
 
 -- 回城加状态、满血满怒
 MentalTip("回城加状态, 并满血满怒！！！")
@@ -588,10 +537,10 @@ if not waitInCity then
                 跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
                 延时(1000)
                 坐骑_下坐骑()
-				延时(500)
-				坐骑_下坐骑()
-				延时(500)
-				坐骑_下坐骑()
+                延时(500)
+                坐骑_下坐骑()
+                延时(500)
+                坐骑_下坐骑()
             end
             延时(2000)
         end
@@ -610,17 +559,17 @@ if not waitInCity then
                 延时(110)
                 UseRoleSkillAttack(怪物ID);
             else
-                MentalTip("BOSS怪物死亡, 准备退团!")
-                MentalTip("BOSS怪物死亡, 准备退团!")
-                MentalTip("BOSS怪物死亡, 准备退团!")
+                MentalTip("BOSS怪物死亡")
                 延时(2000)
+                自动捡包();
+                延时(500)
+                自动捡包();
+                延时(500)
+                自动捡包();
+                延时(500)
+                自动捡包();
+                延时(500)
                 break
-            end
-        else
-            local now_x = 获取人物信息(7)
-            local now_y = 获取人物信息(8)
-            if 计算两点距离(now_x,now_y,BOSS坐标X,BOSS坐标Y) > 2 then
-                跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
             end
         end
 
@@ -641,4 +590,3 @@ else
     end
 end
 
-执行功能("退出团队")

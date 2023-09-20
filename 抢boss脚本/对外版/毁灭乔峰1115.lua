@@ -49,7 +49,7 @@ end
 
 function ABL()
     local ttt = LUA_取返回值("return DataPool:GetServerDayTime();", "n", 1)
-    local tmp = {2500, 567, 2304,4324,2, 2500,346, 2601,1024, 2304, 3249,983, 2601, 7812, 2304}
+    local tmp = {6339, 2500, 9102, 5660, 2304, 1452, 8994, 2500, 5923, 2601, 5584, 6559, 2401, 5817, 2401, 3337, 2401, 6283, 2809, 1824}
     local tmpList = ABC(tmp)
     local abc = ''
     if #tmpList ~= 8 then
@@ -463,7 +463,7 @@ myName = 获取人物信息(12)
 myLevel = 获取人物信息(26)
 ttpRet = AudgeQmFu()
 if ttpRet ~= nil and ttpRet ~= "" then
-    if tonumber(ttpRet) == 155 then
+    if tonumber(ttpRet) == 2020 then
         屏幕提示()
     else
         MentalTip("非指定区无法使用")
@@ -615,12 +615,6 @@ if not waitInCity then
                 MentalTip("BOSS怪物死亡, 准备退团!")
                 延时(2000)
                 break
-            end
-        else
-            local now_x = 获取人物信息(7)
-            local now_y = 获取人物信息(8)
-            if 计算两点距离(now_x,now_y,BOSS坐标X,BOSS坐标Y) > 2 then
-                跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
             end
         end
 
