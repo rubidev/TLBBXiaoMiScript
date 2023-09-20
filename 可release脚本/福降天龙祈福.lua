@@ -21,6 +21,26 @@ if tonumber(FJLCount) > 0 then
 	NPC二级对话("福降天龙")
 	延时(2000)
 	LUA_Call([[setmetatable(_G, {__index = FuJiangTianLongHD_Env});FuJiangTianLongHD_DoBless();]])
+	--LUA_Call([[
+	--local bConfirm = tonumber( NpcShop:GetFuJiangTLBuyDirectly() );
+	--local isHasFJL = PlayerPackage:CountAvailableItemByIDTable(g_FJL_ItemID) + Bank:GetUnlockTemBankItemCount(g_FJL_ItemID);
+	--
+	--if isHasFJL >= 1 then
+	--	Clear_XSCRIPT();
+	--		Set_XSCRIPT_Function_Name( "bConfirm_FJL" );	-- 函数名
+	--		Set_XSCRIPT_ScriptID( 890509 );			-- 脚本号
+	--		Set_XSCRIPT_ParamCount( 0 );			-- 参数个数
+	--	Send_XSCRIPT();  --2019福降令
+	--elseif ( bConfirm >= 1 ) then
+	--	-- 执行脚本
+	--	Clear_XSCRIPT();
+	--		Set_XSCRIPT_Function_Name( "DoBless" );	-- 函数名
+	--		Set_XSCRIPT_ScriptID( 890509 );			-- 脚本号
+	--		Set_XSCRIPT_Parameter( 0, 1 );			-- 0:非活动界面 1:活动界面
+	--		Set_XSCRIPT_ParamCount( 1 );			-- 参数个数
+	--	Send_XSCRIPT();
+	--
+	--]])
 	延时(1000)
 	LUA_Call([[setmetatable(_G, {__index = MessageBox_Self_Env});MessageBox_Self_OK_Clicked();]])
 	

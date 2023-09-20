@@ -1754,3 +1754,21 @@ LUA_Call(string.format([[
 ]], zfIndex))  
 -- zfIndex 阵法索引
 ```
+
+
+### 70、(有待测试)目标Target操作
+```lua
+LUA_Call([[
+    local szName = Guild:GetMembersInfo(tonumber(currentGuildListIndex), "Name");
+
+	if(nil ~= szName) then
+		Target:SelectThePlayer(szName);
+	end
+]])
+
+
+LUA_Call([[
+    Target:SelectThePlayer(szSingleName,tZoneWorldId);
+]])
+
+```
