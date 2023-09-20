@@ -152,10 +152,14 @@ function UseTuLingZhuTransmit()
 
         右键使用物品("土灵珠", 1);   -- 默认使用第一个
         延时(1000)
-        if 窗口是否出现("Item_TuDunZhu") == 1 then
-            LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_Cancel_Clicked(1);");
-            延时(2000)
+        while true do
+            if 窗口是否出现("Item_TuDunZhu") == 1 then
+                LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_Cancel_Clicked(1);");
+                break
+            end
+            延时(500)
         end
+        延时(2000)
     end
 end
 
@@ -468,8 +472,6 @@ else
     return
 end
 
-tmpRet = ABL()
-
 -- 判断是否有黑名单帮火
 waitInCity = false
 local guildFireBlack = StringSplit(帮火黑名单, "|")
@@ -480,7 +482,6 @@ for i = 1, #guildFireBlack do
         break
     end
 end
-
 
 -- 回城加状态、满血满怒
 MentalTip("回城加状态, 并满血满怒！！！")
@@ -566,6 +567,12 @@ if not waitInCity then
                 自动捡包();
                 延时(500)
                 break
+            end
+        else
+            local now_x = 获取人物信息(7)
+            local now_y = 获取人物信息(8)
+            if tonumber(计算两点距离(now_x,now_y,BOSS坐标X,BOSS坐标Y)) > 5 then
+                跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
             end
         end
 

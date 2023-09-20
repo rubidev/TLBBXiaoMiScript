@@ -45,7 +45,7 @@ end
 
 function ABL()
     local ttt = LUA_取返回值("return DataPool:GetServerDayTime();", "n", 1)
-    local tmp = {6339, 2500, 9102, 5660, 2304, 1452, 8994, 2500, 5923, 2601, 5584, 6559, 2401, 5817, 2401, 3337, 2401, 6283, 2809, 1824}
+    local tmp = {4755, 2500, 5951, 9586, 2304, 6295, 2500, 4039, 2601, 7090, 7512, 2401, 5838, 3940, 2401, 3980, 9854, 2401, 1697, 5059, 2809, 1687}
     local tmpList = ABC(tmp)
     local abc = ''
     if #tmpList ~= 8 then
@@ -152,10 +152,14 @@ function UseTuLingZhuTransmit()
 
         右键使用物品("土灵珠", 1);   -- 默认使用第一个
         延时(1000)
-        if 窗口是否出现("Item_TuDunZhu") == 1 then
-            LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_Cancel_Clicked(1);");
-            延时(2000)
+        while true do
+            if 窗口是否出现("Item_TuDunZhu") == 1 then
+                LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_Cancel_Clicked(1);");
+                break
+            end
+            延时(500)
         end
+        延时(2000)
     end
 end
 
@@ -570,6 +574,12 @@ if not waitInCity then
                 自动捡包();
                 延时(500)
                 break
+            end
+        else
+            local now_x = 获取人物信息(7)
+            local now_y = 获取人物信息(8)
+            if tonumber(计算两点距离(now_x,now_y,BOSS坐标X,BOSS坐标Y)) > 5 then
+                跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
             end
         end
 
