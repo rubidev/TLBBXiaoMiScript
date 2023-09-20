@@ -152,10 +152,14 @@ function UseTuLingZhuTransmit()
 
         右键使用物品("土灵珠", 1);   -- 默认使用第一个
         延时(1000)
-        if 窗口是否出现("Item_TuDunZhu") == 1 then
-            LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_Cancel_Clicked(1);");
-            延时(2000)
+        while true do
+            if 窗口是否出现("Item_TuDunZhu") == 1 then
+                LUA_Call("setmetatable(_G, {__index = Item_TuDunZhu_Env});Item_TuDunZhu_Cancel_Clicked(1);");
+                break
+            end
+            延时(500)
         end
+        延时(2000)
     end
 end
 
