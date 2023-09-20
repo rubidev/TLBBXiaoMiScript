@@ -619,7 +619,7 @@ if not waitInCity then
         else
             local now_x = 获取人物信息(7)
             local now_y = 获取人物信息(8)
-            if 计算两点距离(now_x,now_y,BOSS坐标X,BOSS坐标Y) > 2 then
+            if tonumber(计算两点距离(now_x,now_y,BOSS坐标X,BOSS坐标Y)) > 2 then
                 跨图寻路(BossLocation, BOSS坐标X, BOSS坐标Y)
             end
         end
