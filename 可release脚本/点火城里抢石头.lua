@@ -69,6 +69,7 @@ if waitInCity then
     执行功能("回城待命")
     执行功能("同步游戏时间")
     while true do
+        LUA_Call([[setmetatable(_G, {__index = ChatFrame_Env});Chat_ChangeTabIndex(2);]])
         local cur_h, cur_m, cur_s, _ = GetCurrentTime()
         if cur_h == 23 and cur_m == 55 and cur_s == 59 then
             执行功能("存仓补给")
