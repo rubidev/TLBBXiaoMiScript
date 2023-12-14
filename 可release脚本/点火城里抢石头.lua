@@ -1,5 +1,13 @@
 帮火黑名单 = "不灭神话|‖众神之巅‖|天神山庄|德云社"  -- 多个帮用 | 分开, 帮会名支持模糊匹配, "" 表示不判断帮火
 
+function MentalTip(text, ...)
+    local strCode = string.format(text, ...)
+    LUA_Call(string.format([[
+		setmetatable(_G, {__index = DebugListBox_Env})
+		str= "#e0000ff".."【雨夜出品,必是精品】".."#eFF0000".."%s"
+		DebugListBox_ListBox:AddInfo(str)
+	]], strCode))
+end
 
 function StringSplit(str, reps)
     -- 字符串切割
