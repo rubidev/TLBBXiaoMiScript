@@ -58,16 +58,9 @@ function DownEquipGetEquipName(equipLocationName)
             for k = 1, 10 do
                 local equipName = GetInfantEquipName(znEuipList[i].equipIndex)
                 MentalTip("准备取下装备位置:" .. equipName)
-                if 窗口是否出现("Infant") ~= 1 then
-                    LUA_Call("MainMenuBar_SelfEquip_Clicked();");
-                    延时(2000)
-                    LUA_Call("setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_Infant_Switch();");
-                    延时(2000)
-                    LUA_Call("setmetatable(_G, {__index = Infant_Env});Infant_SetCheckBox(1);");
-                    延时(2000)
-                end
+
                 LUA_Call(string.format([[setmetatable(_G, {__index = Infant_Env}); Infant_Card_Clicked(%d,0);]], znEuipList[i].downIndex))
-                延时(5000)
+                延时(1000)
                 if GetInfantEquipID(znEuipList[i].equipIndex) == 0 then
                     判断关闭窗口("Infant")
                     判断关闭窗口("SelfEquip")
@@ -91,16 +84,9 @@ function WearInfantEquip(equipLocationName, equipName)
     for i = 1, #znEuipList do
         if znEuipList[i].name == equipLocationName then
             for k = 1, 5 do
-                if 窗口是否出现("Infant") ~= 1 then
-                    LUA_Call("MainMenuBar_SelfEquip_Clicked();");
-                    延时(2000)
-                    LUA_Call("setmetatable(_G, {__index = SelfEquip_Env});SelfEquip_Infant_Switch();");
-                    延时(2000)
-                    LUA_Call("setmetatable(_G, {__index = Infant_Env});Infant_SetCheckBox(1);");
-                    延时(2000)
-                end
+
                 右键使用物品(equipName);
-                延时(2000)
+                延时(1000)
 
                 if GetInfantEquipID(znEuipList[i].equipIndex) > 0 then
                     判断关闭窗口("Infant")
@@ -127,7 +113,7 @@ function InfantEquipLevelUp(InfantLocationName, level)
     跨图寻路("洛阳", 151, 173)
 
     local equipName = DownEquipGetEquipName(InfantLocationName)
-    延时(3000)
+    延时(1000)
 
     if equipName == 0 then
         return -1
@@ -178,13 +164,13 @@ function InfantEquipLevelUp(InfantLocationName, level)
                 Set_XSCRIPT_ParamCount(2);
             Send_XSCRIPT()
 	    ]], LPindex, level))
-        延时(2000)
+        延时(500)
 
         local curEquipLevel = GetInfantEquipLevel(LPindex)
         if curEquipLevel >= level then
             break
         end
-        延时(3000)
+
     end
 
 
@@ -197,6 +183,7 @@ function AutoInfantEquipLevelUp()
     end
 
     for level = 1, 9 do
+		MentalTip(string.format("开始检测升级到%d星", level))
         InfantEquipLevelUp("属性", level)
         InfantEquipLevelUp("体力", level)
         InfantEquipLevelUp("命中", level)
@@ -350,10 +337,10 @@ end
 function NormalInfantSkillLevelUp(targetLevel)
     for kkk = 1, 4 do
         local skillName = GetInfantSkillName(kkk)
-        MentalTip("升级子女技能" .. skillName)
 
         local curWLZNum = 获取背包物品数量("悟灵珠")
         for i = 1, curWLZNum do
+            MentalTip("升级子女技能" .. skillName .. "到等级" .. targetLevel)
             if getInfantSkillLevelById(kkk) >= targetLevel then
                 break
             end
@@ -391,7 +378,7 @@ function NormalInfantSkillLevelUp(targetLevel)
 					Set_XSCRIPT_ParamCount(4);
 				Send_XSCRIPT();
 			]], kkk, targetLevel))
-            延时(3000)
+            延时(500)
             if tonumber(tem) == 2 then
                 break
             end
@@ -414,6 +401,7 @@ end
 function AutoInfantSkillLevelUp()
     if GetInfantNum() > 0 and GetInfantLevel() >= 31 then
         for i = 1, 9 do
+			MentalTip("全部升到等级" .. i)
             InfantSkillLevelUp(i)
         end
     end
@@ -422,8 +410,8 @@ end
 -- -------------------------------------------------------
 取出物品("悟灵珠|典籍注解")
 取出物品("金币")
-AutoInfantEquipLevelUp()
 AutoInfantSkillLevelUp()
+AutoInfantEquipLevelUp()
 存物品("悟灵珠")
 存物品("典籍注解")
 存物品("金币")
