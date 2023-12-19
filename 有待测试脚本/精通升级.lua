@@ -100,7 +100,7 @@ function getMainAttr()
         end
         return maxOfT
     ]]), "s")
-    屏幕提示("主属性攻击:" .. 属性攻击)
+    MentalTip("主属性攻击:" .. 属性攻击)
     return tem
 end
 
@@ -165,7 +165,7 @@ function 取下装备获取名字(装备位置名称)
             return 0
         end
     end
-    屏幕提示("提示错误 取下装备 数组错误")
+    MentalTip("提示错误 取下装备 数组错误")
     延时(2000)
 end
 
@@ -333,14 +333,13 @@ function 精通升级(装备位置名称, 属性, 等级)
         需要材料数量 = 20
     end
 
-    取出物品("精金石")
     if 获取背包物品数量("精金石") < 需要材料数量 then
-        屏幕提示(装备位置名称 .. "|装备提升精通目标等级:" .. 等级 .. "|精金石不够" .. 需要材料数量 .. "|跳过升级")
+        MentalTip(装备位置名称 .. "|装备提升精通目标等级:" .. 等级 .. "|精金石不够" .. 需要材料数量 .. "|跳过升级")
         return
     end
 
     if 到数值(获取人物信息(45) + 获取人物信息(52)) < 100 then
-        屏幕提示("精通属性升级,金币不够")
+        MentalTip("精通属性升级,金币不够")
         return
     end
 
@@ -355,14 +354,14 @@ function 精通升级(装备位置名称, 属性, 等级)
     elseif 属性 == "毒" then
         JT_SHUXING = "attack_poison"
     else
-        屏幕提示("精通属性升级,请设置好参数")
+        MentalTip("精通属性升级,请设置好参数")
         return
     end
-    --屏幕提示("装备精通升级的属性为:" .. 属性)
+    --MentalTip("装备精通升级的属性为:" .. 属性)
     local 精通最小等级 = 取身上装备位置精通最小等级(装备位置名称, JT_SHUXING)
-    屏幕提示(装备位置名称 .. "属性:" .. JT_SHUXING .. "最小精通:" .. 精通最小等级)
+    MentalTip(装备位置名称 .. "属性:" .. JT_SHUXING .. "最小精通:" .. 精通最小等级)
     if 精通最小等级 > 等级 or 精通最小等级 == 0 then
-        屏幕提示("精通已满足目标等级: " .. tostring(等级))
+        MentalTip("精通已满足目标等级: " .. tostring(等级))
         return
     end
     跨图寻路("苏州", 364, 245)
@@ -373,7 +372,7 @@ function 精通升级(装备位置名称, 属性, 等级)
     end
 
     local LPindex = 获取背包物品位置(装备名称) - 1
-    屏幕提示("待精通升级的背包序号:" .. LPindex)
+    MentalTip("待精通升级的背包序号:" .. LPindex)
     if LPindex < 0 then
         return
     end
@@ -464,38 +463,7 @@ function 精通升级(装备位置名称, 属性, 等级)
     穿上装备(装备位置名称, 装备名称)
 end
 
-
-function 精通智能升级(index)
-    MentalTip("精通智能升级到:  " .. index)
-
-    if 获取背包物品数量("精金石") < 12 then
-        MentalTip("精通属性升级不够15个 放弃精通属性升级")
-        return
-    end
-
-    local needNotLevelUp = CheckJingJinShi()
-        if needNotLevelUp == 1 then
-            return
-    end
-
-    if CheckSpecifiedJingTong("护符上", index) == -1 then
-        精通升级("护符上", 属性攻击, index)
-    end
-    if CheckSpecifiedJingTong("护符下", index) == -1 then
-        精通升级("护符下", 属性攻击, index)
-    end
-    if CheckSpecifiedJingTong("戒指上", index) == -1 then
-        精通升级("戒指上", 属性攻击, index)
-    end
-    if CheckSpecifiedJingTong("戒指下", index) == -1 then
-        精通升级("戒指下", 属性攻击, index)
-    end
-    if CheckSpecifiedJingTong("护腕", index) == -1 then
-        精通升级("护腕", 属性攻击, index)
-    end
-    if CheckSpecifiedJingTong("项链", index) == -1 then
-        精通升级("项链", 属性攻击, index)
-    end
+function StrengthLevelUp(index)
     if CheckSpecifiedJingTong("腰带", index) == -1 then
         精通升级("腰带", "体力", index)
     end
@@ -514,6 +482,62 @@ function 精通智能升级(index)
     if CheckSpecifiedJingTong("衣服", index) == -1 then
         精通升级("衣服", "体力", index)
     end
+end
+
+function AttackLevelUp(index)
+    if CheckSpecifiedJingTong("护符上", index) == -1 then
+        精通升级("护符上", 属性攻击, index)
+    end
+    if CheckSpecifiedJingTong("护符下", index) == -1 then
+        精通升级("护符下", 属性攻击, index)
+    end
+    if CheckSpecifiedJingTong("戒指上", index) == -1 then
+        精通升级("戒指上", 属性攻击, index)
+    end
+    if CheckSpecifiedJingTong("戒指下", index) == -1 then
+        精通升级("戒指下", 属性攻击, index)
+    end
+    if CheckSpecifiedJingTong("护腕", index) == -1 then
+        精通升级("护腕", 属性攻击, index)
+    end
+    if CheckSpecifiedJingTong("项链", index) == -1 then
+        精通升级("项链", 属性攻击, index)
+    end
+end
+
+function 精通智能升级()
+    MentalTip("精通智能升级到:  " .. index)
+
+    if 获取背包物品数量("精金石") < 12 then
+        MentalTip("精通属性升级不够15个 放弃精通属性升级")
+        return
+    end
+
+    local needNotLevelUp = CheckJingJinShi()
+    if needNotLevelUp == 1 then
+        return
+    end
+
+    local _, menPai, _, _, _, _, _, _, _ = 获取人物属性()
+    if menPai == "峨嵋" then
+        StrengthLevelUp(30)
+        StrengthLevelUp(50)
+        StrengthLevelUp(70)
+        StrengthLevelUp(100)
+        AttackLevelUp(30)
+        AttackLevelUp(50)
+        AttackLevelUp(70)
+        AttackLevelUp(100)
+    else
+        AttackLevelUp(30)
+        AttackLevelUp(50)
+        AttackLevelUp(70)
+        AttackLevelUp(100)
+        StrengthLevelUp(30)
+        StrengthLevelUp(50)
+        StrengthLevelUp(70)
+        StrengthLevelUp(100)
+    end
 
 end
 -- -------------------------------------------------------------------------------------------
@@ -523,15 +547,6 @@ if needNotLevelUp == 1 then
 end
 
 属性攻击 = getMainAttr()
-取出物品("金币", 99999999)
+取出物品("金币")
 取出物品("精金石")
-精通智能升级(30)
-精通智能升级(50)
-精通智能升级(100)
-
-
-
-
-
-
-
+精通智能升级()
