@@ -169,11 +169,11 @@ function getPlayerMainAttr()
     ]])
     local mainAttrList = StringSplit(mainAttrStr, '|')
     local mainAttr, attrValue = mainAttrList[1], mainAttrList[2]
-    return mainAttr, attrValue
+    return mainAttr, tonumber(attrValue)
 end
 
 function LevelUpXinJue()
-    LUA_取返回值(string.format([[
+    local ret = LUA_取返回值(string.format([[
         local g_ID = %d
 
         --0结束 1继续升级 2升级下一个
@@ -206,13 +206,13 @@ function LevelUpXinJue()
             need_exp, need_money = DataPool:LuaFnGetXingJuanLevelNeed(g_ID, jie, ji)
         end
         if need_exp > exp then
-            PushDebugMessage(string.format("【温馨提示】  %-12s 体悟不足", name))
+            PushDebugMessage("【温馨提示】" .. name .. " 心决体悟不足")
             return 0
         elseif need_money > money then
-            PushDebugMessage(string.format("【温馨提示】  %-12s 金币不足", name))
+            PushDebugMessage("【温馨提示】" .. name .. " 金币不足")
             return 0
         elseif need_Chip > Chip then
-            PushDebugMessage(string.format("【温馨提示】  %-12s 残印不足", name))
+            PushDebugMessage("【温馨提示】" .. name .. " 残印不足")
             return 2
         else
             if jie == -1 then
@@ -243,6 +243,7 @@ function LevelUpXinJue()
             return 1
         end
     ]], g_ID))
+    return tonumber(ret)
 end
 
 function GetNeedBuyCYCount()
@@ -258,8 +259,8 @@ function GetNeedBuyCYCount()
         end
 
         if Order == 5 then
-            PushDebugMessage(string.format("【温馨提示】  %-12s 已满阶", name))
-            return retn(0)
+            PushDebugMessage("【" .. name .. "】" .. "已满阶")
+            return 0
         end
 
         local Level = DataPool:LuaFnGetXingJuanInfo(g_ID, 'Level')
@@ -302,7 +303,7 @@ function GetNeedBuyCYCount()
         if ChipCount >= need_chip or maxbuy == 0 then
             return 0
         end
-        PushDebugMessage(string.format("【温馨提示】  %-12s 需要[%d] 单价[%d] 限购[%d] 已有[%d]", name, need_chip, price, MAXLimit, ChipCount))
+        PushDebugMessage("【温馨提示】" .. name .. " 需要[" .. need_chip .."] 单价[" .. price .. "] 限购[" .. MAXLimit .."] 已有[" .. ChipCount .. "]")
         need_chip = need_chip - ChipCount
         if MAXLimit < need_chip then
             need_chip = MAXLimit
@@ -310,7 +311,7 @@ function GetNeedBuyCYCount()
         if maxbuy < need_chip then
             need_chip = maxbuy
         end
-        PushDebugMessage(string.format("【温馨提示】  %-12s 最终购买数量[%d]", name, need_chip))
+        PushDebugMessage("【温馨提示】" .. name .. " 最终购买数量[" .. need_chip .. "]")
         return need_chip
     ]], g_ID))
     return tonumber(needBuyCount)
