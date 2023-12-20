@@ -58,6 +58,7 @@ function DownEquipGetEquipName(equipLocationName)
             for k = 1, 10 do
                 local equipName = GetInfantEquipName(znEuipList[i].equipIndex)
                 MentalTip("准备取下装备位置:" .. equipName)
+                znEuipList[i].equipName = equipName
 
                 LUA_Call(string.format([[setmetatable(_G, {__index = Infant_Env}); Infant_Card_Clicked(%d,0);]], znEuipList[i].downIndex))
                 延时(1000)
@@ -107,7 +108,7 @@ end
 function InfantEquipLevelUp(InfantLocationName, level)
     if 获取背包物品数量("典籍注解") <= 0 then
         MentalTip("材料不足")
-        return
+        return 0
     end
 
     跨图寻路("洛阳", 151, 173)
@@ -116,13 +117,13 @@ function InfantEquipLevelUp(InfantLocationName, level)
     延时(1000)
 
     if equipName == 0 then
-        return -1
+        return 1
     else
         LPindex = 获取背包物品位置(equipName) - 1
     end
     if GetInfantEquipLevel(LPindex) >= level then
         WearInfantEquip(InfantLocationName, equipName)
-        return
+        return 2
     end
 
     local curMaterialCount = 获取背包物品数量("典籍注解")
@@ -172,7 +173,7 @@ function InfantEquipLevelUp(InfantLocationName, level)
         end
 
     end
-
+    return 3
 
 end
 
@@ -195,12 +196,23 @@ function AutoInfantEquipLevelUp()
     end
     MentalTip(string.format('子女装备最低为 %d 星', minLevel))
 
-    
-    for level = minLevel, 9 do
+    local startLevel = minLevel + 1
+    local levelUpRet = 0
+    for level = startLevel, 9 do
 		MentalTip(string.format("开始检测升级到%d星", level))
+        local tmp = 1
         for _, v in pairs(znEuipList) do
             local InfantLocationName = v['name']
-            InfantEquipLevelUp(InfantLocationName, level)
+            levelUpRet = InfantEquipLevelUp(InfantLocationName, level)
+            local equipName = v['equipName']
+            WearInfantEquip(InfantLocationName, equipName)
+            if levelUpRet == -1 then
+                tmp = 0
+                break
+            end
+        end
+        if tmp == 0 then
+            break
         end
     end
 
@@ -432,7 +444,9 @@ end
 -- -------------------------------------------------------
 取出物品("悟灵珠|典籍注解")
 取出物品("金币")
+MentalTip("开始升级子女技能")
 AutoInfantSkillLevelUp()
+MentalTip("开始提升子女装备")
 AutoInfantEquipLevelUp()
 存物品("悟灵珠")
 存物品("典籍注解")
