@@ -182,14 +182,26 @@ function AutoInfantEquipLevelUp()
         return
     end
 
-    for level = 1, 9 do
+    local minLevel = 9
+    for _, v in pairs(znEuipList) do
+        local InfantLocationName = v['name']
+        local equipName = DownEquipGetEquipName(InfantLocationName)
+        local LPindex = 获取背包物品位置(equipName) - 1
+        local equipLevel = GetInfantEquipLevel(LPindex)
+        if equipLevel < minLevel then
+            minLevel = equipLevel
+        end
+        WearInfantEquip(InfantLocationName, equipName)
+    end
+    MentalTip(string.format('子女装备最低为 %d 星', minLevel))
+
+    
+    for level = minLevel, 9 do
 		MentalTip(string.format("开始检测升级到%d星", level))
-        InfantEquipLevelUp("属性", level)
-        InfantEquipLevelUp("体力", level)
-        InfantEquipLevelUp("命中", level)
-        InfantEquipLevelUp("会心", level)
-        InfantEquipLevelUp("身法", level)
-        InfantEquipLevelUp("闪避", level)
+        for _, v in pairs(znEuipList) do
+            local InfantLocationName = v['name']
+            InfantEquipLevelUp(InfantLocationName, level)
+        end
     end
 
     for _, v in pairs(znEuipList) do
@@ -252,7 +264,7 @@ function GetInfantSkillLevelByName(infantSkillName)
     return tonumber(tem)
 end
 
-function getInfantSkillLevelById(infantSkillID)
+function GetInfantSkillLevelById(infantSkillID)
     local tem = LUA_取返回值(string.format([[
 			i = %d - 1
 			local nSkillID, nSkillLevel, nSkillEffect, nSkillUpRate, szSkillName, szIcon, szTipsInfo = Infant:GetInfantSkillInfo(0,i)
@@ -341,7 +353,7 @@ function NormalInfantSkillLevelUp(targetLevel)
         local curWLZNum = 获取背包物品数量("悟灵珠")
         for i = 1, curWLZNum do
             MentalTip("升级子女技能" .. skillName .. "到等级" .. targetLevel)
-            if getInfantSkillLevelById(kkk) >= targetLevel then
+            if GetInfantSkillLevelById(kkk) >= targetLevel then
                 break
             end
             if 获取背包物品数量("悟灵珠") <= 0 then
@@ -399,8 +411,18 @@ end
 
 -- ----------------------------------------------------------------------------------
 function AutoInfantSkillLevelUp()
+    local minSkillLevel = 9
+    for i = 1, 4 do
+        local curSkillLevel = GetInfantSkillLevelById(i)
+        if curSkillLevel < minSkillLevel then
+            minSkillLevel = curSkillLevel
+        end
+    end
+    MentalTip(string.format("当前子女技能最低等级为 %d 级", minSkillLevel))
+
+    local startSkillLevel = minSkillLevel + 1
     if GetInfantNum() > 0 and GetInfantLevel() >= 31 then
-        for i = 1, 9 do
+        for i = startSkillLevel, 9 do
 			MentalTip("全部升到等级" .. i)
             InfantSkillLevelUp(i)
         end
