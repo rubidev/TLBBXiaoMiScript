@@ -137,6 +137,20 @@ function GetDownedWHBKIndex(WHName, WHEXTRALEVEL, isBind)
     return tonumber(tem)
 end
 
+
+function UseItem(index) --背包序号
+	LUA_Call(string.format([[
+		local theAction = EnumAction(%d, "packageitem");
+		if theAction:GetID() ~= 0 then
+				setmetatable(_G, {__index = Packet_Env});
+				local oldid = Packet_Space_Line1_Row1_button:GetActionItem();
+				Packet_Space_Line1_Row1_button:SetActionItem(theAction:GetID());
+				Packet_Space_Line1_Row1_button:DoAction();
+				Packet_Space_Line1_Row1_button:SetActionItem(oldid);
+		end
+	]], index))
+end
+
 function WashBKWH(BKIndex)
     LUA_Call(string.format([[
         m_Equip_Idx = %d
@@ -161,6 +175,13 @@ function main()
         WashBKWH(BKIndex)
         延时(500)
     end
+
+	坐骑_下坐骑()
+	坐骑_下坐骑()
+
+	UseItem(BKIndex)
+
+
     存物品("回天神石")
     存物品("金币")
 end
