@@ -37,7 +37,7 @@ function WashBaoYu(baoYuIndex, targetRate)
     local num = 获取背包物品数量("玉华灵泉")
     local n2 = tonumber(GetLuaValue("local num=0 for i=1,5 do num=num+Player:GetFiveElements_JadeExtend(" .. baoYuIndex - 1 .. ",Player:GetFiveElements_JadeType(" .. baoYuIndex - 1 .. ",i-1))end return num", "n", 1))
     local n3 = tonumber(GetLuaValue("return Player:GetData('MONEY')+Player:GetData('MONEY_JZ')", "n", 1))
-    MentalTip("晴天|当前序号：" .. baoYuIndex .. " 值：" .. n2 .. "% 材料数量：" .. num .. " 金币：" .. n3)
+    MentalTip("晴天|当前序号：" .. baoYuIndex .. " 值：" .. n2 .. "%% 材料数量：" .. num .. " 金币：" .. n3)
     while num >= 5 and n2 < targetRate and n3 >= 10000 do
         if IsWindowShow("EquipBaoJian_Wash") and string.find(GetLuaValue("setmetatable(_G, {__index = EquipBaoJian_Wash_Env})return EquipBaoJian_Wash_DragTitle:GetText()", "s", 1), tpname[baoYuIndex]) then
             MentalTip("淬洗操作：" .. tpname[baoYuIndex])
@@ -50,7 +50,7 @@ function WashBaoYu(baoYuIndex, targetRate)
                     Set_XSCRIPT_Parameter(1,2)
                     Set_XSCRIPT_ParamCount(2)
                 Send_XSCRIPT()
-			]]))
+			]], baoYuIndex))
             Sleep(1000)
             GetLuaValue("setmetatable(_G, {__index = WuhunQuest_Env})if this:IsVisible()then WuhunQuest_Bn1Click()end")
         else
@@ -63,7 +63,7 @@ function WashBaoYu(baoYuIndex, targetRate)
         num = 获取背包物品数量("玉华灵泉")
         n2 = tonumber(GetLuaValue("local num=0 for i=1,5 do num=num+Player:GetFiveElements_JadeExtend(" .. baoYuIndex - 1 .. ",Player:GetFiveElements_JadeType(" .. baoYuIndex - 1 .. ",i-1))end return num", "n", 1))
         n3 = tonumber(GetLuaValue("return Player:GetData('MONEY')+Player:GetData('MONEY_JZ')", "n", 1))
-        MentalTip("当前序号：" .. baoYuIndex .. " 值：" .. n2 .. "% 材料数量：" .. num .. " 金币：" .. n3)
+        MentalTip("当前序号：" .. baoYuIndex .. " 值：" .. n2 .. "%% 材料数量：" .. num .. " 金币：" .. n3)
         Sleep(1000)
     end
 end
@@ -85,3 +85,5 @@ Wash(45)
 Wash(65)
 Wash(80)
 Wash(100)
+
+存物品("金币")
