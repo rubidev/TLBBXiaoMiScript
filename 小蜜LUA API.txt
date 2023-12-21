@@ -673,3 +673,6 @@ for i = 1, nSkillCount do
 	- local wbsNum = Player:GetWeekBrotherShip()   -- 阵法情义值周值
 	- local totaljifen = Player:GetZhenFaTotalpoint()   -- 阵法修为
 
+118、寻路
+    - 自动寻路：AutoRunToTarget(coordinatex, coordinatey)
+    - 跨图寻路：AutoRunToTargetEx(coordinatex,coordinatey,tonumber(g_CurSelectSceneID))
