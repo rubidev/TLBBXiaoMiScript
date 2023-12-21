@@ -152,9 +152,10 @@ function main()
     存物品("回天神石", 不存物品, 0, 1, 1)
     local WHEXTRALEVEL = GetWornWHINFO(2)
     local WHName = GetWornWHINFO(1)
+	DownWornWH(1)
     local BKIndex = GetDownedWHBKIndex(WHName, WHEXTRALEVEL, 2)
     MentalTip('摘下的武魂在背包中的索引为' .. BKIndex)
-
+	跨图寻路("大理",138,195)
     local HTSSNum = 获取背包物品数量("回天神石")
     for i=1, HTSSNum do
         WashBKWH(BKIndex)
