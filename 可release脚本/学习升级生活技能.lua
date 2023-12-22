@@ -84,6 +84,14 @@ function GetLifeSkillLevel(targetAbilityName)
 end
 
 function GetGuildCityName()
+    LUA_Call([[setmetatable(_G, {__index = MainMenuBar_Env});MainMenuBar_OnOpenGruidClick();]])
+    延时(1000)
+    LUA_Call([[setmetatable(_G, {__index = NewBangHui_Hygl_Env});NewBangHui_Hygl_Bhxx_Clicked();]])
+    延时(1000)
+    LUA_Call([[setmetatable(_G, {__index = NewBangHui_Bhxx_Env});NewBangHui_Bhxx_Tmxx_Clicked();]])
+    延时(1000)
+    LUA_Call([[setmetatable(_G, {__index = NewBangHui_Tmxx_Env});NewBangHui_Tmxx_Closed();]])
+
     local myGuildCityName = LUA_取返回值([[
        local guildID, clanID = DataPool:GetGuildClanID()
        local myCityName = Guild:GetMyGuildDetailInfo("CityName")
@@ -94,15 +102,6 @@ function GetGuildCityName()
 end
 
 function BackToBangHui()
-    -- 必须打开帮会界面，切换过才能获取帮会信息
-    LUA_Call([[setmetatable(_G, {__index = MainMenuBar_Env});MainMenuBar_OnOpenGruidClick();]])
-    延时(1000)
-    LUA_Call([[setmetatable(_G, {__index = NewBangHui_Hygl_Env});NewBangHui_Hygl_Bhxx_Clicked();]])
-    延时(1000)
-    LUA_Call([[setmetatable(_G, {__index = NewBangHui_Bhxx_Env});NewBangHui_Bhxx_Tmxx_Clicked();]])
-    延时(1000)
-    LUA_Call([[setmetatable(_G, {__index = NewBangHui_Tmxx_Env});NewBangHui_Tmxx_Closed();]])
-
     坐骑_下坐骑()
 
     local myGuildCityName = GetGuildCityName()
@@ -190,7 +189,7 @@ function BackToBangHui()
         延时(500)
         NPC二级对话("进入本帮城市")
         等待过图完毕()
-        延时(3000)
+        延时(5000)
     end
 
     while true do
@@ -205,18 +204,20 @@ end
 
 function LifeSkillStudyAndLevelUp()
     local needStudyLifeSkill = {
-        [1] = { skillName = "铸造", studyLevel = 10, npcMap = "洛阳", ncpName = "耶律大石", posX = 188, posY = 62 },
-        [2] = { skillName = "缝纫", studyLevel = 10, npcMap = "大理", ncpName = "木婉清", posX = 105, posY = 135 },
+        [1] = { skillName = "铸造", studyLevel = 10, npcMap = "洛阳", ncpName = "耶律大石", posX = 215, posY = 205 },
+        [2] = { skillName = "缝纫", studyLevel = 10, npcMap = "大理", ncpName = "木婉清", posX = 110, posY = 131 },
         [3] = { skillName = "工艺", studyLevel = 10, npcMap = "镜湖", ncpName = "阮星竹", posX = 108, posY = 140 },
-        [4] = { skillName = "养生", studyLevel = 10, npcMap = "洛阳", ncpName = "蔷薇", posX = 132, posY = 156 },
-        [5] = { skillName = "药理", studyLevel = 10, npcMap = "洛阳", ncpName = "白颖明", posX = 136, posY = 169 },
+        [4] = { skillName = "养生法", studyLevel = 10, npcMap = "洛阳", ncpName = "蔷薇", posX = 234, posY = 297 },
+        [5] = { skillName = "药理", studyLevel = 10, npcMap = "洛阳", ncpName = "白颖明", posX = 229, posY = 302 },
         [6] = { skillName = "养气", studyLevel = 10, npcMap = "-1", ncpName = "穆易", posX = 46, posY = 91 },
         [7] = { skillName = "强身", studyLevel = 10, npcMap = "-1", ncpName = "钱为一", posX = 149, posY = 57 },
         [8] = { skillName = "健体", studyLevel = 10, npcMap = "-1", ncpName = "钱为一", posX = 149, posY = 57 },
-        [9] = { skillName = "活血", studyLevel = 10, npcMap = "-1", ncpName = "朱世友", posX = 266, posY = 140 },
+        [9] = { skillName = "活血", studyLevel = 10, npcMap = "-1", ncpName = "朱世友", posX = 129, posY = 99 },
         [10] = { skillName = "材料加工", studyLevel = 1, npcMap = "洛阳", ncpName = "冯铸铁", posX = 155, posY = 174 },
-        [11] = { skillName = "咫尺天涯", studyLevel = 3, npcMap = "大理", ncpName = "张灵均", posX = 53, posY = 212 },
+        [11] = { skillName = "咫尺天涯", studyLevel = 3, npcMap = "大理", ncpName = "张灵均", posX = 27, posY = 239 },
     }
+
+    GetGuildCityName()
 
     for i = 1, #needStudyLifeSkill do
         local studyMap = needStudyLifeSkill[i].npcMap
@@ -226,15 +227,26 @@ function LifeSkillStudyAndLevelUp()
         local posX = needStudyLifeSkill[i].posX
         local posY = needStudyLifeSkill[i].posY
         local lifeSkillLevel = GetLifeSkillLevel(lifeSkillName)
+
+        local nStudyMap = studyMap
+        if studyMap == "-1" then
+            nStudyMap = "帮会城市"
+        end
+        MentalTip(string.format([[前往【%s（%d, %d）】找【%s】学习【%s】到【%d】级，当前 %d 级]], nStudyMap, posX, posY, npcName, lifeSkillName, studyLevel, lifeSkillLevel))
+
         if studyMap ~= "-1" then
             if lifeSkillLevel == -1 then
                 跨图寻路(studyMap, posX, posY)
                 延时(1000)
                 对话NPC(npcName)
+                延时(2000)
+                NPC二级对话("学习养生法技能")
+                延时(1000)
+                NPC二级对话("学习药理技能")
                 延时(1000)
                 NPC二级对话("学习", 1)
                 延时(1000)
-                NPC二级对话("确定")
+                NPC二级对话("确定", 1)
                 延时(500)
             end
             if lifeSkillLevel < studyLevel then
@@ -248,7 +260,7 @@ function LifeSkillStudyAndLevelUp()
                         延时(1000)
                         NPC二级对话("升级", 1)
                         延时(1000)
-                        NPC二级对话("确定")
+                        NPC二级对话("是")
                         延时(100)
                     end
                 else
@@ -256,10 +268,13 @@ function LifeSkillStudyAndLevelUp()
                     延时(1000)
                     NPC二级对话("升级", 1)
                     延时(1000)
-                    for i = 1, studyLevel - lifeSkillLevel do
-                        -- TODO
+                    local levelMax = studyLevel - lifeSkillLevel
+                    if lifeSkillLevel == -1 then
+                        levelMax = 9
+                    end
+                    for i = 1, levelMax do
                         LUA_Call([[
-
+							setmetatable(_G, {__index = LifeSkillsStudy_Env});LifeSkillsStudy_UpLevel_Click();
                         ]])
                         延时(500)
                     end
@@ -281,9 +296,13 @@ function LifeSkillStudyAndLevelUp()
                 延时(2000)
                 对话NPC(npcName)
                 延时(1000)
+                NPC二级对话("学习生活技能", 1)
+                延时(1000)
+                NPC二级对话(lifeSkillName)
+                延时(1000)
                 NPC二级对话("学习", 1)
                 延时(1000)
-                NPC二级对话("确定")
+                NPC二级对话("我确定要学习")
                 延时(500)
             end
             if lifeSkillLevel < studyLevel then
@@ -300,12 +319,19 @@ function LifeSkillStudyAndLevelUp()
                 延时(2000)
                 对话NPC(npcName)
                 延时(1000)
+                NPC二级对话("学习生活技能", 1)
+                延时(1000)
+                NPC二级对话(lifeSkillName)
+                延时(1000)
                 NPC二级对话("升级", 1)
                 延时(1000)
-                for i = 1, studyLevel - lifeSkillLevel do
-                    -- TODO
+                local levelMax = studyLevel - lifeSkillLevel
+                if lifeSkillLevel == -1 then
+                    levelMax = 9
+                end
+                for i = 1, levelMax do
                     LUA_Call([[
-
+						setmetatable(_G, {__index = ConfraternitySkillsStudy_Env});Guild_Ability_LevelUp_Click();
                     ]])
                     延时(500)
                 end
@@ -313,3 +339,6 @@ function LifeSkillStudyAndLevelUp()
         end
     end
 end
+
+LifeSkillStudyAndLevelUp()
+LifeSkillStudyAndLevelUp()
