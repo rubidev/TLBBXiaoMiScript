@@ -184,8 +184,8 @@ function SongLiaoAgname()
 end
 
 function ShuaXingAgname()
-    local AgnameList = { '广目天王', '多闻天王', '增长天王', '持国天王' }
-    local itemIndex = { 11, 12, 13, 1 }  -- TODO
+    local AgnameList = {'持国天王' }
+    local itemIndex = { 1 }
     if tonumber(JudgeHasAgname("持国天王")) == 1 then
         MentalTip("您已拥有【持国天王】称号，跳过")
     else
@@ -203,7 +203,7 @@ function ShuaXingAgname()
                     LUA_Call([[setmetatable(_G, {__index = ActivitySchedule_Shop2_Env});ActivitySchedule_Shop2_PageDown();]])
                     延时(1000)
                 end
-                LUA_Call(string.format([[setmetatable(_G, {__index = ActivitySchedule_Shop2_Env});ActivitySchedule_Shop2_Clicked(%d)]], itemIndex[index]))  -- 点击灵兽甲礼盒
+                LUA_Call(string.format([[setmetatable(_G, {__index = ActivitySchedule_Shop2_Env});ActivitySchedule_Shop2_Clicked(%d)]], itemIndex[index]))  -- 点击
                 延时(100)
                 LUA_Call([[setmetatable(_G, {__index = ActivitySchedule_MBuy2_Env});ActivitySchedule_MBuy2_OK_Clicked();]])  -- 点击购买
             end
