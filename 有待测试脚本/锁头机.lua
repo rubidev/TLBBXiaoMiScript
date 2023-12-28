@@ -40,6 +40,31 @@ function GetTargetRelation()
     return tmp
 end
 
+
+function HavaUnbeatableBuff()
+    local tem = LUA_取返回值([[
+        local TARGET_BUFF_MAX = 6;
+        local TARGET_IMPACT_NUM = 20; --查询时要从20个里面选出优先级最高的6个
+
+        local nBuffNum = Target:GetBuffNumber();
+        local nFindNum = nBuffNum --在修正nBuffNum之前获得它的值
+        if(nFindNum > TARGET_IMPACT_NUM) then nFindNum = TARGET_IMPACT_NUM; end
+        if(nBuffNum > TARGET_BUFF_MAX) then nBuffNum = TARGET_BUFF_MAX; end
+
+        local tmp = 0
+        for jj = 1, nFindNum then
+            szIconName,szTipInfo = Target:GetBuffIconNameByIndex(jj-1);
+            PushDebugMessage(szTipInfo)
+            if string.find(szTipInfo, '无敌') then
+                tmp = 1
+                break
+            end
+        end
+        return tmp
+    ]])
+    return tonumber(tem)
+end
+
 while true do
     local myX = 获取人物信息(7)
     local myY = 获取人物信息(8)
@@ -49,7 +74,8 @@ while true do
     local nearbyPlayer = 获取周围玩家(白名单, myX, myY, 15)
     if nearbyPlayer ~= nil then
         local nearbyPlayerList = StringSplit(nearbyPlayer, '|')
-        for _, playerName in pairs(nearbyPlayerList) do
+        for i = 1, #nearbyPlayerList do
+            local playerName = nearbyPlayerList[i]
             local flag = false
             if #目标名字关键字 ~= 0 then
                 for _, pattern in pairs(目标名字关键字) do
@@ -68,7 +94,8 @@ while true do
                     选中对象(ID)
                     延时(遍历速度)
                     local relation = GetTargetRelation()
-                    if relation == '4' or relation == '5' then
+                    local isUnbeatable = HavaUnbeatableBuff()
+                    if (relation == '4' or relation == '5') and isUnbeatable ~= 1 then
                         if minHP == -1 then
                             minHP = HP
                             tID = ID
