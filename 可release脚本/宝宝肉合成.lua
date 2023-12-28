@@ -7,6 +7,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function RightUse(row, col)
     LUA_Call(string.format([[
         setmetatable(_G, {__index = Packet_Env});Packet_ItemBtnClicked(%d,%d);
@@ -94,7 +106,7 @@ function main()
         local petFoodString = List2String(petFoodList)
         取出物品(petFoodString)
 
-        跨图寻路("洛阳", 275, 295)
+        MoveToPos("洛阳", 275, 295)
         延时(3000)
 
         for i = 1, #petFoodList do

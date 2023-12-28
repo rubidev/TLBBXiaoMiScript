@@ -7,6 +7,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function CheckBaoJian()
     local isMaxLevel = LUA_取返回值([[
         local totalLevel = 0
@@ -42,7 +54,7 @@ function BaoJianCohesion()
         return
     end
 
-    跨图寻路("凤鸣镇", 113, 200)  -- TODO
+    MoveToPos("凤鸣镇", 113, 200)  -- TODO
     if 对话NPC("杜钏灵") == 1 then
         NPC二级对话("五行宝玉凝聚")
         延时(1000)

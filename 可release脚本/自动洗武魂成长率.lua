@@ -10,6 +10,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function GetWornWHName()
     local tem = LUA_取返回值("return EnumAction(18,'equip'):GetName();")
     return tem
@@ -169,7 +181,7 @@ function main()
 	DownWornWH(1)
     local BKIndex = GetDownedWHBKIndex(WHName, WHEXTRALEVEL, 2)
     MentalTip('摘下的武魂在背包中的索引为' .. BKIndex)
-	跨图寻路("大理",138,195)
+	MoveToPos("大理",138,195)
     local HTSSNum = 获取背包物品数量("回天神石")
     for i=1, HTSSNum do
         WashBKWH(BKIndex)

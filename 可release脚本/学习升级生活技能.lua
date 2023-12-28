@@ -56,6 +56,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function GetLifeSkillLevel(targetAbilityName)
     local lifeSkillLevel = LUA_取返回值(string.format([[
         local targetAbilityName = "%s"
@@ -236,7 +248,7 @@ function LifeSkillStudyAndLevelUp()
 
         if studyMap ~= "-1" then
             if lifeSkillLevel == -1 then
-                跨图寻路(studyMap, posX, posY)
+                MoveToPos(studyMap, posX, posY)
                 延时(1000)
                 对话NPC(npcName)
                 延时(2000)
@@ -250,7 +262,7 @@ function LifeSkillStudyAndLevelUp()
                 延时(500)
             end
             if lifeSkillLevel < studyLevel then
-                跨图寻路(studyMap, posX, posY)
+                MoveToPos(studyMap, posX, posY)
                 延时(1000)
 
                 if i == 11 then

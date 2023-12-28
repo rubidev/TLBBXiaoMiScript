@@ -27,6 +27,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function CheckAllJingTong()
     local needClean = 1
     for i = 1, #SelfEquipList do
@@ -364,7 +376,7 @@ function 精通升级(装备位置名称, 属性, 等级)
         MentalTip("精通已满足目标等级: " .. tostring(等级))
         return
     end
-    跨图寻路("苏州", 364, 245)
+    MoveToPos("苏州", 364, 245)
 
     local 装备名称 = 取下装备获取名字(装备位置名称)
     if 装备名称 == 0 then

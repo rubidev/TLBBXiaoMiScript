@@ -7,6 +7,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function 判断关闭窗口(strWindowName)
     if 窗口是否出现(strWindowName) == 1 then
         LUA_Call(string.format([[
@@ -111,7 +123,7 @@ function InfantEquipLevelUp(InfantLocationName, level)
         return 0
     end
 
-    跨图寻路("洛阳", 151, 173)
+    MoveToPos("洛阳", 151, 173)
 
     local equipName = DownEquipGetEquipName(InfantLocationName)
     延时(1000)
@@ -411,7 +423,7 @@ function NormalInfantSkillLevelUp(targetLevel)
 end
 
 function InfantSkillLevelUp(level)
-    跨图寻路("洛阳", 150, 183)
+    MoveToPos("洛阳", 150, 183)
 
     --SpecifiedInfantSkillLevelUp("毒抗", level)
 

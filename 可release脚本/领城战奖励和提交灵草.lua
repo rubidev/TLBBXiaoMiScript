@@ -1,8 +1,20 @@
 -- 缩进为3个空格
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function 领城战奖励()
    屏幕提示("领取城战奖励")
-   跨图寻路("凤鸣镇",132,59)           -- 修改x，y为城战NPC的坐标
+   MoveToPos("凤鸣镇",132,59)           -- 修改x，y为城战NPC的坐标
    延时(1000)
    对话NPC("万翎疆")                   -- 修改X，X为领奖励NPC名字
    延时(500)
@@ -23,7 +35,7 @@ end
 
 function 提交城战灵草()
    屏幕提示("提交三城或烽火石灵草奖励")
-   跨图寻路("凤鸣镇",145,201)    -- 移动到凤鸣镇领取城战灵草NPC坐标
+   MoveToPos("凤鸣镇",145,201)    -- 移动到凤鸣镇领取城战灵草NPC坐标
    延时(1000)
    对话NPC("姜星辰")                   -- 修改X，X为提交灵草NPC名字
    延时(500)

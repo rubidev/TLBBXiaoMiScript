@@ -2,6 +2,19 @@
     "3级宝石兑换券", "金蚕丝"
 }
 
+
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function BuyGood(goodIndex)
     LUA_Call([[setmetatable(_G, {__index = GuiShi_Shop_Env});GuiShi_Shop_BuyMult();]])   -- 生效批量购买
     延时(1000)
@@ -22,7 +35,7 @@ end
 function Main()
     屏幕提示("【雨夜出品, 必是精品】新千金阁购物, 默认买宝石兑换券、金蚕丝")
 
-    跨图寻路("苏州", 222, 235)
+    MoveToPos("苏州", 222, 235)
     延时(2000)
     对话NPC("柳金蟾")
     延时(500)

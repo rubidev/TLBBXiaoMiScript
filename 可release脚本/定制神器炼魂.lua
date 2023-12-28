@@ -18,6 +18,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function GetWeaponLevel(weaponIndex)
     local weaponLevel = LUA_取返回值(string.format([[
         local BagIndex = %d
@@ -140,7 +152,7 @@ function main()
         return
     end
 
-    跨图寻路("苏州", 354, 240)
+    MoveToPos("苏州", 354, 240)
     延时(1500)
     对话NPC("欧治于")
     延时(1000)

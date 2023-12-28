@@ -1,5 +1,17 @@
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 取出物品("马鞍|黄金马鞍")
-跨图寻路("洛阳", 228, 325)
+MoveToPos("洛阳", 228, 325)
 延时(1000)
 对话NPC("田骁鸣")
 延时(500)

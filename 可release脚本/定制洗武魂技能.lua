@@ -13,6 +13,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function GetMyMoney()
     local myMoney = LUA_取返回值([[
         local myMoney = Player:GetData('MONEY') + Player:GetData('MONEY_JZ')
@@ -35,7 +47,7 @@ function main()
     end
     LUA_Call([[setmetatable(_G, {__index = Wuhun_Env});Wuhun_Equip_Clicked( 0 );]])  -- 摘下武魂
 
-    跨图寻路("大理", 140, 195)
+    MoveToPos("大理", 140, 195)
     延时(1500)
     对话NPC("无崖子")
     延时(1000)

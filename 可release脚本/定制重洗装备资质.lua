@@ -9,6 +9,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function equipIdentify(equipPos)
     -- 装备资质鉴定
     LUA_Call(string.format([[
@@ -164,7 +176,7 @@ MentalTip(string.format("只有背包金刚砂、金刚锉耗尽,或洗到60%,才退出"))
 MentalTip(string.format("只有背包金刚砂、金刚锉耗尽,或洗到60%,才退出"))
 MentalTip(string.format("即将重新鉴定装备【%s】", 装备名字))
 取出物品("金刚锉|金刚砂")
-跨图寻路("苏州", 354, 234)
+MoveToPos("苏州", 354, 234)
 延时(2000)
 对话NPC("欧冶子")
 延时(500)

@@ -1,3 +1,15 @@
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 -- 打开无字谱
 LUA_Call([[
     setmetatable(_G, {__index = PlayerQuicklyEnter_Env});PlayerQuicklyEnter_Clicked(23)
@@ -28,7 +40,7 @@ LUA_Call([[
     setmetatable(_G, {__index = Rune_Stars_Reel_Env});Rune_Stars_Reel_OnCloseClicked();
 ]])
 延时(300)
-跨图寻路("大理", 206, 52)
+MoveToPos("大理", 206, 52)
 延时(2000)
 对话NPC("沈暝楼")
 延时(500)

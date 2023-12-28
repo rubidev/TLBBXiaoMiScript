@@ -7,9 +7,21 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function PickOutJGC()
     取出物品("金刚锉")
-    跨图寻路("苏州", 354, 234)
+    MoveToPos("苏州", 354, 234)
     延时(2000)
     对话NPC("欧冶子")
     延时(1000)
@@ -91,7 +103,7 @@ function main()
         MergeJGCCount()
     end
 
-    跨图寻路("苏州", 343, 245)
+    MoveToPos("苏州", 343, 245)
 end
 
 main()

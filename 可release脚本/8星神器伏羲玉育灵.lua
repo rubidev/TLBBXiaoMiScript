@@ -7,6 +7,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function GetEquipStar(equipIndex)
     -- 获取装备星星
     local tem = LUA_取返回值(string.format([[
@@ -48,7 +60,7 @@ end
 function main()
     取出物品("伏羲玉")
     取出物品("金币")
-    跨图寻路("凤鸣镇", 248, 217)
+    MoveToPos("凤鸣镇", 248, 217)
     延时(500)
 
     -- 获取神器名字

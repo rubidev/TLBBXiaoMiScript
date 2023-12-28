@@ -1,5 +1,18 @@
 购买灵兽金甲礼盒数量 = -1   -- 指定购买数量，-1 表示购买最大数量
 
+
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function BuyPetEquipPkg(buyMax)
     LUA_Call([[setmetatable(_G, {__index = ActivitySchedule_Shop2_Env});ActivitySchedule_Shop2_Clicked(11)]])  -- 点击灵兽甲礼盒
     延时(100)
@@ -148,8 +161,8 @@ end
 
 
 执行功能("自动清包")
-跨图寻路("洛阳", 355, 236)
-跨图寻路("洛阳", 355, 236)
+MoveToPos("洛阳", 355, 236)
+MoveToPos("洛阳", 355, 236)
 延时(1000)
 对话NPC("付云伤")
 延时(500)
@@ -164,7 +177,7 @@ else
     end
 end
 延时(2000)
-跨图寻路("苏州", 354, 268)
+MoveToPos("苏州", 354, 268)
 延时(1000)
 对话NPC("云姗姗")
 延时(500)

@@ -12,6 +12,18 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+function MoveToPos(NPCCity, x, y)
+    while true do
+        跨图寻路(NPCCity, x, y)
+        延时(500)
+        local myX = 获取人物信息(7)
+        local myY = 获取人物信息(8)
+        if tonumber(myX) == x and tonumber(myY) == y then
+            break
+        end
+    end
+end
+
 function 取身上全部钱()
     local tem = LUA_取返回值(string.format([[
 			local selfMoney = Player:GetData("MONEY") + Player:GetData("MONEY_JZ")
@@ -306,7 +318,7 @@ function 装备淬炼(装备位置名称, attr, 数量)
         return
     end
 
-    跨图寻路("苏州", 364, 245)
+    MoveToPos("苏州", 364, 245)
 
     local 装备名称 = 取下装备获取名字(装备位置名称);
     MentalTip(string.format("准备淬炼【%s】位置上的【%s】", 装备位置名称, 装备名称));
