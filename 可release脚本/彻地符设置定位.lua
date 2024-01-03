@@ -13,7 +13,7 @@
     { page = 3, index = 2, scene = '漠南青原', posX = 178, posY = 200 },
     { page = 3, index = 3, scene = '漠南青原', posX = 217, posY = 32 },
     { page = 3, index = 4, scene = '漠南青原', posX = 210, posY = 129 },
-    { page = 3, index = 5, scene = '天岐南淮', posX = 89, posY = 157 },
+    { page = 3, index = 5, scene = '天岐南淮', posX = 90, posY = 157 },
     { page = 3, index = 6, scene = '天岐南淮', posX = 52, posY = 70 },
     { page = 3, index = 7, scene = '苍梧秘境', posX = 135, posY = 173 },
     { page = 3, index = 8, scene = '忘川花海', posX = 83, posY = 107 },
@@ -32,7 +32,7 @@
 -- posY: Y坐标
 
 
-LUA_RETURN = lua_取返回值
+LUA_RETURN = LUA_取返回值
 sleep = 延时
 
 function MentalTip(text, ...)
@@ -75,7 +75,7 @@ function GetDJTSPosInfo(curPage, curIndex, DJTSIndex)
         local nIdx = (g_CurSelectPage - 1) * 10 + g_CurIndex - 1
         local sceneid, strText, count, posx, posy, init = PlayerPackage:GetDunJiaShuPosInfo(g_Client_ItemIndex, nIdx)
         if sceneid >=1 then
-            posInfo = strText .. "|" .. posx .. "|" .. "posy"
+            posInfo = strText .. "|" .. posx .. "|" .. posy
         else
             posInfo = "||"
         end

@@ -9,6 +9,9 @@ function MentalTip(text, ...)
 	]], strCode))
 end
 
+LUA_RETURN = LUA_取返回值
+sleep = 延时
+
 function StringSplit(str, reps)
     -- 字符串切割
     local resultStrList = {}
@@ -79,29 +82,31 @@ function AddDJTSCount()
         return
     end
 
-    MentalTip(string.format([[需要补充【%d】次, 才能使次数大于40]], addNum))
+    MentalTip(string.format([[需要补充【%d】次, 才能使次数大于40]], needBuyCount))
 
     local curYBBind = tonumber(获取人物信息(62))
     local YBBindCanBuyCount = math.floor(curYBBind / 110)
     local minCount = needBuyCount
     if YBBindCanBuyCount < needBuyCount then
         minCount = YBBindCanBuyCount
-        for i = 1, minCount do
-            MentalTip(string.format([[第【%d】次使用绑定元宝购买]]))
-            AddCountByYBBind(DJTSIndex)
-            延时(1000)
-        end
+    end
+    for i = 1, minCount do
+        MentalTip(string.format([[第【%d】次使用绑定元宝购买]], i))
+        AddCountByYBBind(DJTSIndex)
+        延时(1000)
     end
 
-    local needHLBugCount = needBuyCount - YBBindCanBuyCount
-    if needHLBugCount > 0 then
-        local curHL = tonumber(获取人物信息(55))
-        local HLCanBuyCount = math.floor(curHL / 110)
-        local minCount = needHLBugCount
-        if HLCanBuyCount < needHLBugCount then
-            minCount = HLCanBuyCount
+    if YBBindCanBuyCount < needBuyCount then
+        local needHLBugCount = needBuyCount - YBBindCanBuyCount
+        if needHLBugCount > 0 then
+            local curHL = tonumber(获取人物信息(55))
+            local HLCanBuyCount = math.floor(curHL / 110)
+            minCount = needHLBugCount
+            if HLCanBuyCount < needHLBugCount then
+                minCount = HLCanBuyCount
+            end
             for i = 1, minCount do
-                MentalTip(string.format([[第【%d】次购买]]))
+                MentalTip(string.format([[第【%d】次购买]], i))
                 AddCount(DJTSIndex)
                 延时(1000)
             end
