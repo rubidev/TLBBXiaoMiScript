@@ -32,6 +32,26 @@ function UseTuLingZhuTransmit()
     end
 end
 
+function GetTLZPos(TLZName, TLZNum)
+    return LUA_取返回值(string.format([[
+        local currNum = DataPool:GetBaseBag_Num();
+        local TLZName = "%s"
+        local TLCNum = %d
+        local TLZCount = 0
+        for i=1, currNum do
+            theAction,bLocked = PlayerPackage:EnumItem("base", i-1);  -- szPacketName = "base"、"material"、"quest"
+            local sName = theAction:GetName();
+            if string.find(TLZName, sName) ~= nil then
+                TLZCount = TLZCount + 1
+                if TLZCount == TLCNum then
+                    return i
+                end
+            end
+        end
+        return -1
+    ]], TLZName, tonumber(TLZNum)))
+end
+
 function UseTuLingZhuPositioning()
     -- 使用土灵珠定位
     -- 定位第1个土灵珠
