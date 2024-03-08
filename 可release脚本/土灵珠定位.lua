@@ -42,7 +42,6 @@ function GetBaseBKGItemPos(itemName, itemNum)
 end
 
 function setTLZPosition(TLZIndex)
-    -- 测试方法一
     LUA_Call(string.format([[
         local Client_ItemIndex = %d
         Clear_XSCRIPT();
@@ -51,24 +50,6 @@ function setTLZPosition(TLZIndex)
             Set_XSCRIPT_Parameter(0, Client_ItemIndex);
             Set_XSCRIPT_ParamCount(1);
         Send_XSCRIPT();
-    ]], TLZIndex))
-
-    -- 测试方法二
-    LUA_Call(string.format([[
-        local Client_ItemIndex = %d
-        PlayerPackage:UseTulingzhuSetpos(Client_ItemIndex, 1);
-    ]], TLZIndex))
-
-    -- 测试方法三
-    LUA_Call(string.format([[
-        local Client_ItemIndex = %d
-        Clear_XSCRIPT();
-			Set_XSCRIPT_Function_Name("UseItem");
-			Set_XSCRIPT_ScriptID(300056);
-			Set_XSCRIPT_Parameter(0, 0);
-			Set_XSCRIPT_Parameter(1, Client_ItemIndex);
-			Set_XSCRIPT_ParamCount(2);
-		Send_XSCRIPT();
     ]], TLZIndex))
 end
 
